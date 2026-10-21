@@ -42,6 +42,20 @@
 	flex: none;
 }
 
+/* State content has its own reading lane; the App toolbar retains the shell's frame. */
+.sg-state-content {
+	flex: 1;
+	min-block-size: min-content;
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	justify-content: center;
+	inline-size: calc(100% - var(--sg-safe-start) - var(--sg-safe-end));
+	max-inline-size: var(--sg-focus);
+	margin-inline: auto;
+	padding-block: var(--sg-space-task) max(var(--sg-space-section), env(safe-area-inset-bottom));
+}
+
 /* Terminal reason is passive supporting copy, never a second warning surface. */
 .sg-terminal-page .intro {
 	display: grid;

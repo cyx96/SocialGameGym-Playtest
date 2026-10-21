@@ -286,10 +286,13 @@ function syncView() {
 		"aria-label",
 		creating ? "返回私信" : mobile.matches && opened ? "返回会话列表" : "返回应用桌面",
 	);
-	newButton.hidden = creating || conversations.length === 0;
+	const readonly = Boolean(window.SessionApp && SessionApp.readonly);
+	// A narrow empty list needs its creation action in the App toolbar; the wide
+	// workspace offers the same action beside its empty-state message instead.
+	newButton.hidden = creating || readonly || (!mobile.matches && conversations.length === 0);
 	workspace.classList.toggle("empty-workspace", conversations.length === 0);
 	empty.querySelector("p").textContent = conversations.length ? "选择一个会话" : "还没有会话";
-	empty.querySelector("button").hidden = conversations.length > 0;
+	empty.querySelector("button").hidden = conversations.length > 0 || readonly || mobile.matches;
 }
 function selectConversation(id, instant = false, initial = false) {
 	if (creating) {

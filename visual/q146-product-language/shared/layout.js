@@ -42,6 +42,24 @@
 	}
 	function toolbar(root) {
 		root.classList.add("sg-toolbar", "sg-pane-toolbar");
+		// App navigation has its own frame, independent of the content reading width.
+		// Profile peeks belong to the host Reading and have no product-level App bar.
+		const page = root.parentElement;
+		if (
+			document.documentElement.dataset.sessionApp &&
+			!document.documentElement.hasAttribute("data-profile-peek") &&
+			page?.matches("body > .sg-page")
+		) {
+			if (root.hasAttribute("data-sg-navigation-scroll")) {
+				// A scroll-owned navigation overlay needs the full navigation viewport;
+				// its children retain the page's independent reading-width role.
+				page.classList.add("sg-navigation-scroll-canvas");
+			} else {
+				root.classList.add("sg-navigation-canvas");
+				page.before(root);
+			}
+			root.dispatchEvent(new Event("sgg:navigation-mounted"));
+		}
 		const title = [...root.children].find((n) =>
 			n.matches("h1,h2,.app-title,.sg-task-toolbar-label"),
 		);
