@@ -1,0 +1,240 @@
+:root {
+	--ink: #1c6945;
+	--label: #202622;
+	--secondary: #58615b;
+	--canvas: #f7faf8;
+	--surface: #fff;
+	--wash: #e4f0e8;
+	--control: #f0f5f2;
+	--paper: #f7faf8;
+	--sg-focus: 1040px;
+	--sg-safe-start: clamp(20px, 6.666vw, 80px);
+	--sg-safe-end: var(--sg-safe-start);
+}
+* {
+	box-sizing: border-box;
+}
+body {
+	margin: 0;
+	background: var(--canvas);
+	color: var(--label);
+}
+[hidden] {
+	display: none !important;
+}
+h1,
+h2,
+p {
+	margin: 0;
+}
+button {
+	touch-action: manipulation;
+}
+.sg-home {
+	height: 100dvh;
+}
+.catalog {
+	position: fixed;
+	inset: 0;
+}
+.catalog iframe {
+	width: 100%;
+	height: 100%;
+	border: 0;
+	display: block;
+}
+.sg-welcome-copy {
+	font-size: clamp(16px, 2.4vw, 32px);
+}
+.sg-welcome-prompt {
+	gap: 16px;
+}
+.sg-welcome[data-leaving="true"] {
+	pointer-events: none;
+}
+.sg-welcome-copy {
+	scrollbar-width: none;
+}
+.sg-send-arrow svg {
+	width: 20px;
+	height: 20px;
+}
+.product-header {
+	height: 76px;
+	background: var(--surface);
+	padding: 0 40px;
+	display: flex;
+	align-items: center;
+	gap: 32px;
+}
+.product-header strong {
+	color: var(--ink);
+	font-size: 18px;
+	font-weight: 550;
+	letter-spacing: -0.025em;
+}
+.product-header > span {
+	font-size: var(--sg-type-context);
+}
+.product-header > span:last-child {
+	margin-left: auto;
+}
+.product-header svg {
+	width: 20px;
+	height: 20px;
+}
+.app-space {
+	height: calc(100dvh - 76px);
+	display: grid;
+	position: relative;
+	isolation: isolate;
+}
+.desktop,
+.app-pane {
+	grid-area: 1 / 1;
+	min-width: 0;
+	width: 100%;
+	height: 100%;
+	background: var(--canvas);
+}
+.desktop {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	gap: 48px;
+	padding: 32px 20px;
+}
+.desktop h1 {
+	font-size: var(--sg-task-title);
+	font-weight: 550;
+}
+.launchers {
+	display: grid;
+	grid-template-columns: repeat(6, 1fr);
+	gap: 32px;
+}
+.launch-tool {
+	border: 0;
+	background: transparent;
+	font: inherit;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 12px;
+	padding: 8px;
+	cursor: pointer;
+	color: var(--label);
+	border-radius: var(--sg-radius-control);
+}
+.launch-tool:focus-visible {
+	outline: 2px solid var(--ink);
+	outline-offset: 2px;
+}
+.launch-tool:hover .tool-tile {
+	background: var(--wash);
+}
+.tool-tile {
+	box-shadow: none;
+}
+#experience-next {
+	min-width: 240px;
+}
+.app-pane {
+	position: relative;
+}
+.app-header {
+	display: grid;
+	grid-template-columns: 44px 1fr 44px;
+	align-items: center;
+	max-width: none;
+	padding: 16px 40px;
+	gap: 16px;
+}
+.app-header h1 {
+	font-size: var(--sg-type-title);
+	text-align: center;
+	font-weight: 550;
+}
+.app-header svg {
+	width: 20px;
+	height: 20px;
+}
+.app-content {
+	width: min(100% - 80px, 640px);
+	margin: 48px auto;
+	line-height: var(--sg-leading-body);
+}
+.app-content h2 {
+	font-size: var(--sg-task-title);
+	font-weight: 550;
+	margin: 24px 0 12px;
+}
+.app-content p {
+	color: var(--secondary);
+	margin-bottom: 24px;
+}
+.avatar {
+	width: 88px;
+	height: 88px;
+	display: block;
+}
+[data-sg-app-origin-hidden] {
+	visibility: hidden !important;
+}
+@media (max-width: 760px) {
+	.product-header {
+		height: 92px;
+		gap: 4px 16px;
+		padding: 16px 20px;
+		flex-wrap: wrap;
+	}
+	.product-header > span:first-of-type {
+		order: 2;
+		flex-basis: 100%;
+	}
+	.product-header > span:last-child {
+		position: absolute;
+		top: 20px;
+		right: 20px;
+	}
+	.app-space {
+		height: calc(100dvh - 92px);
+	}
+	.desktop {
+		gap: 28px;
+	}
+	.launchers {
+		grid-template-columns: repeat(3, 1fr);
+		gap: 20px 24px;
+		--sg-launch-size: 64px;
+		--sg-launch-glyph: 48px;
+		--sg-launch-radius: 19px;
+	}
+	.app-header {
+		padding: 10px 20px;
+	}
+	.app-content {
+		width: calc(100% - 40px);
+		margin-top: 32px;
+	}
+	.sg-welcome-prompt {
+		padding: 12px 12px 12px 20px;
+	}
+	.sg-welcome-copy {
+		font-size: 16px;
+	}
+}
+
+[data-measuring] {
+	visibility: hidden !important;
+	transform: none !important;
+	pointer-events: none !important;
+}
+.product-header > [data-icon] svg {
+	fill: none;
+	stroke: currentColor;
+	stroke-width: var(--sg-icon-stroke);
+	stroke-linecap: round;
+	stroke-linejoin: round;
+}
