@@ -9,11 +9,8 @@ const scroller = document.querySelector(".forum-app"),
 	reduce = matchMedia("(prefers-reduced-motion: reduce)"),
 	error = editor.querySelector(".draft-error"),
 	slot = document.querySelector(".entry-spacer"),
-	inner = editor.querySelector(".newpost-inner"),
-	toolbar = document.querySelector(".forum-toolbar"),
-	layer = document.querySelector(".sticky-layer");
+	inner = editor.querySelector(".newpost-inner");
 let width = 0,
-	navigationMounted = false,
 	frame = 0,
 	progress = 0,
 	pressed = false,
@@ -26,11 +23,6 @@ let width = 0,
 	clearMotion = () => {},
 	scrollTarget = null,
 	restoreFrame = 0;
-toolbar.addEventListener("sgg:navigation-mounted", () => {
-	navigationMounted = true;
-	new ResizeObserver(schedule).observe(toolbar);
-	schedule();
-});
 function scrollToTarget(top, instant = false) {
 	scrollTarget = top;
 	scroller.scrollTo({ top, behavior: instant || reduce.matches ? "instant" : "smooth" });
@@ -64,26 +56,15 @@ function sync() {
 	const scroll = Math.max(0, scroller.scrollTop),
 		raw = reduce.matches ? (scroll <= 4 ? 0 : 1) : Math.max(0, Math.min(1, (scroll - 4) / 92));
 	progress = raw;
-	const nav = navigationMounted ? toolbar.getBoundingClientRect() : null,
-		origin = navigationMounted ? layer.getBoundingClientRect() : null,
-		reading = navigationMounted ? slot.getBoundingClientRect() : null,
-		expandedY = nav
-			? nav.bottom - origin.top + parseFloat(getComputedStyle(toolbar).marginBottom)
-			: 64,
-		compactY = nav ? nav.top - origin.top + (nav.height - 44) / 2 : 6,
-		shiftX = nav ? (nav.right - reading.right) * raw : 0,
-		y = expandedY - (expandedY - compactY) * Math.pow(raw, 1.7),
+	const y = 64 - 58 * Math.pow(raw, 1.7),
 		w = width - (width - 44) * raw,
 		h = 78 - 34 * raw;
-	surface.style.transform = `translate(${shiftX}px,${y}px) scale(${w / width},${h / 78})`;
+	surface.style.transform = `translateY(${y}px) scale(${w / width},${h / 78})`;
 	surface.style.borderRadius = `${16 + (width / 2 - 16) * raw}px / ${16 + 23 * raw}px`;
-	icon.style.transform = `translate(${-14 * (1 - raw) + shiftX}px,${expandedY + 17 - (expandedY + 17 - compactY) * raw}px)`;
+	icon.style.transform = `translate(${-14 * (1 - raw)}px,${81 - 75 * raw}px)`;
 	copy.style.opacity = Math.max(0, 1 - raw * 8);
-	copy.style.top = expandedY + 20 + "px";
 	copy.style.transform = `translateY(${-10 * raw}px)`;
 	hit.style.top = y + "px";
-	// Keep position independent of the shared button's transient press transform.
-	hit.style.translate = shiftX + "px";
 	hit.style.width = w + "px";
 	hit.style.height = h + "px";
 	hit.style.borderRadius = 16 + 6 * raw + "px";
@@ -96,7 +77,7 @@ function schedule() {
 new ResizeObserver((entries) => {
 	width = entries[0].contentRect.width;
 	schedule();
-}).observe(slot);
+}).observe(scroller);
 scroller.addEventListener("scroll", schedule, { passive: true });
 document.addEventListener("keydown", () => (keyboard = true), { capture: true });
 document.addEventListener("pointerdown", () => (keyboard = false), { capture: true });

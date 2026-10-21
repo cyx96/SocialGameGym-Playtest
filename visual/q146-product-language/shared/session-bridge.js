@@ -49,21 +49,22 @@
 		}
 		clearTimeout(p.timer);
 		pending.delete(e.data.id);
-		// Keep the receipt in this child message task: deferred callbacks in WebKit
-		// srcdoc frames can lose the exact sender Window. postMessage already queues
-		// delivery after the promise reactions below have cleared the local draft.
 		if (e.data.error) {
 			p.reject(Error(e.data.error));
-			parent.postMessage(
-				{ channel: "sgg-surface-ack", id: e.data.id },
-				new URL(document.baseURI).origin,
+			queueMicrotask(() =>
+				parent.postMessage(
+					{ channel: "sgg-surface-ack", id: e.data.id },
+					new URL(document.baseURI).origin,
+				),
 			);
 		} else {
 			if (e.data.context) context = e.data.context;
 			p.resolve(Object.hasOwn(e.data, "result") ? e.data.result : e.data.context);
-			parent.postMessage(
-				{ channel: "sgg-surface-ack", id: e.data.id },
-				new URL(document.baseURI).origin,
+			queueMicrotask(() =>
+				parent.postMessage(
+					{ channel: "sgg-surface-ack", id: e.data.id },
+					new URL(document.baseURI).origin,
+				),
 			);
 		}
 	});

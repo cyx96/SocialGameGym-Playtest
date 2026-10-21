@@ -113,10 +113,10 @@ body[data-sg-shell][data-scroll="workspace"] {
 	flex: none;
 }
 .sg-product-bar > .sg-header-actions > .sg-button[data-sg-button] {
-	inline-size: var(--sg-button-compact);
-	min-inline-size: var(--sg-button-compact);
-	block-size: var(--sg-button-compact);
-	min-block-size: var(--sg-button-compact);
+	inline-size: var(--sg-target);
+	min-inline-size: var(--sg-target);
+	block-size: var(--sg-target);
+	min-block-size: var(--sg-target);
 	padding: 0;
 	color: var(--secondary, #535a55);
 }
@@ -124,14 +124,6 @@ body.config-open > .sg-product-bar {
 	z-index: 60;
 }
 .sg-shell-width {
-	box-sizing: border-box;
-	inline-size: calc(100% - var(--sg-safe-start) - var(--sg-safe-end));
-	max-inline-size: var(--sg-frame);
-	margin-inline: auto;
-}
-/* Product and App levels share an outer navigation frame, independently of content width. */
-.sg-pane-toolbar.sg-navigation-canvas,
-.sg-inset-pane > .sg-pane-toolbar {
 	box-sizing: border-box;
 	inline-size: calc(100% - var(--sg-safe-start) - var(--sg-safe-end));
 	max-inline-size: var(--sg-frame);
@@ -205,20 +197,6 @@ body.config-open > .sg-product-bar {
 .sg-page[data-width="split"] {
 	max-inline-size: var(--sg-frame);
 }
-/* Scroll-owned navigation overlays retain a full frame viewport. Reading
-   children keep the page's semantic content width inside that viewport. */
-.sg-page.sg-navigation-scroll-canvas {
-	--sg-page-content-width: var(--sg-work);
-	max-inline-size: var(--sg-frame);
-}
-.sg-navigation-scroll-canvas[data-width="focus"] {
-	--sg-page-content-width: var(--sg-focus);
-}
-.sg-navigation-scroll-canvas > :not(.sg-pane-toolbar) {
-	inline-size: 100%;
-	max-inline-size: var(--sg-page-content-width);
-	margin-inline: auto;
-}
 
 body[data-scroll="workspace"] > .sg-page {
 	flex: 1;
@@ -233,9 +211,7 @@ body[data-scroll="workspace"] > .sg-page[data-flow="feed"] {
 .sg-toolbar {
 	position: relative;
 	display: grid;
-	grid-template-columns:
-		minmax(var(--sg-nav-target, var(--sg-target)), 1fr) minmax(0, auto)
-		minmax(var(--sg-nav-target, var(--sg-target)), 1fr);
+	grid-template-columns: minmax(var(--sg-target), 1fr) minmax(0, auto) minmax(var(--sg-target), 1fr);
 	align-items: center;
 	gap: var(--sg-related);
 	flex: none;
@@ -286,8 +262,8 @@ body[data-scroll="workspace"] > .sg-page[data-flow="feed"] {
 }
 .sg-toolbar > .sg-toolbar-leading.sg-button[data-sg-button],
 .sg-toolbar > .sg-toolbar-trailing.sg-button[data-sg-button] {
-	min-inline-size: var(--sg-nav-target, var(--sg-target));
-	min-block-size: var(--sg-nav-target, var(--sg-target));
+	min-inline-size: var(--sg-target);
+	min-block-size: var(--sg-target);
 }
 .sg-toolbar[data-sticky] {
 	position: sticky;
@@ -701,35 +677,13 @@ body[data-task-scene] > .sg-page {
 	}
 }
 
-/* Full-width App host. Its navigation and reading content own separate canvases. */
+/* One content guide: inset hosts derive their outer width from the shared inner work width. */
 .sg-inset-pane {
 	--sg-pane-inset: var(--sg-space-surface);
+	--sg-pane-content-width: var(--sg-work);
 	inline-size: 100%;
-	max-inline-size: none;
-	padding-inline: 0;
-	margin-inline: auto;
-}
-.sg-inset-pane.sg-page {
-	max-inline-size: none;
-}
-.sg-inset-pane > :is(.sg-context-task, .sg-task-context-rail) {
-	inline-size: calc(
-		100% -
-		max(var(--sg-pane-inset), var(--sg-safe-start)) -
-		max(var(--sg-pane-inset), var(--sg-safe-end))
-	);
-	margin-inline: auto;
-}
-.sg-inset-pane > .sg-task-context-rail {
-	max-inline-size: var(--sg-work);
-}
-.sg-inset-pane > .sg-state-content {
-	inline-size: calc(
-		100% -
-		max(var(--sg-pane-inset), var(--sg-safe-start)) -
-		max(var(--sg-pane-inset), var(--sg-safe-end))
-	);
-	max-inline-size: var(--sg-focus);
+	max-inline-size: calc(var(--sg-pane-content-width) + 2 * var(--sg-pane-inset));
+	padding-inline: var(--sg-pane-inset);
 	margin-inline: auto;
 }
 /* Align the visible back glyph to the reading guide, independently of its full target. */
@@ -755,12 +709,16 @@ body[data-task-scene] > .sg-page {
 	outline-offset: -2px;
 }
 
+.sg-inset-pane[data-width="focus"] {
+	--sg-pane-content-width: var(--sg-focus);
+}
+
 /* Text enlargement preserves a two-character App name before spending space on side gaps. */
 @container (max-width: 14rem) {
 	.sg-toolbar {
 		column-gap: 0;
-		grid-template-columns: minmax(var(--sg-nav-target, var(--sg-target)), 1fr) minmax(2em, auto) minmax(
-				var(--sg-nav-target, var(--sg-target)),
+		grid-template-columns: minmax(var(--sg-target), 1fr) minmax(2em, auto) minmax(
+				var(--sg-target),
 				1fr
 			);
 	}

@@ -51,7 +51,6 @@
 	}
 	const bars = [...document.querySelectorAll(".toolbar,.app-toolbar,.forum-toolbar,.dm-toolbar")];
 	for (const bar of bars) {
-		if (bar.classList.contains("forum-toolbar")) bar.dataset.sgNavigationScroll = "";
 		L.toolbar(bar);
 		if (bar.classList.contains("forum-toolbar")) bar.dataset.sticky = "";
 		new MutationObserver(() => L.toolbar(bar)).observe(bar, { childList: true });

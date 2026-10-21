@@ -59,7 +59,7 @@
 		});
 		frame.mount(host);
 		if (spec.purpose === "terminal") frame.main.classList.add("sg-terminal-page");
-		if (contextTask) frame.main.classList.add("sg-task-page", "sg-inset-pane");
+		if (contextTask) frame.main.classList.add("sg-task-page");
 		if (spec.navigation) {
 			const bar = el("nav", "");
 			if (spec.navigation.back) {

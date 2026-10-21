@@ -2,6 +2,8 @@
 	"use strict";
 	const focusOnly = document.body.dataset.focusOnly === "true",
 		flipOnly = document.body.dataset.cardGesture === "flip";
+	let captionVisible = true,
+		captionTheme = "cooperation";
 	const profile = SGGCatalogMotion;
 	const { animate } = Motion,
 		stage = document.querySelector("#stage"),
@@ -135,10 +137,7 @@
 				e.stopPropagation();
 				if (!clickBlocked) flipCard();
 			};
-			const reading = document.createElement("div");
-			reading.className = "card-reading";
-			reading.append(wash, copy);
-			face.append(art, reading);
+			face.append(art, wash, copy);
 			if (!flipOnly) face.append(flip);
 			const reverse = document.createElement("div");
 			reverse.className = "card-face card-back";
@@ -218,6 +217,25 @@
 		c.configurationMounted = true;
 	}
 	const selected = () => assemblies[mod(Math.round(state.theme), assemblies.length)];
+	function beginCaptions() {
+		if (focusOnly) {
+			captionVisible = false;
+			schedule();
+		}
+	}
+	function finishCaptions() {
+		if (
+			focusOnly &&
+			!down &&
+			wheelAxis === null &&
+			Math.abs(state.theme - Math.round(state.theme)) < 0.002 &&
+			Math.abs(selected().pos - Math.round(selected().pos)) < 0.002
+		) {
+			captionVisible = true;
+			captionTheme = selected().theme.id;
+			schedule();
+		}
+	}
 	function setThemeColors() {
 		const a = selected();
 		if (
@@ -232,6 +250,7 @@
 			Math.abs(state.nav - targets.nav) > 0.002
 		)
 			return;
+		finishCaptions();
 		const theme =
 			targets.nav > 0.5
 				? themes.find((t) => t.id === a.games[mod(Math.round(a.pos), a.games.length)].category)
@@ -314,9 +333,9 @@
 			a.root.style.transform = `translate(-50%,-50%) translate3d(${mix(-34, 0, p) + state.boundary}px,${themeY * (1 - p)}px,0) scale(${scale})`;
 			const fp = active ? p : 0,
 				reveal = active ? profile.reveal(d) : 0;
-			// One spatial focus envelope owns the fan, its reading and the poster.
-			// At the ownership midpoint both neighbours have zero reading opacity.
-			if (focusOnly) a.identity.style.opacity = String(reveal);
+			const identityVisible =
+				!focusOnly || (active && captionVisible && captionTheme === a.theme.id);
+			if (focusOnly) a.identity.style.opacity = identityVisible ? "1" : "0";
 			a.board.style.transform = `translateX(${-fp * 95}px) scale(${1 - 0.06 * fp})`;
 			a.board.style.opacity = String(1 - smooth(fp / 0.78));
 			a.front.style.transform = `perspective(1200px) translateX(${-fp * 150}px) rotateY(${-12 * reveal - 38 * fp}deg)`;
@@ -357,11 +376,13 @@
 				const expansion = smooth((f - 0.48) / 0.52);
 				c.reverse.style.transform = `translate(-50%,-50%) rotateY(180deg) scale(${mix(size.frontWidth / size.backWidth, 1, expansion)},${mix(450 / size.backHeight, 1, expansion)})`;
 				c.settingsContent.style.opacity = String(smooth((f - 0.55) / 0.3));
-				const readingFocus = focusOnly ? reveal * profile.reveal(gd) : 1;
-				c.copy.style.opacity = String(smooth((fp - 0.4) / 0.5) * readingFocus);
-				c.wash.style.opacity = String(smooth((fp - 0.35) / 0.5) * readingFocus);
+				const captionGate =
+					!focusOnly || (active && gameMain && captionVisible && captionTheme === a.theme.id);
+				c.copy.style.opacity = String(smooth((fp - 0.4) / 0.5) * (captionGate ? 1 : 0));
+				if (focusOnly)
+					c.wash.style.opacity = String(smooth((fp - 0.35) / 0.5) * (captionGate ? 1 : 0));
 				c.desc.style.visibility = gameMain ? "visible" : "hidden";
-				c.flip.style.opacity = String(smooth((fp - 0.75) / 0.25) * readingFocus);
+				c.flip.style.opacity = String(smooth((fp - 0.75) / 0.25) * (captionGate ? 1 : 0));
 				c.flip.tabIndex = active && gameMain && fp > 0.99 && f < 0.5 ? 0 : -1;
 				c.face.inert = f >= 0.5;
 				c.reverse.inert = f < 0.5;
@@ -615,6 +636,7 @@
 		}
 		if (g.mode === 1) spring("theme", Math.round(g.theme));
 		else moveGames(g.a, g.gameTarget);
+		beginCaptions();
 	}
 	stage.addEventListener("pointerdown", (e) => {
 		tapTarget = null;
@@ -860,6 +882,7 @@
 		dropPointer();
 		clearWheel(true);
 		setInputMode(instant ? "instant" : "gesture");
+		beginCaptions();
 		const next = (fn) => () => {
 			if (searchNavigation === route) fn();
 		};
@@ -983,7 +1006,6 @@
 			state.theme = targets.theme = themes.findIndex((t) => t.id === g.category);
 			const a = selected();
 			a.pos = a.games.indexOf(g);
-			gameTargets.set(a, a.pos);
 		}
 	}
 	if (params.get("state") === "open") state.nav = targets.nav = 1;
@@ -1002,10 +1024,7 @@
 			running: running.size,
 			wheel: wheelAxis,
 			gesture: down?.axis || null,
-			caption: {
-				visible: profile.reveal(ring(selected().index, state.theme, themes.length)) > 0.001,
-				theme: selected().theme.id,
-			},
+			caption: { visible: captionVisible, theme: captionTheme },
 		}),
 		open: openFolder,
 		close: closeFolder,
