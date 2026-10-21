@@ -1,1 +1,6411 @@
-<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>资料 · SocialGameGym</title><script src="shared/icons.js"></script><script src="shared/motion.js"></script><script src="shared/session-bridge.js"></script><link rel="stylesheet" href="game/ui.css"><link rel="stylesheet" href="shared/button.css"><link rel="stylesheet" href="shared/controls.css"><link rel="stylesheet" href="shared/journey.css"><link rel="stylesheet" href="shared/layout.css"><link rel="stylesheet" href="shared/avatar.css"><link rel="stylesheet" href="shared/profile-app.css"><link rel="stylesheet" href="shared/activity.css"><link rel="stylesheet" href="shared/game-records.css"><link rel="stylesheet" href="game/number-language.css"><link rel="stylesheet" href="shared/avatar-picker.css"><link rel="stylesheet" href="shared/product-language.css"><script src="shared/inline-person.js"></script><script src="shared/product-language.js"></script><link rel="stylesheet" href="shared/session-embed.css"></head><body data-sg-shell data-scroll="workspace"><main class="sg-page" data-width="focus"><nav id="profile-toolbar"></nav><div id="profile-filter" class="profile-filter"></div><section id="profile-list" aria-label="玩家资料"></section><form id="profile-edit" hidden><div class="profile-avatar" id="profile-avatar"></div><div class="profile-fields"><label>称呼<input id="profile-name" aria-describedby="profile-status" autocomplete="nickname" required></label><label>简介<textarea id="profile-bio" aria-describedby="profile-status" rows="4" placeholder="简单介绍一下自己"></textarea></label></div><p id="profile-status" role="status"></p></form></main><dialog id="avatar-picker" class="sg-reading" aria-labelledby="avatar-picker-title"><header class="sg-reading-head"><h2 id="avatar-picker-title">头像</h2></header><div class="sg-reading-body"><fieldset id="avatar-options" aria-label="头像"></fieldset></div></dialog><dialog id="profile-detail" class="sg-reading" aria-labelledby="detail-name"><header class="sg-reading-head"><h2 id="detail-name"></h2></header><div id="detail-body" class="sg-reading-body"></div></dialog><script src="shared/button.js"></script><script src="shared/controls.js"></script><script src="shared/layout.js"></script><script src="shared/avatar-registry.js"></script><script src="shared/avatar.js"></script><script src="shared/reading-surface.js"></script><script src="shared/avatar-picker.js"></script><script src="shared/activity-definition.js"></script><script src="game/number-policy.js"></script><script src="game/number-language.js"></script><script src="shared/profile-app.js"></script><script src="shared/notice-reader.js"></script></body></html>
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>资料 · SocialGameGym</title><script>/* Authored geometric icons, generated from source/icons.json. */
+(() => {
+	const registry = {"back":"<path d=\"m14 5-7 7 7 7\"/>","close":"<path d=\"m6 6 12 12M18 6 6 18\"/>","search":"<circle cx=\"10.5\" cy=\"10.5\" r=\"6.5\"/><path d=\"m16 16 5 5\"/>","edit":"<path d=\"m15 5 4 4M4 20l4.5-1L20 7.5 16.5 4 5 15.5 4 20Z\"/>","compose":"<path d=\"M20 13v6a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1h6m3 1 4 4M10 14l1-4L18 3l3 3-7 7-4 1Z\"/>","copy":"<rect x=\"8\" y=\"8\" width=\"12\" height=\"12\" rx=\"2\"/><path d=\"M15 8V4a1 1 0 0 0-1-1H4a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h4\"/>","reply":"<path d=\"m9 5-6 6 6 6M3 11h10a7 7 0 0 1 7 7v1\"/>","chevron-down":"<path d=\"m6 9 6 6 6-6\"/>","plus":"<path d=\"M12 5v14M5 12h14\"/>","minus":"<path d=\"M5 12h14\"/>","rules":"<path d=\"M12 5C8 3 5 3 2 4v16c4-1 7-1 10 1m0-16c4-2 7-2 10-1v16c-4-1-7-1-10 1V5\"/>","records":"<path d=\"M3 10a9 9 0 1 1 1 8M3 4v6h6M12 7v5l3 2\"/>","send":"<path d=\"M12 19V5m-6 6 6-6 6 6\"/>","check":"<path class=\"sg-checkmark\" pathLength=\"1\" d=\"m5 12 4 4L19 6\"/>","more":"<circle cx=\"5\" cy=\"12\" r=\".8\"/><circle cx=\"12\" cy=\"12\" r=\".8\"/><circle cx=\"19\" cy=\"12\" r=\".8\"/>","settings":"<path d=\"m10 3-.5 2.3-1.7 1-2.2-.7-2 3.4 1.7 1.6v2L3.6 14.5l2 3.4 2.2-.7 1.7 1L10 21h4l.5-2.3 1.7-1 2.2.7 2-3.4-1.7-1.6v-2l1.7-1.6-2-3.4-2.2.7-1.7-1L14 3Z\"/><circle cx=\"12\" cy=\"12\" r=\"3\"/>","person":"<circle cx=\"12\" cy=\"8\" r=\"3.5\"/><path d=\"M5 21v-2a7 7 0 0 1 14 0v2\"/>","player-type":"<circle cx=\"10\" cy=\"7.5\" r=\"3.2\"/><path d=\"M3.5 20v-2a6.5 6.5 0 0 1 11-4.7m2 3.7 3 3 3-3\"/>","builtin":"<rect x=\"3\" y=\"5\" width=\"18\" height=\"14\" rx=\"3\"/><path d=\"m7 9 3 3-3 3m6 0h4\"/>","agent":"<circle cx=\"12\" cy=\"12\" r=\"3\"/><circle cx=\"5\" cy=\"5\" r=\"2\"/><circle cx=\"19\" cy=\"5\" r=\"2\"/><circle cx=\"19\" cy=\"19\" r=\"2\"/><path d=\"m6.5 6.5 3.3 3.3m4.4 0 3.3-3.3m-3.3 7.7 3.3 3.3M3 19h6m-3-3v6\"/>","trash":"<path d=\"M4 7h16M9 7V4h6v3M6 7l1 14h10l1-14M10 11v6M14 11v6\"/>","clock":"<circle cx=\"12\" cy=\"12\" r=\"9\"/><path d=\"M12 7v5l3 2\"/>","status-idle":"<circle cx=\"12\" cy=\"12\" r=\"7\"/>","desktop":"<rect x=\"4\" y=\"4\" width=\"6\" height=\"6\" rx=\"1\"/><rect x=\"14\" y=\"4\" width=\"6\" height=\"6\" rx=\"1\"/><rect x=\"4\" y=\"14\" width=\"6\" height=\"6\" rx=\"1\"/><rect x=\"14\" y=\"14\" width=\"6\" height=\"6\" rx=\"1\"/>","eye":"<path d=\"M2 12s3.4-6 10-6 10 6 10 6-3.4 6-10 6S2 12 2 12Z\"/><circle cx=\"12\" cy=\"12\" r=\"2.5\"/>"};
+	window.SGGIcons = Object.freeze({
+		names: Object.keys(registry),
+		create(name) {
+			if (!registry[name]) throw Error("Unknown icon: " + name);
+			const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+			svg.setAttribute("viewBox", "0 0 24 24");
+			svg.setAttribute("aria-hidden", "true");
+			svg.setAttribute("focusable", "false");
+			svg.dataset.sgIcon = name;
+			svg.innerHTML = registry[name];
+			return svg;
+		},
+	});
+})();
+</script><script>/* Shared presentation motion. No timers or animation completions advance product state. */
+(() => {
+	"use strict";
+	const root = document.documentElement,
+		reduced = matchMedia("(prefers-reduced-motion:reduce)"),
+		active = new Map(),
+		origins = new Map(),
+		listeners = new Set();
+	let exposed = true;
+	const instant = (event) =>
+		reduced.matches || event?.detail === 0 || root.dataset.sgMotionInput === "keyboard";
+	function options(role = "enter") {
+		if (
+			![
+				"enter",
+				"exit",
+				"state",
+				"press",
+				"release",
+				"expand",
+				"collapse",
+				"app-open",
+				"app-close",
+			].includes(role)
+		)
+			throw Error("Unregistered motion role: " + role);
+		const css = getComputedStyle(root);
+		return {
+			duration: parseFloat(css.getPropertyValue("--sg-motion-" + role)) || 0,
+			easing: css.getPropertyValue("--sg-ease").trim() || "linear",
+		};
+	}
+	function cancel(node) {
+		const a = active.get(node);
+		active.delete(node);
+		a?.cancel();
+	}
+	function input(value) {
+		if (!["keyboard", "pointer"].includes(value)) return;
+		root.dataset.sgMotionInput = value;
+		if (value === "keyboard") settle();
+	}
+	function settle() {
+		for (const node of active.keys()) cancel(node);
+		for (const fn of listeners) fn();
+	}
+	function run(node, frames, { role = "enter", immediate = false, event, fill = "none" } = {}) {
+		if (!node?.isConnected) return null;
+		const previous = active.get(node),
+			current = previous ? getComputedStyle(node) : null,
+			from = current ? { opacity: current.opacity, transform: current.transform } : null;
+		if (from && (role === "app-open" || role === "app-close")) from.opacity = 1;
+		if (from && frames.some((f) => "clipPath" in f))
+			from.clipPath = current.clipPath === "none" ? frames[0].clipPath : current.clipPath;
+		cancel(node);
+		if (immediate || instant(event) || document.hidden || !exposed) return null;
+		const a = node.animate(from ? [from, frames.at(-1)] : frames, { ...options(role), fill });
+		active.set(node, a);
+		a.finished
+			.catch(() => {})
+			.finally(() => {
+				if (active.get(node) === a) active.delete(node);
+			});
+		return a;
+	}
+	function scene(node, { direction = "forward", ...config } = {}) {
+		const x = direction === "back" ? -6 : direction === "replace" ? 0 : 6;
+		return run(
+			node,
+			[
+				{ opacity: 0.92, transform: `translate3d(${x}px,0,0)` },
+				{ opacity: 1, transform: "translate3d(0,0,0)" },
+			],
+			{ role: direction === "replace" ? "state" : "enter", ...config },
+		);
+	}
+	function app(node, desktop, { opening, anchor, bounds, desktopBounds: home, source }) {
+		const x = anchor.x + anchor.width / 2,
+			y = anchor.y + anchor.height / 2,
+			scale = Math.min(anchor.width / bounds.width, anchor.height / bounds.height);
+		if (!(scale > 0 && Number.isFinite(scale))) return [];
+		// The complete visible viewport keeps its aspect ratio and contents; never crop full-size text into the source tile.
+		node.style.transformOrigin = "50% 50%";
+		desktop.style.transformOrigin = `${x - home.x}px ${y - home.y}px`;
+		const rest = { transform: "translate(0px,0px) scale(1)", opacity: 1 },
+			near = {
+				transform: `translate(${x - bounds.x - bounds.width / 2}px,${y - bounds.y - bounds.height / 2}px) scale(${scale})`,
+				opacity: 1,
+			};
+		const homeRest = { transform: "scale(1)", opacity: 1 },
+			receded = { transform: "scale(.985)", opacity: 1 };
+		const animations = [
+			run(node, opening ? [near, rest] : [rest, near], {
+				role: opening ? "app-open" : "app-close",
+				fill: "both",
+			}),
+			run(desktop, opening ? [homeRest, receded] : [receded, homeRest], {
+				role: opening ? "app-open" : "app-close",
+				fill: "both",
+			}),
+		].filter(Boolean);
+		const pane = animations[0];
+		if (!pane || !source) return animations;
+		source.dataset.sgAppOriginHidden = "";
+		const release = () => {
+			if (origins.get(node)?.animation === pane) {
+				delete source.dataset.sgAppOriginHidden;
+				origins.delete(node);
+			}
+		};
+		origins.set(node, { animation: pane, source });
+		const nativeCancel = pane.cancel.bind(pane);
+		pane.cancel = () => {
+			release();
+			nativeCancel();
+		};
+		pane.finished.catch(() => {}).finally(release);
+		return animations;
+	}
+	function reveal(node, config = {}) {
+		return run(
+			node,
+			[
+				{ opacity: 0.9, transform: "translateY(4px)" },
+				{ opacity: 1, transform: "translateY(0)" },
+			],
+			config,
+		);
+	}
+	root.dataset.sgMotionInput = "pointer";
+	document.addEventListener(
+		"keydown",
+		(e) => {
+			if (["Shift", "Control", "Alt", "Meta"].includes(e.key)) return;
+			input("keyboard");
+		},
+		true,
+	);
+	document.addEventListener("pointerdown", () => input("pointer"), {
+		passive: true,
+		capture: true,
+	});
+	reduced.addEventListener("change", () => {
+		if (reduced.matches) settle();
+	});
+	document.addEventListener("visibilitychange", () => {
+		if (document.hidden) settle();
+	});
+	window.addEventListener("message", (e) => {
+		if (e.source === parent && e.data?.channel === "q146-app-visibility") {
+			exposed = Boolean(e.data.visible);
+			if (!exposed) settle();
+		}
+	});
+	// Native details retains focus, semantics and immediate access; only its revealed contents move.
+	document.addEventListener(
+		"click",
+		(e) => {
+			const summary = e.target.closest?.("summary");
+			if (!summary || summary.closest("#stage")) return;
+			const details = summary.parentElement;
+			if (details.tagName !== "DETAILS") return;
+			details.dataset.sgDisclosureInput = instant(e) ? "instant" : "pointer";
+			if (details.open) for (const child of details.children) cancel(child);
+		},
+		true,
+	);
+	document.addEventListener(
+		"toggle",
+		(e) => {
+			const details = e.target;
+			if (
+				details.tagName !== "DETAILS" ||
+				!details.open ||
+				details.dataset.sgDisclosureInput !== "pointer"
+			)
+				return;
+			details.dataset.sgDisclosureInput = "";
+			for (const child of details.children) if (child.tagName !== "SUMMARY") reveal(child);
+		},
+		true,
+	);
+	window.SGGMotion = Object.freeze({
+		version: "sgg.motion/1",
+		options,
+		instant,
+		input,
+		cancel,
+		run,
+		reveal,
+		scene,
+		app,
+		onSettle(fn) {
+			listeners.add(fn);
+			return () => listeners.delete(fn);
+		},
+		get reduced() {
+			return reduced.matches;
+		},
+	});
+})();
+</script><script>/* Bridge used only inside the explicitly labelled local review host. */
+(() => {
+	"use strict";
+	const q = new URLSearchParams(location.search);
+	if (!window.__SGG_CONTEXT__) throw Error("Missing authorised surface context");
+	let context = window.__SGG_CONTEXT__;
+	if (context.themeId) document.documentElement.dataset.sgTheme = context.themeId;
+	const app = window.__SGG_APP__;
+	document.documentElement.dataset.sessionApp = app;
+	document.documentElement.dataset.readonly = String(context.readonly);
+	const pending = new Map();
+	let serial = 0;
+	function send(type, data = {}) {
+		return new Promise((resolve, reject) => {
+			const id = ++serial,
+				timer = setTimeout(() => {
+					parent.postMessage({ channel: "sgg-surface-slow", id }, new URL(document.baseURI).origin);
+				}, 8000);
+			pending.set(id, { resolve, reject, timer });
+			parent.postMessage(
+				{ channel: "sgg-surface", id, app, type, data, window: context.window },
+				new URL(document.baseURI).origin,
+			);
+		});
+	}
+	window.addEventListener("message", (e) => {
+		if (
+			e.source === parent &&
+			e.origin === new URL(document.baseURI).origin &&
+			e.data?.channel === "q146-notices"
+		) {
+			context = { ...context, ...e.data.context };
+			dispatchEvent(new Event("sgg:notice-update"));
+			return;
+		}
+		if (
+			e.source !== parent ||
+			e.origin !== new URL(document.baseURI).origin ||
+			e.data?.channel !== "sgg-surface-response"
+		)
+			return;
+		const p = pending.get(e.data.id);
+		if (!p) {
+			parent.postMessage(
+				{ channel: "sgg-surface-ack", id: e.data.id },
+				new URL(document.baseURI).origin,
+			);
+			return;
+		}
+		clearTimeout(p.timer);
+		pending.delete(e.data.id);
+		// Keep the receipt in this child message task: deferred callbacks in WebKit
+		// srcdoc frames can lose the exact sender Window. postMessage already queues
+		// delivery after the promise reactions below have cleared the local draft.
+		if (e.data.error) {
+			p.reject(Error(e.data.error));
+			parent.postMessage(
+				{ channel: "sgg-surface-ack", id: e.data.id },
+				new URL(document.baseURI).origin,
+			);
+		} else {
+			if (e.data.context) context = e.data.context;
+			p.resolve(Object.hasOwn(e.data, "result") ? e.data.result : e.data.context);
+			parent.postMessage(
+				{ channel: "sgg-surface-ack", id: e.data.id },
+				new URL(document.baseURI).origin,
+			);
+		}
+	});
+	window.SessionApp = {
+		get context() {
+			return context;
+		},
+		get readonly() {
+			return context.readonly;
+		},
+		get scope() {
+			return [context.room, context.viewer, context.participation, context.window, app].join(":");
+		},
+		request(type, data) {
+			return send(type, { ...data, requestId: crypto.randomUUID() });
+		},
+		submit(button, type, data) {
+			if (button.getAttribute("aria-busy") === "true")
+				return Promise.reject(Error("正在保存，请稍候。"));
+			const disabled = button.disabled;
+			button.disabled = true;
+			window.SGGButtons?.busy(button, true);
+			return send(type, { ...data, requestId: crypto.randomUUID() }).finally(() => {
+				window.SGGButtons?.busy(button, false);
+				button.disabled = disabled;
+			});
+		},
+		close() {
+			send("ui.close", {
+				keyboard: document.activeElement?.matches(":focus-visible") || false,
+			}).catch(() => {});
+		},
+		refresh() {
+			send("ui.refresh").catch(() => {});
+		},
+		get app() {
+			return app;
+		},
+	};
+})();
+</script><style>:root {
+	--ink: #1d6940;
+	--wash: #e2efe6;
+	--paper: #f8fbf9;
+	--canvas: #f9fbfa;
+	--surface: #fff;
+	--label: #1f2320;
+	--secondary: #535a55;
+	--line: #cbcfcc;
+}
+* {
+	box-sizing: border-box;
+}
+html,
+body {
+	margin: 0;
+	min-height: 100%;
+	background: var(--canvas);
+	color: var(--label);
+}
+body {
+	font:
+		16px / 1.7 -apple-system,
+		BlinkMacSystemFont,
+		"PingFang SC",
+		sans-serif;
+	-webkit-font-smoothing: antialiased;
+}
+button,
+input,
+select {
+	font: inherit;
+	color: inherit;
+}
+button,
+a,
+label,
+input,
+select {
+	-webkit-tap-highlight-color: transparent;
+}
+button {
+	border: 0;
+	background: transparent;
+	cursor: pointer;
+	touch-action: manipulation;
+}
+button:disabled {
+	cursor: default;
+}
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+summary:focus-visible,
+select:focus-visible {
+	outline: 2px solid var(--ink);
+	outline-offset: 4px;
+}
+.person {
+	display: inline-flex;
+	align-items: center;
+	gap: 8px;
+	color: var(--secondary);
+	font-size: 14px;
+	white-space: nowrap;
+}
+.avatar {
+	border-radius: 50%;
+	display: block;
+	object-fit: cover;
+	flex-shrink: 0;
+}
+.workspace {
+}
+.intro h1 {
+	font-size: var(--sg-task-title);
+	line-height: var(--sg-task-title-leading);
+	font-weight: 600;
+	letter-spacing: -0.65px;
+	margin: 0 0 var(--sg-space-paragraph);
+	text-wrap: pretty;
+	overflow-wrap: anywhere;
+}
+.description {
+	font-size: 16px;
+	line-height: 1.8;
+	color: var(--secondary);
+	margin: 0;
+}
+.fact-list {
+	margin: 28px 0 0;
+	padding-top: 16px;
+	border-top: 0;
+}
+.fact-row {
+	display: flex;
+	justify-content: space-between;
+	align-items: baseline;
+	gap: 20px;
+	padding: 7px 0;
+}
+.fact-row dt {
+	font-size: 14px;
+	color: var(--secondary);
+}
+.fact-row dd {
+	font-size: 15px;
+	margin: 0;
+	text-align: right;
+	overflow-wrap: anywhere;
+}
+.field {
+	border: 0;
+	padding: 0;
+	margin: 0 0 28px;
+	min-width: 0;
+}
+.field legend,
+.control-label {
+	display: block;
+	font-size: 16px;
+	font-weight: 550;
+	margin-bottom: 12px;
+	padding: 0;
+}
+.field-help {
+	font-size: 14px;
+	line-height: 1.6;
+	color: var(--secondary);
+	margin: var(--sg-space-related) 0 0;
+}
+.field legend + .field-help {
+	margin: -5px 0 14px;
+}
+.choice-options {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 10px;
+}
+.option {
+	position: relative;
+	min-width: 0;
+	display: flex;
+	flex: 1 1 140px;
+	cursor: pointer;
+}
+.option input {
+	position: absolute;
+	opacity: 0;
+	width: 1px;
+	height: 1px;
+	pointer-events: none;
+}
+.option-label {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 100%;
+	min-height: 48px;
+	padding: 10px 15px;
+	border: 0;
+	border-radius: 12px;
+	background: var(--surface);
+	text-align: center;
+	font-size: 16px;
+	line-height: 1.6;
+	transition:
+		background 140ms ease,
+		border-color 140ms ease,
+		box-shadow 140ms ease;
+}
+.option input:checked + .option-label {
+	background: var(--wash);
+	border-color: var(--ink);
+	box-shadow: inset 0 0 0 0.5px var(--ink);
+	color: var(--ink);
+	font-weight: 550;
+}
+.option input:focus-visible + .option-label {
+	outline: 2px solid var(--ink);
+	outline-offset: 4px;
+}
+.short-options .option {
+	flex: 1 1 44px;
+}
+.number-control {
+	display: flex;
+	align-items: center;
+	gap: 16px;
+	border: 0;
+	border-radius: 14px;
+	background: var(--surface);
+	padding: 10px;
+}
+.stepper {
+	min-width: 48px;
+	min-height: 48px;
+	border-radius: 10px;
+	background: var(--paper);
+	color: var(--ink);
+	font-size: 24px;
+}
+.stepper:disabled {
+	color: var(--secondary);
+	opacity: 0.4;
+}
+.number-input {
+	width: 100%;
+	min-width: 0;
+	border: 0;
+	text-align: center;
+	font-size: 30px;
+	line-height: 1.4;
+	background: transparent;
+	appearance: textfield;
+	-moz-appearance: textfield;
+}
+.number-input::-webkit-inner-spin-button {
+	appearance: none;
+}
+.number-input::placeholder {
+	font-size: 16px;
+	color: var(--secondary);
+}
+.consequence {
+	padding: 0;
+	min-height: 0;
+}
+.consequence.has-content {
+	padding: 18px 0 0;
+	border-top: 0;
+	margin-top: 8px;
+}
+.consequence-title {
+	font-size: 18px;
+	font-weight: 550;
+	line-height: 1.5;
+	margin: 0;
+}
+.action-footer {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	justify-content: flex-end;
+	gap: 16px;
+	margin-top: 30px;
+}
+.primary {
+	min-height: 48px;
+	min-width: 152px;
+	border-radius: 999px;
+	background: var(--ink);
+	color: white;
+	padding: 11px 24px;
+	font-size: 16px;
+	font-weight: 550;
+	transition:
+		background 140ms ease,
+		transform 140ms ease;
+}
+.primary:disabled {
+	background: var(--wash);
+	color: var(--secondary);
+}
+button:active:not(:disabled) {
+	transform: scale(0.97);
+}
+.inline-note {
+	font-size: 14px;
+	color: var(--secondary);
+	margin: 0;
+	flex: 1 1 100%;
+	line-height: 1.7;
+}
+.inline-note:empty {
+	display: none;
+}
+.result-metric {
+	padding: 0 0 25px;
+	border-bottom: 0;
+}
+.section-label {
+	font-size: 14px;
+	font-weight: 400;
+	line-height: 1.6;
+	color: var(--secondary);
+	margin: 0 0 12px;
+}
+.metric-value {
+	font-size: var(--sg-type-metric);
+	line-height: 1.15;
+	font-weight: 550;
+	letter-spacing: -1.3px;
+	color: var(--ink);
+	font-variant-numeric: tabular-nums;
+	margin: 0;
+}
+.unit {
+	font-size: 15px;
+	font-weight: 400;
+	letter-spacing: 0;
+	color: var(--secondary);
+	margin-left: 9px;
+	white-space: nowrap;
+}
+.result-facts {
+	margin: 17px 0 0;
+}
+.result-facts .fact-row {
+	padding: 7px 0;
+}
+.result-facts dd {
+	font-variant-numeric: tabular-nums;
+}
+.artifact {
+	margin: 0 0 24px;
+}
+.document {
+	border: 0;
+	border-radius: 12px;
+	background: var(--surface);
+	padding: 8px 20px;
+}
+.document-row {
+	display: flex;
+	align-items: baseline;
+	gap: 20px;
+	padding: 11px 0;
+}
+.document-row + .document-row {
+	border-top: 0;
+}
+.line-number {
+	color: var(--secondary);
+	font-size: 12px;
+	font-variant-numeric: tabular-nums;
+	min-width: 8px;
+}
+.document-row p {
+	font-size: 20px;
+	line-height: 1.5;
+	margin: 0;
+	font-variant-numeric: tabular-nums;
+	overflow-wrap: anywhere;
+}
+.current-artifact {
+	margin-top: 24px;
+}
+.record-editor > .field {
+	margin-bottom: 20px;
+}
+.record-editor .field {
+	margin-bottom: 22px;
+}
+.editor-details:empty,
+.edit-preview:empty {
+	display: none;
+}
+.editor-details select {
+	display: block;
+	width: 100%;
+	min-height: 48px;
+	border: 0;
+	border-radius: 12px;
+	background: var(--surface);
+	padding: 10px 12px;
+	margin-bottom: 20px;
+}
+.edit-preview {
+	margin-top: 24px;
+}
+.edit-preview .document {
+	background: var(--paper);
+}
+.receipt-facts {
+	margin: 0;
+	padding: 14px 0;
+	border-top: 0;
+	border-bottom: 0;
+}
+.quiet-status {
+	font-size: 14px;
+	color: var(--secondary);
+	margin: 20px 0 0;
+}
+.config-section {
+	border-bottom: 0;
+}
+.config-section:first-child {
+	border-top: 0;
+}
+.config-section summary {
+	font-size: 16px;
+	font-weight: 550;
+	cursor: pointer;
+	min-height: 58px;
+	padding: 15px 0;
+	list-style: none;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 20px;
+}
+.config-section summary::after {
+	content: "+";
+	font-size: 20px;
+	font-weight: 400;
+	color: var(--secondary);
+}
+.config-section[open] summary::after {
+	content: "−";
+}
+.config-fields {
+	padding: 4px 0 20px;
+}
+.config-row {
+	display: grid;
+	grid-template-columns: minmax(0, 1fr) 88px;
+	align-items: center;
+	gap: 10px 20px;
+	margin: 8px 0;
+}
+.config-row > label {
+	font-size: 15px;
+}
+.config-input {
+	min-width: 0;
+	width: 88px;
+	min-height: 44px;
+	border: 0;
+	border-radius: 10px;
+	text-align: center;
+	background: var(--surface);
+	padding: 6px;
+	font-variant-numeric: tabular-nums;
+}
+.config-row .field-help {
+	grid-column: 1 / -1;
+	margin: 0 0 12px;
+}
+.rules-brief {
+	font-size: 16px;
+	line-height: 1.9;
+	margin: 0 0 18px;
+}
+.config-section .rules-brief {
+	font-size: 15px;
+	color: var(--secondary);
+}
+dialog {
+	position: fixed;
+	inset: 0 0 0 auto;
+	margin: 0;
+	border: 0;
+	border-left: 0;
+	width: 420px;
+	max-width: 100%;
+	height: 100dvh;
+	max-height: 100dvh;
+	padding: 24px;
+	background: var(--surface);
+	color: var(--label);
+}
+dialog::backdrop {
+	background: #15221a26;
+}
+dialog > header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 20px;
+	margin-bottom: 26px;
+}
+dialog h2 {
+	font-size: 18px;
+	font-weight: 600;
+	margin: 0;
+}
+dialog header button {
+	width: 44px;
+	height: 44px;
+	border-radius: 50%;
+	background: var(--paper);
+	font-size: var(--sg-task-title);
+	line-height: 1;
+}
+dialog[open] {
+	animation: panel-in 180ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+@keyframes panel-in {
+	from {
+		opacity: 0;
+		transform: translateX(14px);
+	}
+	to {
+		opacity: 1;
+		transform: none;
+	}
+}
+@media (hover: hover) and (pointer: fine) {
+	.option:hover .option-label {
+		border-color: var(--ink);
+	}
+	.primary:not(:disabled):hover {
+		filter: brightness(0.96);
+	}
+}
+@media (max-width: 760px) {
+	.person {
+		font-size: 13px;
+		gap: 7px;
+	}
+	.avatar {
+		width: 26px;
+		height: 26px;
+	}
+	.workspace {
+	}
+	.intro h1 {
+		font-size: var(--sg-task-title);
+		line-height: 1.4;
+		letter-spacing: -0.45px;
+		margin-bottom: var(--sg-space-paragraph);
+	}
+	.description {
+		font-size: 16px;
+		line-height: 1.8;
+	}
+	.fact-list {
+		margin-top: 22px;
+		padding-top: 12px;
+	}
+	.fact-row {
+		gap: 16px;
+	}
+	.fact-row dd {
+		font-size: 14px;
+	}
+	.field {
+		margin-bottom: 24px;
+	}
+	.choice-options {
+		gap: 8px;
+	}
+	.option-label {
+		min-height: 48px;
+		padding: 10px 12px;
+	}
+	.short-options .option {
+		flex-basis: 42px;
+	}
+	.action-footer {
+		margin-top: 26px;
+	}
+	.primary {
+		width: 100%;
+		min-height: 48px;
+	}
+	.result-metric {
+		padding-bottom: 23px;
+	}
+	.metric-value {
+		font-size: var(--sg-type-metric);
+	}
+	.result-facts {
+		margin-top: 15px;
+	}
+	.document {
+		padding: 5px 18px;
+	}
+	.document-row {
+		padding: 10px 0;
+		gap: 18px;
+	}
+	.document-row p {
+		font-size: 20px;
+	}
+	.current-artifact {
+		margin-top: 24px;
+	}
+	.artifact {
+		margin-bottom: 23px;
+	}
+	dialog {
+		inset: auto 0 0;
+		margin: 0;
+		width: 100%;
+		height: auto;
+		max-height: 85dvh;
+		border: 0;
+		border-top: 0;
+		border-radius: 22px 22px 0 0;
+		padding: 20px 24px max(30px, env(safe-area-inset-bottom));
+	}
+	dialog[open] {
+		animation-name: sheet-in;
+	}
+	@keyframes sheet-in {
+		from {
+			opacity: 0;
+			transform: translateY(14px);
+		}
+		to {
+			opacity: 1;
+			transform: none;
+		}
+	}
+}
+@media (prefers-reduced-motion: reduce) {
+	*,
+	*::before,
+	*::after {
+		animation: none !important;
+		transition: none !important;
+	}
+	button:active:not(:disabled) {
+		transform: none;
+	}
+}
+.short-options {
+	display: grid;
+}
+.short-options .option {
+	display: flex;
+}
+.short-options .option-label {
+	padding-left: 6px;
+	padding-right: 6px;
+	white-space: nowrap;
+}
+.editable-row {
+	position: relative;
+	cursor: pointer;
+	border-radius: 8px;
+	margin: 0 -8px;
+	padding-left: 8px;
+	padding-right: 8px;
+}
+.editable-row input {
+	position: absolute;
+	opacity: 0;
+	width: 1px;
+	height: 1px;
+}
+.editable-row:has(input:checked) {
+	background: var(--wash);
+}
+.editable-row:has(input:disabled) {
+	cursor: default;
+}
+.editable-row:has(input:focus-visible) {
+	outline: 2px solid var(--ink);
+	outline-offset: 2px;
+}
+.line-text {
+	font-size: 20px;
+	font-variant-numeric: tabular-nums;
+	line-height: 1.5;
+}
+.edit-summary {
+	font-size: 14px;
+	line-height: 1.7;
+	color: var(--secondary);
+	margin: 16px 0 0;
+}
+.edit-summary:empty {
+	display: none;
+}
+.sr-only {
+	position: absolute !important;
+	width: 1px !important;
+	height: 1px !important;
+	padding: 0 !important;
+	margin: -1px !important;
+	overflow: hidden;
+	clip: rect(0, 0, 0, 0);
+	white-space: nowrap;
+	border: 0;
+}
+.quota-help {
+	margin: 0 0 16px;
+}
+.headline-line {
+	display: block;
+}
+.description {
+	text-wrap: pretty;
+}
+.metric-value {
+	overflow-wrap: anywhere;
+}
+.person {
+	min-width: 0;
+	max-width: 55%;
+}
+.person > span {
+	min-width: 0;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+.description {
+	text-wrap: balance;
+}
+</style><style>/* Shared primitives and semantic roles. Themes remain owned by theme-source.json. */
+:root {
+	--sg-font-ui: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", sans-serif;
+	--sg-font-art: "Songti SC", "Noto Serif CJK SC", serif;
+	--sg-font-number: var(--sg-font-ui);
+	--sg-inline-avatar-size: 1em;
+	--sg-person-inline-gap: 0.16em;
+	--sg-inline-avatar-baseline: -0.14em;
+	--sg-icon-action: 20px;
+	--sg-icon-control: 18px;
+	--sg-icon-chevron: 16px;
+	--sg-icon-stroke: 1.65;
+	--sg-type-body: 1rem;
+	--sg-type-description: var(--sg-type-body);
+	--sg-type-title: 1.1875rem;
+	--sg-type-meta: 0.8125rem;
+	--sg-type-context: 0.875rem;
+	--sg-type-value: 1.125rem;
+	--sg-type-amount: 1.25rem;
+	--sg-type-compact: 0.9375rem;
+	--sg-type-caption: 0.75rem;
+	--sg-type-input: 1rem;
+	--sg-type-number-input: 1.0625rem;
+	--sg-type-metric: 3rem;
+	--sg-text-body: var(--sg-type-body);
+	--sg-text-author: 0.875rem;
+	--sg-text-name: 1rem;
+	--sg-text-meta: var(--sg-type-meta);
+	--sg-text-help: 0.875rem;
+	--sg-weight-name: 550;
+	--sg-weight-value: 550;
+	--sg-text-task-support: var(--sg-type-body);
+	--sg-leading-copy: 1.75;
+	--sg-leading-body: 1.75;
+	--sg-leading-description: 1.75;
+	--sg-leading-interface: 1.5;
+	--sg-task-title-wide: 2.5rem;
+	--sg-task-title: 2rem;
+	--sg-task-title-leading: 1.35;
+	--sg-space-related: 0.5rem;
+	--sg-space-paragraph: 0.75rem;
+	--sg-space-sibling: 1rem;
+	--sg-space-section: 1.5rem;
+	--sg-space-task: 2rem;
+	--sg-space-surface: 1.5rem;
+	--sg-radius-action: 10px;
+	--sg-radius-control: 12px;
+	--sg-radius-surface: 16px;
+	--sg-radius-paper: 14px;
+	--sg-radius-reading: 18px;
+	--sg-radius-sheet: 22px;
+	--sg-line-separator: color-mix(in srgb, var(--label, #1f2320) 10%, var(--surface, #fff));
+	--sg-line-control: color-mix(in srgb, var(--label, #1f2320) 24%, var(--surface, #fff));
+	--sg-line-paper: color-mix(in srgb, var(--label, #1f2320) 8%, var(--surface, #fff));
+	--sg-shadow-paper:
+		0 1px 2px color-mix(in srgb, var(--label, #1f2320) 4%, transparent),
+		0 10px 24px -20px color-mix(in srgb, var(--label, #1f2320) 22%, transparent);
+	--sg-shadow-popover:
+		0 4px 12px -6px color-mix(in srgb, var(--label, #1f2320) 12%, transparent),
+		0 12px 28px -12px color-mix(in srgb, var(--label, #1f2320) 16%, transparent);
+	--sg-shadow-dialog:
+		0 6px 18px -10px color-mix(in srgb, var(--label, #1f2320) 10%, transparent),
+		0 24px 64px -24px color-mix(in srgb, var(--label, #1f2320) 18%, transparent);
+	--sg-backdrop: color-mix(in srgb, var(--label, #1f2320) 14%, transparent);
+	--sg-motion-app-open: 240ms;
+	--sg-motion-app-close: 200ms;
+	--sg-motion-expand: 200ms;
+	--sg-motion-collapse: 160ms;
+	--sg-motion-enter: 160ms;
+	--sg-motion-exit: 120ms;
+	--sg-motion-state: 140ms;
+	--sg-motion-press: 80ms;
+	--sg-motion-release: 160ms;
+	--sg-ease: cubic-bezier(0.23, 1, 0.32, 1);
+}
+body {
+	font-family: var(--sg-font-ui);
+	-webkit-font-smoothing: antialiased;
+}
+.sg-number-text {
+	font-family: var(--sg-font-number);
+	font-variant-numeric: lining-nums tabular-nums;
+}
+@media (max-width: 760px) {
+	:root {
+		--sg-task-title: 1.75rem;
+		--sg-type-context: 0.8125rem;
+		--sg-type-metric: 2.75rem;
+		--sg-space-surface: 1.25rem;
+	}
+}
+@media (max-width: 359px) {
+	:root {
+		--sg-space-surface: 1rem;
+	}
+}
+
+/* SocialGameGym button language v1. Theme roles are supplied by the game UI package. */
+:root {
+	--sg-button-ink:var(--ink);--sg-button-secondary:var(--secondary);--sg-button-surface:var(--surface,#fff);--sg-button-wash:var(--wash,color-mix(in srgb,var(--sg-button-ink) 12%,white));--sg-button-height:48px;--sg-button-compact:44px;--sg-button-radius:999px;--sg-button-ease:var(--sg-ease);--sg-button-press:var(--sg-motion-press);--sg-button-release:var(--sg-motion-release);--sg-button-state:var(--sg-motion-state);--sg-button-selection:180ms;--sg-button-selection-radius:var(--sg-radius-action)
+}
+button.sg-button[data-sg-button],
+a.sg-button[data-sg-button] {
+	position: relative;
+	box-sizing: border-box;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	gap: 8px;
+	min-width: 44px;
+	min-height: var(--sg-button-height);
+	margin-block: 0;
+	padding: 12px 24px;
+	border: 0;
+	border-radius: var(--sg-button-radius);
+	background: transparent;
+	box-shadow: none;
+	color: var(--sg-button-ink);
+	font-family: inherit;
+	font-size: var(--sg-type-body);
+	font-weight: 500;
+	line-height: 1.5;
+	letter-spacing: 0;
+	text-decoration: none;
+	text-align: center;
+	vertical-align: middle;
+	white-space: nowrap;
+	cursor: pointer;
+	touch-action: manipulation;
+	-webkit-tap-highlight-color: transparent;
+	-webkit-user-select: none;
+	user-select: none;
+	transform: scale(1);
+	transition:
+		transform var(--sg-button-release) var(--sg-button-ease),
+		background-color var(--sg-button-state) ease,
+		color var(--sg-button-state) ease;
+}
+button.sg-button[data-sg-button]:active {
+	transform: scale(1);
+}
+button.sg-button[data-sg-button].sg-pressed {
+	transform: scale(var(--sg-press-scale, 0.97));
+	transition-duration: var(--sg-button-press), var(--sg-button-state), var(--sg-button-state);
+}
+.sg-button[data-sg-button][data-sg-role="primary"] {
+	background: var(--sg-button-ink);
+	color: var(--sg-button-surface);
+	font-weight: 550;
+}
+.sg-button[data-sg-button][data-sg-role="soft"] {
+	background: color-mix(in srgb, var(--sg-button-wash) 58%, var(--sg-button-surface));
+	color: var(--sg-button-ink);
+}
+.sg-button[data-sg-button][data-sg-role="quiet"] {
+	background: transparent;
+	color: var(--sg-button-ink);
+}
+.sg-button[data-sg-button][data-sg-size="compact"] {
+	min-height: var(--sg-button-compact);
+	padding: 10px 20px;
+	font-size: var(--sg-type-compact);
+}
+.sg-button[data-sg-button][data-sg-role="icon"],
+.sg-button[data-sg-button][data-sg-role="icon-primary"] {
+	width: 44px;
+	height: 44px;
+	min-width: 44px;
+	min-height: 44px;
+	padding: 0;
+	border-radius: 50%;
+	background: transparent;
+	color: var(--sg-button-ink);
+	flex: 0 0 auto;
+}
+.sg-button[data-sg-button][data-sg-role="icon-primary"] {
+	background: var(--sg-button-ink);
+	color: var(--sg-button-surface);
+}
+.sg-button[data-sg-button] svg {
+	display: block;
+	width: var(--sg-icon-action);
+	height: var(--sg-icon-action);
+	flex: none;
+	stroke: currentColor;
+	stroke-width: var(--sg-icon-stroke);
+	stroke-linecap: round;
+	stroke-linejoin: round;
+	fill: none;
+}
+.sg-button[data-sg-button]:focus-visible {
+	outline: 2px solid var(--sg-button-ink);
+	outline-offset: 3px;
+}
+.sg-button[data-sg-button]:disabled,
+.sg-button[data-sg-button][aria-disabled="true"] {
+	cursor: default;
+	transform: none;
+	opacity: 1;
+	color: var(--sg-button-secondary);
+	background: transparent;
+	filter: none;
+}
+.sg-button[data-sg-button][data-sg-role="primary"]:disabled,
+.sg-button[data-sg-button][data-sg-role="primary"][aria-disabled="true"],
+.sg-button[data-sg-button][data-sg-role="icon-primary"]:disabled,
+.sg-button[data-sg-button][data-sg-role="soft"]:disabled {
+	background: var(--sg-button-wash);
+	color: var(--sg-button-secondary);
+}
+.sg-button[data-sg-button][aria-busy="true"] {
+	background: transparent;
+	color: var(--sg-button-ink);
+	cursor: progress;
+}
+.sg-button[data-sg-button][data-sg-role="primary"][aria-busy="true"],
+.sg-button[data-sg-button][data-sg-role="icon-primary"][aria-busy="true"] {
+	background: var(--sg-button-ink);
+	color: var(--sg-button-surface);
+}
+.sg-button[data-sg-button][data-sg-role="soft"][aria-busy="true"] {
+	background: var(--sg-button-wash);
+}
+.sg-button[data-sg-button][aria-busy="true"] > .sg-button-label {
+	opacity: 1;
+}
+.sg-button-label {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	gap: 8px;
+	pointer-events: none;
+}
+.sg-button-spinner {
+	position: absolute;
+	right: 6px;
+	top: 50%;
+	display: grid;
+	place-items: center;
+	transform: translateY(-50%);
+	pointer-events: none;
+}
+.sg-button-spinner svg {
+	width: 12px;
+	height: 12px;
+	animation: sg-button-spin 700ms linear infinite;
+}
+.sg-button[data-sg-button][hidden],
+.sg-button-spinner[hidden] {
+	display: none !important;
+}
+.sg-button[data-sg-role="quiet"] .sg-button-spinner {
+	right: 2px;
+}
+.sg-button[data-sg-role="quiet"] .sg-button-spinner svg {
+	width: 8px;
+	height: 8px;
+}
+.sg-button[data-sg-role="soft"] .sg-button-spinner {
+	right: 2px;
+}
+.sg-button[data-sg-role="icon"][aria-busy="true"] > .sg-button-label,
+.sg-button[data-sg-role="icon-primary"][aria-busy="true"] > .sg-button-label {
+	opacity: 0;
+}
+.sg-button[data-sg-role="icon"] .sg-button-spinner,
+.sg-button[data-sg-role="icon-primary"] .sg-button-spinner {
+	inset: 0;
+	transform: none;
+}
+.sg-button[data-sg-role="icon"] .sg-button-spinner svg,
+.sg-button[data-sg-role="icon-primary"] .sg-button-spinner svg {
+	width: 18px;
+	height: 18px;
+}
+@keyframes sg-button-spin {
+	to {
+		transform: rotate(360deg);
+	}
+}
+@media (hover: hover) and (pointer: fine) {
+	.sg-button[data-sg-button]:not(:disabled):not([aria-disabled="true"]):hover {
+		background: color-mix(in srgb, var(--sg-button-wash) 44%, var(--sg-button-surface));
+		filter: none;
+	}
+	.sg-button[data-sg-button][data-sg-role="primary"]:not(:disabled):not(
+		[aria-disabled="true"]
+	):hover,
+	.sg-button[data-sg-button][data-sg-role="icon-primary"]:not(:disabled):not(
+		[aria-disabled="true"]
+	):hover {
+		background: color-mix(in srgb, var(--sg-button-ink) 93%, #000);
+	}
+	.sg-button[data-sg-button][data-sg-role="soft"]:not(:disabled):not([aria-disabled="true"]):hover {
+		background: var(--sg-button-wash);
+	}
+}
+/* Native radio choice retains its input and keyboard behavior. */
+.sg-choice .option-label {
+	min-height: 48px;
+	border: 0;
+	background: var(--sg-control-fill, color-mix(in srgb, var(--ink) 6%, var(--surface)));
+	border-radius: var(--sg-control-radius, var(--sg-radius-control));
+	box-shadow: none;
+	font-weight: 400;
+	transition:
+		background-color var(--sg-button-state) ease,
+		border-color var(--sg-button-state) ease;
+}
+.sg-choice input:checked + .option-label {
+	background: var(--sg-button-wash);
+	border-color: color-mix(in srgb, var(--sg-button-ink) 35%, var(--line));
+	box-shadow: none;
+	font-weight: 550;
+	color: var(--sg-button-ink);
+}
+.sg-choice input:focus-visible + .option-label {
+	outline: 2px solid var(--sg-button-ink);
+	outline-offset: 3px;
+}
+.sg-segmented {
+	position: relative;
+	isolation: isolate;
+	display: flex;
+	gap: 4px;
+}
+.sg-segmented > .sg-selection {
+	position: absolute;
+	inset: 0;
+	height: 100%;
+	z-index: -1;
+	border-radius: var(--sg-button-selection-radius);
+	background: color-mix(in srgb, var(--sg-button-wash) 58%, var(--sg-button-surface));
+	pointer-events: none;
+	transition: clip-path var(--sg-button-selection) var(--sg-button-ease);
+	width: 100%;
+}
+.sg-segmented .sg-button[data-sg-button] {
+	min-height: 44px;
+	padding: 9px 12px;
+	border-radius: var(--sg-button-selection-radius);
+	font-size: var(--sg-text-help);
+	flex: 1;
+	color: var(--sg-button-secondary);
+	background: transparent;
+}
+.sg-segmented .sg-button[data-sg-button][aria-pressed="true"] {
+	color: var(--sg-button-ink);
+	font-weight: 550;
+	background: transparent;
+}
+.sg-segmented .sg-button[data-sg-button]:hover {
+	background: transparent;
+}
+.sg-segmented[data-sg-instant] > .sg-selection,
+[data-sg-motion-input="keyboard"] .sg-segmented > .sg-selection {
+	transition: none;
+}
+@media (prefers-reduced-motion: reduce) {
+	button.sg-button[data-sg-button],
+	a.sg-button[data-sg-button],
+	.sg-selection {
+		transition: none !important;
+	}
+	button.sg-button[data-sg-button].sg-pressed {
+		transform: none;
+	}
+	.sg-button-spinner svg {
+		animation: none;
+	}
+}
+.sg-icon-label {
+	position: absolute !important;
+	width: 1px !important;
+	height: 1px !important;
+	padding: 0 !important;
+	margin: -1px !important;
+	overflow: hidden;
+	clip: rect(0, 0, 0, 0);
+	white-space: nowrap;
+	border: 0;
+}
+.sg-button[data-sg-button][data-sg-motion="disclosure"] > svg {
+	transition: transform var(--sg-button-release) var(--sg-button-ease);
+}
+.sg-button[data-sg-button][data-sg-motion="disclosure"][aria-expanded="true"] > svg {
+	transform: rotate(180deg);
+}
+.sg-button[data-sg-button][data-sg-input="keyboard"],
+.sg-button[data-sg-button][data-sg-input="keyboard"] > svg {
+	transition: none;
+}
+.sg-button[data-sg-button][data-sg-feedback="confirmed"] .sg-checkmark {
+	stroke-dasharray: 1;
+	animation: sg-check-draw var(--sg-button-release) var(--sg-button-ease) both;
+}
+@keyframes sg-check-draw {
+	from {
+		stroke-dashoffset: 1;
+	}
+	to {
+		stroke-dashoffset: 0;
+	}
+}
+.sg-tooltip {
+	position: fixed;
+	inset: auto;
+	margin: 0;
+	border: 0;
+	max-width: min(240px, calc(100vw - 16px));
+	padding: 7px 10px;
+	border-radius: 8px;
+	background: var(--ink, #1d6940);
+	color: var(--sg-button-surface);
+	font:
+		var(--sg-type-meta) / 1.5 -apple-system,
+		BlinkMacSystemFont,
+		"PingFang SC",
+		sans-serif;
+	pointer-events: none;
+	box-shadow: none;
+	white-space: normal;
+	text-align: center;
+	z-index: 9999;
+}
+.sg-tooltip[hidden] {
+	display: none !important;
+}
+@media (prefers-reduced-motion: reduce) {
+	.sg-button[data-sg-button][data-sg-motion="disclosure"] > svg {
+		transition: none;
+	}
+	.sg-button[data-sg-button][data-sg-feedback="confirmed"] .sg-checkmark {
+		animation: none;
+	}
+}
+
+.sg-button[data-sg-button] .sg-button-spinner svg {
+	width: 12px;
+	height: 12px;
+}
+.sg-button[data-sg-button][data-sg-role="quiet"] .sg-button-spinner svg {
+	width: 8px;
+	height: 8px;
+}
+.sg-button[data-sg-button][data-sg-role="icon"] .sg-button-spinner svg,
+.sg-button[data-sg-button][data-sg-role="icon-primary"] .sg-button-spinner svg {
+	width: 18px;
+	height: 18px;
+}
+
+html:not([data-sg-mounted]) .sg-button,
+html:not([data-sg-mounted]) .sg-button > svg {
+	transition: none !important;
+}
+
+.sg-button[data-sg-button][data-sg-motion="add"][aria-expanded="true"] {
+	background: color-mix(in srgb, var(--sg-button-wash) 58%, var(--sg-button-surface));
+}
+/* Menu items are compound rows, not centered standalone text buttons. */
+button.sg-button[data-sg-button][role="menuitem"] {
+	display: flex;
+	justify-content: flex-start;
+	align-items: center;
+	gap: 10px;
+	width: 100%;
+	min-height: 60px;
+	padding: 9px 12px;
+	border-radius: var(--sg-button-selection-radius);
+	font-size: var(--sg-text-help);
+	text-align: left;
+	white-space: normal;
+	color: var(--label);
+}
+button.sg-button[data-sg-button][role="menuitem"] .type-copy {
+	flex: 1;
+	min-width: 0;
+}
+button.sg-button[data-sg-button][role="menuitem"] .type-mark {
+	color: var(--sg-button-ink);
+}
+
+.sg-button[data-sg-button][data-sg-role="danger"] {
+	background: var(--sg-danger, #a73731);
+	color: #fff;
+	font-weight: 550;
+}
+@media (hover: hover) and (pointer: fine) {
+	.sg-button[data-sg-button][data-sg-role="danger"]:not(:disabled):not(
+		[aria-disabled="true"]
+	):hover {
+		background: color-mix(in srgb, var(--sg-danger, #a73731) 93%, #000);
+	}
+}
+.sg-button[data-sg-button][data-sg-role="danger"]:disabled {
+	background: var(--sg-button-wash);
+	color: var(--sg-button-secondary);
+}
+</style><style>/* Form language v1: shared by configuration, decisions and feedback; no game policy. */
+:root {
+	--sg-control-height: 48px;
+	--sg-control-radius: var(--sg-radius-control);
+	--sg-control-gap: 8px;
+	--sg-control-line: var(--sg-line-control);
+	--sg-control-fill: color-mix(in srgb, var(--ink, #1d6940) 6%, var(--surface, #fff));
+	--sg-control-muted: var(--secondary, #535a55);
+	--sg-control-danger: #a73731;
+	--sg-control-ease: var(--sg-ease);
+}
+.sg-field {
+	border: 0;
+	padding: 0;
+	margin: 0 0 var(--sg-space-section, 24px);
+	min-width: 0;
+}
+.sg-field > :is(legend, label),
+.sg-field-label {
+	display: block;
+	margin: 0 0 10px;
+	padding: 0;
+	font-family: inherit;
+	font-size: var(--sg-type-body);
+	font-weight: 550;
+	line-height: 1.5;
+	color: var(--label, #1f2320);
+}
+.sg-field legend {
+	float: none;
+	width: 100%;
+}
+.sg-field .field-help {
+	font-size: var(--sg-text-help);
+	line-height: 1.65;
+	margin: 8px 0 0;
+	color: var(--sg-control-muted);
+}
+.sg-field legend + .field-help {
+	margin: -2px 0 12px;
+}
+.sg-field .choice-options {
+	gap: var(--sg-control-gap);
+}
+.sg-field .sg-choice .option {
+	min-width: 0;
+	flex: 1 1 140px;
+	position: relative;
+	display: flex;
+	cursor: pointer;
+}
+.sg-field .sg-choice.short-options .option {
+	flex: 1 1 44px;
+}
+.sg-field .sg-choice .option-label {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	min-height: var(--sg-control-height);
+	width: 100%;
+	padding: 10px 14px;
+	border: 0;
+	border-radius: var(--sg-control-radius);
+	background: var(--sg-control-fill);
+	color: var(--label, #1f2320);
+	font-size: var(--sg-type-body);
+	line-height: 1.5;
+	font-weight: 400;
+	box-shadow: none;
+	overflow-wrap: anywhere;
+	transition:
+		background-color var(--sg-motion-state) ease,
+		color var(--sg-motion-state) ease;
+}
+.sg-field .sg-choice input {
+	position: absolute;
+	inset: 0;
+	width: 100%;
+	height: 100%;
+	margin: 0;
+	opacity: 0;
+	pointer-events: auto;
+	z-index: 1;
+	cursor: inherit;
+}
+.sg-field .sg-choice input:checked + .option-label {
+	background: var(--wash);
+	color: var(--ink);
+	font-weight: 550;
+}
+.sg-field .sg-choice input:focus-visible + .option-label {
+	outline: 2px solid var(--ink);
+	outline-offset: 3px;
+}
+.sg-field .sg-choice input:disabled + .option-label {
+	color: var(--sg-control-muted);
+	background: var(--sg-control-fill);
+	cursor: default;
+}
+.sg-number {
+	display: grid !important;
+	grid-template-columns: 44px minmax(40px, 1fr) 44px !important;
+	align-items: center;
+	gap: 0 !important;
+	min-height: var(--sg-control-height);
+	padding: 0 !important;
+	border: 0 !important;
+	border-radius: var(--sg-control-radius) !important;
+	background: var(--sg-control-fill) !important;
+	box-sizing: border-box;
+}
+.sg-number > input {
+	grid-column: 2;
+	grid-row: 1;
+	width: 100% !important;
+	min-width: 0 !important;
+	height: auto !important;
+	min-height: max(46px, 1.5em) !important;
+	padding: 0 4px !important;
+	border: 0 !important;
+	background: transparent !important;
+	border-radius: 8px !important;
+	color: var(--label, #1f2320);
+	font: 400 var(--sg-type-number-input) / 1.5 var(--sg-font-number) !important;
+	text-align: center;
+	font-variant-numeric: tabular-nums;
+	appearance: textfield;
+	-moz-appearance: textfield;
+	caret-color: var(--ink);
+}
+.sg-number input::-webkit-inner-spin-button,
+.sg-number input::-webkit-outer-spin-button {
+	appearance: none;
+	margin: 0;
+}
+.sg-number > button:first-of-type {
+	grid-column: 1;
+	grid-row: 1;
+}
+.sg-number > button:last-of-type {
+	grid-column: 3;
+	grid-row: 1;
+}
+.sg-number > button.sg-button[data-sg-button],
+.sg-number > button {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 44px !important;
+	min-width: 44px !important;
+	height: 44px !important;
+	min-height: 44px !important;
+	padding: 0 !important;
+	border: 0;
+	border-radius: 10px;
+	background: transparent !important;
+	color: var(--ink);
+	font-size: var(--sg-type-amount);
+	touch-action: manipulation;
+}
+.sg-number > button svg {
+	width: var(--sg-icon-control);
+	height: var(--sg-icon-control);
+	stroke: currentColor;
+	fill: none;
+	stroke-width: 1.65;
+	stroke-linecap: round;
+}
+.sg-number > button:disabled,
+.sg-number > input:disabled {
+	color: var(--sg-control-muted) !important;
+	opacity: 0.55;
+}
+.sg-number > input::placeholder {
+	font-size: var(--sg-type-body);
+	color: var(--sg-control-muted);
+	opacity: 1;
+}
+.sg-number:has(input[aria-invalid="true"]) {
+	border-color: var(--sg-control-danger) !important;
+}
+.sg-number:has(> input:focus-visible) {
+	outline: 2px solid var(--ink);
+	outline-offset: -2px;
+}
+.sg-number input:focus-visible {
+	outline: 0;
+}
+/* Compound controls touch scrollport edges: each keyboard target keeps its ring inside. */
+.sg-number > button.sg-button[data-sg-button]:focus-visible {
+	outline-offset: -2px;
+}
+html[data-sg-motion-input="pointer"] .sg-number:has(> input:focus-visible) {
+	outline: 0;
+}
+.sg-field :is(input.sg-input, select.sg-input, textarea.sg-input) {
+	box-sizing: border-box;
+	width: 100%;
+	min-width: 0;
+	min-height: var(--sg-control-height);
+	padding: 11px 14px;
+	border: 0;
+	border-radius: var(--sg-control-radius);
+	background-color: var(--sg-control-fill);
+	color: var(--label, #1f2320);
+	font-family: inherit;
+	font-size: var(--sg-type-body);
+	line-height: 1.5;
+	caret-color: var(--ink);
+}
+.sg-field select.sg-input {
+	padding-right: 40px;
+}
+.sg-field textarea.sg-input {
+	min-height: 128px;
+	line-height: 1.7;
+	resize: vertical;
+}
+.sg-input::placeholder {
+	color: var(--sg-control-muted);
+	opacity: 1;
+}
+.sg-input:focus-visible {
+	outline: 2px solid var(--ink);
+	outline-offset: 3px;
+}
+.sg-input[aria-invalid="true"] {
+	border-color: var(--sg-control-danger) !important;
+}
+.sg-error {
+	margin: 8px 0 0;
+	color: var(--sg-control-danger);
+	font-size: var(--sg-text-help);
+	line-height: 1.6;
+}
+.sg-error:empty,
+.sg-error[hidden] {
+	display: none;
+}
+.sg-field[aria-invalid="true"] .sg-choice .option-label {
+	border-color: var(--sg-control-danger);
+}
+.sg-field.sg-document-commands .option-label {
+	border: 0;
+	background: transparent;
+	font-size: var(--sg-type-compact);
+	min-height: 44px;
+}
+.sg-field.sg-document-commands input:checked + .option-label {
+	background: var(--sg-control-fill);
+	border: 0;
+}
+.sg-field.sg-document-commands .option-label {
+	padding-inline: 10px;
+}
+[data-sg-controls-input="keyboard"]
+	:is(.option-label, .toggle-track, .toggle-track::after, .config-scroll summary > svg) {
+	transition: none !important;
+}
+@media (hover: hover) and (pointer: fine) {
+	.sg-field .sg-choice .option:has(input:not(:disabled)):hover .option-label {
+		background: color-mix(in srgb, var(--ink) 10%, var(--surface));
+	}
+	.sg-field .sg-choice .option:has(input:checked):hover .option-label {
+		background: var(--wash);
+	}
+	.sg-number > button:not(:disabled):hover {
+		background: color-mix(in srgb, var(--ink) 8%, transparent) !important;
+	}
+}
+@media (prefers-reduced-motion: reduce) {
+	.sg-field .option-label,
+	.toggle-track,
+	.toggle-track::after,
+	.config-scroll summary > svg {
+		transition: none !important;
+	}
+}
+
+/* Text fields share type and focus; compound composers keep their own outer surface. */
+.sg-text-control {
+	font-family: inherit !important;
+	font-size: var(--sg-type-body) !important;
+	line-height: 1.65 !important;
+	caret-color: var(--ink);
+	accent-color: var(--ink);
+}
+.sg-text-control::placeholder {
+	color: var(--sg-control-muted);
+	opacity: 1;
+}
+.sg-text-control[data-sg-field-appearance="standalone"] {
+	min-height: 48px;
+	padding: 11px 14px;
+	border: 0;
+	border-radius: var(--sg-control-radius);
+	background: var(--sg-control-fill);
+	color: var(--label, #1f2320);
+}
+textarea.sg-text-control[data-sg-field-appearance="standalone"] {
+	min-height: 128px;
+}
+.sg-text-control:focus-visible {
+	outline: 2px solid var(--ink);
+	outline-offset: 3px;
+}
+.sg-text-control[data-sg-field-appearance="embedded"]:focus-visible {
+	outline: 2px solid var(--ink);
+	outline-offset: -2px;
+	border-radius: 8px;
+}
+:is(.input-frame, .profile-fields .field-row):has(.sg-text-control:focus-visible) {
+	outline: 2px solid var(--ink);
+	outline-offset: 3px;
+	border-radius: 12px;
+}
+.sg-select-control:not([multiple]) {
+	min-height: 48px;
+	border-radius: var(--sg-control-radius);
+	padding: 11px 40px 11px 14px;
+	font-size: var(--sg-type-body);
+	line-height: 1.5;
+	background-color: var(--sg-control-fill);
+	color: var(--label, #1f2320);
+}
+.dialog-content label {
+	font-size: var(--sg-type-body);
+	line-height: 1.5;
+}
+.config-scroll .number-field {
+	grid-template-columns: minmax(0, 1fr) 140px;
+	gap: 0 10px;
+}
+.config-scroll :is(.quota-column-head, .social-quota-row) {
+	grid-template-columns: minmax(0, 1fr) 132px 44px;
+	gap: 8px;
+}
+.config-scroll .tool-toggle .toggle-track {
+	transition: background-color var(--sg-motion-state) ease;
+}
+.config-scroll .tool-toggle .toggle-track:after {
+	transition: transform var(--sg-motion-release) var(--sg-control-ease);
+}
+
+.sg-field .sg-choice .option:has(input:disabled) {
+	cursor: default;
+}
+
+:is(.input-frame, .profile-fields .field-row)
+	.sg-text-control[data-sg-field-appearance="embedded"]:focus-visible {
+	outline: 0;
+}
+
+html[data-sg-motion-input="keyboard"]
+	:is(
+		.option-label,
+		.toggle-track,
+		.toggle-track::after,
+		.score-option span,
+		.member-check,
+		.member-check svg,
+		.record-chevron,
+		summary::after,
+		summary > svg
+	) {
+	transition: none !important;
+}
+details[data-sg-disclosure-input="instant"] :is(.record-chevron, summary::after, summary > svg) {
+	transition: none;
+}
+
+/* Native selector: one visual owner; the OS retains its accessible option popup. */
+select:not([multiple]) {
+	appearance: none;
+	min-height: 44px;
+	padding: 9px 44px 9px 14px;
+	border: 0;
+	border-radius: var(--sg-control-radius);
+	background-color: var(--sg-control-fill);
+	background-image: none;
+	font-family: inherit;
+	font-size: var(--sg-type-body);
+	line-height: 1.5;
+	color: var(--label);
+}
+select:not([multiple]):focus-visible {
+	outline: 2px solid var(--ink);
+	outline-offset: 3px;
+}
+
+/* Borderless controls: one material, one shape family. Focus is transient, not a frame. */
+.sg-field .sg-choice input:checked:disabled + .option-label {
+	background: color-mix(in srgb, var(--wash) 72%, var(--surface));
+}
+.sg-select-control:not([multiple]),
+.sg-text-control[data-sg-field-appearance="standalone"] {
+	background-color: var(--sg-control-fill);
+	border-radius: var(--sg-control-radius);
+}
+:is(.input-frame, .first-message, .profile-fields input, .profile-fields textarea) {
+	background: var(--sg-control-fill);
+	border-radius: var(--sg-control-radius);
+}
+html[data-sg-motion-input="pointer"] :is(input, textarea, select):focus-visible {
+	outline: 0;
+}
+html[data-sg-motion-input="pointer"]
+	:is(.input-frame, .profile-fields .field-row):has(.sg-text-control:focus-visible) {
+	outline: 0;
+}
+
+.sg-disclosure {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 12px;
+	min-height: 44px;
+	list-style: none;
+	cursor: pointer;
+}
+.sg-disclosure::-webkit-details-marker {
+	display: none;
+}
+.sg-disclosure::marker {
+	content: "";
+}
+.sg-disclosure::after {
+	content: none;
+}
+.sg-disclosure:focus-visible {
+	outline: 2px solid var(--ink);
+	outline-offset: 3px;
+	border-radius: var(--sg-radius-control);
+}
+.sg-disclosure-chevron {
+	flex: none;
+	margin-inline: 14px;
+	width: var(--sg-icon-chevron);
+	height: var(--sg-icon-chevron);
+	stroke: currentColor;
+	stroke-width: var(--sg-icon-stroke);
+	fill: none;
+	pointer-events: none;
+	transform: rotate(0deg);
+	transition: transform var(--sg-motion-release) var(--sg-ease);
+}
+details[open] > summary > .sg-disclosure-chevron {
+	transform: rotate(180deg);
+}
+html[data-sg-motion-input="keyboard"] .sg-disclosure-chevron {
+	transition: none;
+}
+@media (prefers-reduced-motion: reduce) {
+	.sg-disclosure-chevron {
+		transition: none;
+	}
+}
+
+/* The native control and its shared SVG use one optical center, not a CSS triangle. */
+.sg-select {
+	display: block;
+	position: relative;
+	min-width: 0;
+}
+.sg-field > .sg-select,
+.dialog-content .sg-select {
+	width: 100%;
+}
+.sg-select > select {
+	display: block;
+	box-sizing: border-box;
+	width: 100%;
+	padding-inline-end: 44px;
+}
+.sg-select > .sg-select-chevron {
+	position: absolute;
+	inset-inline-end: 14px;
+	top: 50%;
+	width: var(--sg-icon-chevron);
+	height: var(--sg-icon-chevron);
+	transform: translateY(-50%);
+	stroke: currentColor;
+	stroke-width: var(--sg-icon-stroke);
+	stroke-linecap: round;
+	stroke-linejoin: round;
+	fill: none;
+	pointer-events: none;
+	color: var(--secondary);
+}
+.sg-select:has(select:disabled) > .sg-select-chevron {
+	opacity: 0.55;
+}
+
+.config-scroll summary > svg {
+	width: var(--sg-icon-chevron);
+	height: var(--sg-icon-chevron);
+	margin-inline: 14px;
+	stroke-width: var(--sg-icon-stroke);
+}
+
+.sg-disclosure-chevron,
+.config-scroll summary > svg {
+	color: var(--secondary);
+	stroke: currentColor;
+}
+
+textarea.sg-text-control[data-sg-auto-size] {
+	field-sizing: content;
+	height: auto;
+	min-height: 2lh;
+	max-height: 35dvh;
+	overflow-y: auto;
+	resize: none;
+}
+
+.sg-control-error {
+	margin: 8px 0 0;
+	color: var(--label);
+	font-size: var(--sg-type-meta);
+	line-height: 1.6;
+	overflow-wrap: anywhere;
+}
+
+/* A fixed/read-only selection is a value, not a disabled dropdown with a false affordance. */
+.sg-field > .sg-field-value {
+	margin: 0;
+	min-block-size: var(--sg-control-height);
+	display: flex;
+	align-items: center;
+	overflow-wrap: anywhere;
+	color: var(--secondary);
+	font: 400 var(--sg-type-body) / var(--sg-leading-body) var(--sg-font-ui);
+}
+/* React utility selectors own their select node and an icon-only tail. */
+.sg-select-chevron > svg {
+	display: block;
+	inline-size: 100%;
+	block-size: 100%;
+	stroke: inherit;
+	stroke-width: inherit;
+	fill: none;
+}
+/* A single decision may borrow its visible prompt from the task; retain its programmatic field label. */
+[data-field-labels="task"] .sg-field > :is(legend, label) {
+	position: absolute;
+	inline-size: 1px;
+	block-size: 1px;
+	padding: 0 !important;
+	margin: -1px !important;
+	overflow: hidden;
+	clip-path: inset(50%);
+	white-space: nowrap;
+}
+</style><style>.sg-reading {
+	--sg-reading-entry-transform: translateY(6px);
+	--sg-reading-exit-transform: translateY(6px);
+	--sg-reading-exit-opacity: 0;
+	padding: 0;
+	border: 0;
+	inset: 0;
+	margin: auto;
+	height: fit-content;
+	border-radius: var(--sg-radius-reading);
+	width: 600px;
+	max-width: calc(100vw - 40px);
+	max-height: calc(100dvh - 40px);
+	background: var(--surface, #fff);
+	color: var(--label, #1f2320);
+	overflow: hidden;
+	box-shadow: var(--sg-shadow-dialog);
+}
+.sg-reading::backdrop {
+	background: var(--sg-backdrop);
+}
+.sg-reading > .sg-reading-head {
+	margin: 0;
+	flex: none;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 16px;
+	padding: 16px 24px 8px;
+}
+.sg-reading-head h2 {
+	font-size: var(--sg-type-title);
+	font-weight: 550;
+	line-height: 1.5;
+	margin: 0;
+	text-align: left;
+	flex: 1;
+	min-inline-size: 0;
+	overflow-wrap: anywhere;
+}
+.sg-reading > .sg-reading-body {
+	min-height: 0;
+	padding: 8px 24px 26px;
+	max-height: calc(100dvh - 150px);
+	overflow: auto;
+	overscroll-behavior: contain;
+}
+.sg-reading-body .rules-brief {
+	font-size: var(--sg-type-body);
+	line-height: var(--sg-leading-body);
+	margin: 0;
+}
+.sg-reading-body .rules-brief + .rules-brief {
+	margin-top: 12px;
+}
+.sg-reading-body .game-record-list {
+	max-height: none;
+	overflow: visible;
+}
+.sg-reading[data-keyboard="true"],
+.sg-reading[data-keyboard-open="true"] {
+	animation: none;
+}
+
+body[data-journey-surface="rating"] {
+	background: var(--canvas);
+}
+
+.dm-create .create-head {
+	min-height: 56px;
+	padding: 12px 24px;
+}
+.dm-create .create-body {
+	padding: 16px 24px 20px;
+	scroll-padding-block: 16px;
+}
+.dm-create .member-option {
+	min-height: 48px;
+	padding: 4px;
+	gap: 10px;
+}
+.dm-create .member-option .sg-avatar {
+	--avatar-size: 36px;
+}
+.dm-create .member-options {
+	padding-top: 8px;
+	gap: 0;
+}
+.dm-create .first-message-label {
+	margin: 16px 0 8px;
+}
+.dm-create .first-message {
+	min-height: 126px;
+	scroll-margin-block: 16px;
+	line-height: 1.7;
+}
+.dm-create .create-note {
+	margin: var(--sg-space-paragraph) 0 0;
+	font-size: var(--sg-type-meta);
+	line-height: var(--sg-leading-body);
+}
+.dm-create .create-footer {
+	padding: 12px 24px 16px;
+}
+body:has(#deck) {
+	font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", sans-serif;
+}
+#communication-help:empty {
+	display: none;
+}
+@media (max-width: 760px) {
+	.sg-reading {
+		--sg-reading-entry-transform: translateY(100%);
+		--sg-reading-exit-transform: translateY(100%);
+		--sg-reading-exit-opacity: 1;
+		max-width: none;
+		width: 100%;
+		inset: auto 0 0;
+		max-height: calc(100dvh - 24px);
+		height: auto;
+		margin: 0;
+		border-radius: var(--sg-radius-sheet) var(--sg-radius-sheet) 0 0;
+		padding-bottom: env(safe-area-inset-bottom);
+	}
+	.sg-reading > .sg-reading-head {
+		padding: 14px 20px 8px;
+	}
+	.sg-reading > .sg-reading-body {
+		min-height: 0;
+		padding: 6px 20px 24px;
+		max-height: calc(100dvh - 120px);
+	}
+	.dm-create .create-head {
+		padding: 12px 18px;
+	}
+	.dm-create .create-body {
+		padding: 14px 18px 18px;
+	}
+	.dm-create .create-footer {
+		padding: 12px 18px 14px;
+	}
+}
+@media (max-width: 359px) {
+	.dm-create .create-head,
+	.dm-create .create-body,
+	.dm-create .create-footer {
+		padding-inline: 14px;
+	}
+}
+@media (prefers-reduced-motion: no-preference) {
+	.sg-reading[open]:not([data-keyboard="true"]):not([data-keyboard-open="true"]):not(
+		[data-closing="true"]
+	) {
+		animation: sg-reading-enter var(--sg-motion-enter) var(--sg-ease);
+	}
+	@keyframes sg-reading-enter {
+		from {
+			opacity: 1;
+			transform: var(--sg-reading-entry-transform);
+		}
+		to {
+			opacity: 1;
+			transform: translateY(0);
+		}
+	}
+}
+
+:root {
+	--sg-shell: 1120px;
+	--sg-app-title: 19px;
+	--sg-app-toolbar: 56px;
+	--sg-surface-radius: var(--sg-radius-surface);
+	--sg-control-radius: var(--sg-radius-control);
+}
+body[data-journey-surface="rating"] .rating-app {
+}
+
+.dm-create .create-footer {
+	border-top: 0;
+	padding-top: 20px;
+}
+
+.sg-reading[open] {
+	display: flex;
+	flex-direction: column;
+}
+.sg-reading > .sg-reading-head > .sg-button[data-sg-button] {
+	flex: none;
+	background: transparent;
+	color: var(--secondary);
+}
+.sg-reading > .sg-reading-body :is(.rules-brief, .brief-rules) {
+	font-size: var(--sg-type-body);
+	line-height: var(--sg-leading-body);
+	margin: 0;
+}
+.sg-reading > .sg-reading-body {
+	scrollbar-width: thin;
+	scrollbar-color: var(--line) transparent;
+}
+@media (max-width: 760px) {
+	body[data-journey-surface="rating"] .rating-app {
+		border: 0;
+		border-radius: var(--sg-surface-radius);
+		overflow: hidden;
+		background: var(--surface);
+	}
+	body[data-journey-surface="rating"] .rating-app {
+	}
+	body[data-journey-surface="rating"] .players-pane {
+		height: auto;
+	}
+	body[data-journey-surface="rating"] .player-list {
+		padding: 0 10px 4px;
+		overflow: visible;
+	}
+	body[data-journey-surface="rating"] .detail-scroll {
+		padding: 20px 16px 24px;
+	}
+	.dm-workspace {
+		border: 0;
+		border-radius: var(--sg-surface-radius);
+	}
+	.dm-workspace[data-view="list"] {
+		flex: none;
+		overflow: visible;
+		background: transparent;
+	}
+	.dm-workspace[data-view="list"] .dm-list-pane {
+		background: var(--surface);
+		border: 0;
+		border-radius: var(--sg-surface-radius);
+		overflow: hidden;
+	}
+	.dm-workspace[data-view="list"] .dm-list-scroll {
+		flex: none;
+		overflow: visible;
+	}
+	.dm-create .create-footer {
+		padding-top: 20px;
+	}
+}
+@media (prefers-reduced-motion: no-preference) {
+	.sg-reading[data-closing="true"]::backdrop {
+		animation: sg-reading-backdrop-out var(--sg-motion-exit) var(--sg-ease) both;
+	}
+	@keyframes sg-reading-backdrop-out {
+		to {
+			opacity: 0;
+		}
+	}
+}
+
+html[data-sg-motion-input="keyboard"] .sg-reading {
+	animation: none;
+}
+
+/* Short immediate choices have their own compact measure inside the shared reading owner. */
+.sg-reading[data-purpose="choice"] {
+	inline-size: min(420px, 100%);
+}
+.sg-action-choices {
+	display: grid;
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+	gap: var(--sg-space-sibling);
+}
+.sg-action-choices > .sg-button[data-sg-button] {
+	min-inline-size: 0;
+	min-block-size: 64px;
+	border-radius: var(--sg-radius-control);
+	padding: var(--sg-space-sibling);
+	white-space: normal;
+}
+
+/* A sheet remains a solid surface; only its backdrop fades over the previous task. */
+@media (prefers-reduced-motion: no-preference) {
+	.sg-reading[open]:not([data-keyboard="true"]):not([data-keyboard-open="true"]):not(
+		[data-closing="true"]
+	)::backdrop {
+		animation: sg-reading-backdrop-in var(--sg-motion-enter) var(--sg-ease);
+	}
+	@keyframes sg-reading-backdrop-in {
+		from {
+			opacity: 0;
+		}
+		to {
+			opacity: 1;
+		}
+	}
+}
+html[data-sg-motion-input="keyboard"] .sg-reading::backdrop {
+	animation: none;
+}
+</style><style>/* One owner for screen geometry. Components own only their internal layout. */
+:root {
+	--sg-layout-version: q184-1;
+
+	--sg-frame: 70rem;
+	--sg-work: 65rem;
+	--sg-task-reading-width: 52rem;
+	--sg-focus: 40rem;
+	--sg-gutter: 2.5rem;
+	--sg-safe-start: max(var(--sg-gutter), env(safe-area-inset-left));
+	--sg-safe-end: max(var(--sg-gutter), env(safe-area-inset-right));
+	--sg-related: 0.5rem;
+	--sg-section: 1.5rem;
+	--sg-page-gap: 0.5rem;
+	--sg-page-top: 2rem;
+	--sg-task-gap: 4rem;
+	--sg-toolbar-height: 3.5rem;
+	--sg-target: 2.75rem;
+	--sg-header-height: 4.75rem;
+}
+body[data-sg-shell] {
+	margin: 0;
+	min-block-size: 100dvh;
+	display: flex;
+	flex-direction: column;
+	isolation: isolate;
+}
+body[data-sg-shell][data-scroll="workspace"] {
+	block-size: 100dvh;
+	overflow: hidden;
+}
+/* ProductBar is full bleed; game/round and phase/step share its context guide. */
+.sg-product-bar {
+	flex: none;
+	position: relative;
+	z-index: 10;
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: var(--sg-section);
+	box-sizing: border-box;
+	min-block-size: var(--sg-header-height);
+	block-size: auto;
+	inline-size: 100%;
+	margin: 0;
+	padding-block: 0.75rem;
+	padding-inline: max(var(--sg-safe-start), calc((100% - var(--sg-frame)) / 2))
+		max(var(--sg-safe-end), calc((100% - var(--sg-frame)) / 2));
+	background: var(--surface, #fff);
+	border: 0;
+	border-block-end: 0;
+}
+.sg-product-bar > .brand {
+	display: inline-flex;
+	align-items: center;
+	min-block-size: var(--sg-target);
+	position: static;
+	inset: auto;
+	transform: none;
+	white-space: nowrap;
+	flex: none;
+	font: 650 1.125rem / 1.5 var(--sg-font-ui);
+	letter-spacing: -0.025em;
+	color: var(--ink);
+	text-decoration: none;
+}
+.sg-product-bar > .game-context,
+.sg-product-bar > .page-name {
+	position: static;
+	inset: auto;
+	transform: none;
+	flex: 1 1 16rem;
+	min-inline-size: min(16rem, 100%);
+	max-inline-size: 100%;
+	display: flex;
+	align-items: baseline;
+	flex-wrap: wrap;
+	gap: 0.125rem var(--sg-related);
+	padding-inline-start: var(--sg-section);
+	border-inline-start: 0;
+	font-size: var(--sg-type-context);
+	line-height: 1.5;
+	color: var(--label, #1f2320);
+}
+.sg-product-bar > .game-context > :first-child {
+	min-inline-size: 0;
+	max-inline-size: 100%;
+	overflow-wrap: anywhere;
+	white-space: normal;
+	overflow: visible;
+	text-overflow: clip;
+}
+.sg-product-bar :is(.round, .rounds, #round) {
+	margin: 0;
+	flex: none;
+	white-space: nowrap;
+	font-size: var(--sg-type-meta);
+	line-height: 1.5;
+	color: var(--secondary, #535a55);
+	font-variant-numeric: tabular-nums;
+}
+.sg-product-bar > .sg-header-actions {
+	position: static;
+	inset: auto;
+	transform: none;
+	margin: 0 0 0 auto;
+	padding: 0;
+	display: flex;
+	align-items: center;
+	gap: 0;
+	inline-size: auto;
+	block-size: auto;
+	flex: none;
+}
+.sg-product-bar > .sg-header-actions > .sg-button[data-sg-button] {
+	inline-size: var(--sg-button-compact);
+	min-inline-size: var(--sg-button-compact);
+	block-size: var(--sg-button-compact);
+	min-block-size: var(--sg-button-compact);
+	padding: 0;
+	color: var(--secondary, #535a55);
+}
+body.config-open > .sg-product-bar {
+	z-index: 60;
+}
+.sg-shell-width {
+	box-sizing: border-box;
+	inline-size: calc(100% - var(--sg-safe-start) - var(--sg-safe-end));
+	max-inline-size: var(--sg-frame);
+	margin-inline: auto;
+}
+/* Product and App levels share an outer navigation frame, independently of content width. */
+.sg-pane-toolbar.sg-navigation-canvas,
+.sg-inset-pane > .sg-pane-toolbar {
+	box-sizing: border-box;
+	inline-size: calc(100% - var(--sg-safe-start) - var(--sg-safe-end));
+	max-inline-size: var(--sg-frame);
+	margin-inline: auto;
+}
+/* Progress group is mounted inside the common context line, before content. */
+.sg-progress {
+	display: inline-flex;
+	align-items: center;
+	flex-wrap: wrap;
+	gap: var(--sg-related);
+	flex: none;
+	min-block-size: 0;
+	margin: 0;
+	padding: 0;
+	font-size: var(--sg-type-meta);
+	line-height: 1.5;
+	color: var(--secondary, #535a55);
+}
+.sg-progress-group {
+	display: inline-flex;
+	align-items: baseline;
+	gap: var(--sg-related);
+	margin: 0;
+	min-inline-size: 0;
+	flex: none;
+	font-size: inherit;
+	line-height: inherit;
+}
+.sg-progress-name {
+	margin: 0;
+	font-size: inherit;
+	font-weight: 550;
+	line-height: inherit;
+	color: var(--label, #1f2320);
+}
+.sg-progress-count {
+	margin: 0;
+	font-size: inherit;
+	line-height: inherit;
+	white-space: nowrap;
+	color: var(--secondary, #535a55);
+	font-variant-numeric: tabular-nums;
+}
+.sg-progress-actions {
+	margin-inline-start: auto;
+	display: flex;
+	align-items: center;
+	gap: var(--sg-related);
+	min-inline-size: 0;
+	flex: 0 1 auto;
+	max-inline-size: 65%;
+}
+
+/* Content lanes express the task. They do not own the product header or progress. */
+.sg-page {
+	box-sizing: border-box;
+	inline-size: calc(100% - var(--sg-safe-start) - var(--sg-safe-end));
+	max-inline-size: var(--sg-frame);
+	min-inline-size: 0;
+	margin: var(--sg-page-top) auto 0;
+	padding: 0 0 max(2rem, env(safe-area-inset-bottom));
+	container-type: inline-size;
+}
+.sg-page[data-width="focus"] {
+	max-inline-size: var(--sg-focus);
+}
+.sg-page[data-width="work"] {
+	max-inline-size: var(--sg-work);
+}
+.sg-page[data-width="split"] {
+	max-inline-size: var(--sg-frame);
+}
+/* Scroll-owned navigation overlays retain a full frame viewport. Reading
+   children keep the page's semantic content width inside that viewport. */
+.sg-page.sg-navigation-scroll-canvas {
+	--sg-page-content-width: var(--sg-work);
+	max-inline-size: var(--sg-frame);
+}
+.sg-navigation-scroll-canvas[data-width="focus"] {
+	--sg-page-content-width: var(--sg-focus);
+}
+.sg-navigation-scroll-canvas > :not(.sg-pane-toolbar) {
+	inline-size: 100%;
+	max-inline-size: var(--sg-page-content-width);
+	margin-inline: auto;
+}
+
+body[data-scroll="workspace"] > .sg-page {
+	flex: 1;
+	min-block-size: 0;
+	display: flex;
+	flex-direction: column;
+}
+body[data-scroll="workspace"] > .sg-page[data-flow="feed"] {
+	display: block;
+}
+/* All navigable page bars use equal side tracks; the title stays optically centered. */
+.sg-toolbar {
+	position: relative;
+	display: grid;
+	grid-template-columns:
+		minmax(var(--sg-nav-target, var(--sg-target)), 1fr) minmax(0, auto)
+		minmax(var(--sg-nav-target, var(--sg-target)), 1fr);
+	align-items: center;
+	gap: var(--sg-related);
+	flex: none;
+	min-block-size: var(--sg-toolbar-height);
+	block-size: auto;
+	inline-size: 100%;
+	margin: 0 0 var(--sg-page-gap);
+	padding: 0;
+	background: var(--canvas, var(--paper));
+}
+.sg-toolbar > .sg-toolbar-leading {
+	grid-column: 1;
+	grid-row: 1;
+	justify-self: start;
+	position: static;
+	inset: auto;
+	margin: 0;
+	max-inline-size: 100%;
+}
+.sg-toolbar > .sg-toolbar-title {
+	grid-column: 2;
+	grid-row: 1;
+	justify-self: center;
+	min-inline-size: 0;
+	position: static;
+	inset: auto;
+	transform: none;
+	margin: 0;
+	text-align: center;
+}
+.sg-toolbar > .sg-toolbar-trailing {
+	grid-column: 3;
+	grid-row: 1;
+	justify-self: end;
+	position: static;
+	inset: auto;
+	margin: 0;
+	max-inline-size: 100%;
+}
+.sg-toolbar > .sg-toolbar-title,
+.sg-toolbar > .sg-toolbar-title :is(h1, h2) {
+	font-size: var(--sg-type-title);
+	line-height: 1.5;
+	font-weight: 600;
+	letter-spacing: 0;
+	margin: 0;
+	overflow-wrap: anywhere;
+}
+.sg-toolbar > .sg-toolbar-leading.sg-button[data-sg-button],
+.sg-toolbar > .sg-toolbar-trailing.sg-button[data-sg-button] {
+	min-inline-size: var(--sg-nav-target, var(--sg-target));
+	min-block-size: var(--sg-nav-target, var(--sg-target));
+}
+.sg-toolbar[data-sticky] {
+	position: sticky;
+	inset-block-start: 0;
+	z-index: 3;
+}
+.sg-task-layout {
+	display: grid;
+	grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+	gap: var(--sg-task-gap);
+	align-items: start;
+}
+.sg-task-layout > * {
+	min-inline-size: 0;
+}
+@container (max-width: 46rem) {
+	.sg-task-layout {
+		grid-template-columns: minmax(0, 1fr);
+		gap: var(--sg-section);
+	}
+}
+/* Workspace takes the remaining shell row, without subtracting an assumed header height. */
+.sg-workspace {
+	flex: 1;
+	min-block-size: 0;
+	block-size: auto;
+	max-block-size: none;
+}
+body[data-layout-surface="rating"] .rating-app {
+	block-size: auto;
+	min-block-size: 0;
+	max-block-size: none;
+}
+body[data-layout-surface="rating"] .player-list {
+	min-block-size: 0;
+	overflow: auto;
+}
+body[data-layout-surface="rating"] .players-pane {
+	min-block-size: 0;
+	block-size: auto;
+}
+.sg-page[data-width="gallery"] {
+	max-inline-size: var(--sg-frame);
+	inline-size: 100%;
+	container-type: normal;
+	margin: 0 auto;
+	padding: clamp(32px, calc((100svh - 668px) / 2), 112px) var(--sg-gutter) 120px;
+}
+body[data-layout-surface="catalog"] > .workspace {
+	display: contents;
+}
+body[data-layout-surface="social"] > .tool-home {
+	max-inline-size: var(--sg-focus);
+	padding-block: 2rem;
+	min-block-size: 0;
+	gap: 2rem;
+}
+/* Reading sheets and configuration keep their own content; common insets define the frame. */
+.sg-panel-toolbar {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: var(--sg-related);
+	min-block-size: var(--sg-toolbar-height);
+}
+.sg-panel-toolbar h2 {
+	font-size: var(--sg-type-title);
+	line-height: 1.5;
+	font-weight: 550;
+}
+@media (max-width: 760px) {
+	:root {
+		--sg-gutter: 1.25rem;
+		--sg-header-height: 5.75rem;
+		--sg-page-top: 1.5rem;
+		--sg-task-gap: 1.5rem;
+	}
+	.sg-product-bar {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.25rem var(--sg-related);
+		padding-block: 0.625rem 0.75rem;
+	}
+	.sg-product-bar > .brand {
+		grid-column: 1;
+		grid-row: 1;
+		font-size: 1.0625rem;
+		min-block-size: 2.75rem;
+		display: flex;
+		align-items: center;
+	}
+	.sg-product-bar > .game-context,
+	.sg-product-bar > .page-name {
+		grid-column: 1 / -1;
+		grid-row: 2;
+		order: 2;
+		flex: 1 0 100%;
+		min-inline-size: 0;
+		padding: 0;
+		border: 0;
+	}
+	.sg-product-bar :is(.round, .rounds, #round) {
+		font-size: 0.75rem;
+	}
+	.sg-product-bar > .sg-header-actions {
+		grid-column: 2;
+		grid-row: 1;
+		order: 1;
+		margin: 0 0 0 auto;
+	}
+	.sg-page[data-width="gallery"] {
+		padding-block-start: clamp(24px, calc((100svh - 642px) / 2), 96px);
+	}
+	.sg-page {
+		padding-block-end: max(1.5rem, env(safe-area-inset-bottom));
+	}
+	.sg-progress-actions {
+		max-inline-size: 60%;
+	}
+	.sg-workspace {
+		min-block-size: 0;
+	}
+	body[data-layout-surface="rating"] .rating-app {
+		height: auto;
+		min-height: 0;
+		overflow: hidden;
+	}
+	body[data-layout-surface="rating"] .rating-app.mobile-detail {
+		height: auto;
+		min-height: 0;
+	}
+	body[data-layout-surface="rating"] .players-pane,
+	body[data-layout-surface="rating"] .detail-pane {
+		block-size: 100%;
+	}
+	body[data-layout-surface="rating"] .player-list {
+		block-size: 100%;
+		padding-block-end: 1rem;
+	}
+	body[data-layout-surface="rating"] .detail-scroll {
+		min-block-size: 0;
+	}
+	body[data-layout-surface="social"] > .tool-home {
+		padding-block: 1.5rem;
+	}
+}
+@media (max-width: 359px) {
+	:root {
+		--sg-gutter: 1rem;
+	}
+	.sg-progress {
+		column-gap: 0.75rem;
+	}
+}
+@media (prefers-reduced-motion: reduce) {
+	.sg-product-bar,
+	.sg-progress,
+	.sg-page,
+	.sg-toolbar {
+		scroll-behavior: auto;
+		animation: none;
+		transition: none;
+	}
+}
+
+/* Game / round and phase / step share one context line (latest user decision). */
+.sg-product-bar > .game-context {
+	align-items: center;
+	gap: 0.25rem var(--sg-section);
+	min-block-size: 1.75rem;
+}
+.sg-context-game {
+	display: inline-flex;
+	align-items: baseline;
+	flex-wrap: wrap;
+	gap: 0.125rem var(--sg-related);
+	min-inline-size: 0;
+	max-inline-size: 100%;
+}
+.sg-context-game > :first-child {
+	min-inline-size: 0;
+	overflow-wrap: anywhere;
+}
+.sg-context-line > .sg-progress {
+	inline-size: auto;
+	max-inline-size: none;
+	min-block-size: 0;
+	margin: 0;
+	padding: 0;
+	display: inline-flex;
+	align-items: center;
+	flex-wrap: wrap;
+	gap: var(--sg-related);
+}
+.sg-context-line .sg-progress-group {
+	font-size: var(--sg-type-meta);
+	line-height: 1.5;
+}
+.sg-context-line .sg-progress-actions {
+	margin: 0;
+	max-inline-size: none;
+}
+body[data-context-progress] > .sg-page {
+	margin-block-start: var(--sg-page-gap);
+}
+.sg-toolbar > .sg-toolbar-leading {
+	margin-inline: 0;
+}
+@media (max-width: 760px) {
+	.sg-product-bar {
+		padding-block: 0.375rem 0.5rem;
+	}
+	.sg-product-bar > .game-context {
+		gap: 0.25rem 1rem;
+	}
+	.sg-context-line > .sg-progress {
+		gap: 0.75rem;
+	}
+}
+
+/* Semantic spacing: related < paragraph / siblings < sections < independent tasks. */
+
+.decision-form {
+	display: flex;
+	flex-direction: column;
+	gap: var(--sg-space-section);
+}
+.decision-form > .sg-field {
+	margin-block: 0;
+}
+.decision-form > .consequence:empty {
+	display: none;
+}
+.decision-form > .consequence.has-content {
+	margin: 0;
+}
+.decision-form > .action-footer {
+	margin-block-start: 0;
+	gap: var(--sg-space-sibling);
+}
+@media (max-width: 760px) {
+	.sg-task-layout {
+		gap: var(--sg-space-section);
+	}
+}
+
+/* TaskScene: the viewport is a canvas, with a reading band and a reachable action rail. */
+body[data-task-scene] > .sg-page {
+	flex: 1;
+	display: flex;
+	flex-direction: column;
+	margin-block-start: 0;
+	padding-block: var(--sg-space-task) max(var(--sg-space-section), env(safe-area-inset-bottom));
+}
+.sg-task-layout[data-scene]:where(:not(.sg-context-task)) {
+	flex: 1;
+	min-block-size: min-content;
+	grid-template-rows: minmax(1.5rem, 0.8fr) auto minmax(2rem, 1fr) auto;
+	grid-template-areas: ". ." "context interaction" ". ." ". actions";
+	column-gap: var(--sg-task-gap);
+	row-gap: var(--sg-space-task);
+	align-items: start;
+}
+.sg-task-layout[data-scene]:where(:not(.sg-context-task)) > .intro {
+	grid-area: context;
+	align-self: start;
+}
+.sg-task-layout[data-scene]:where(:not(.sg-context-task)) > .content {
+	grid-area: interaction;
+	min-block-size: 0;
+}
+.sg-task-layout[data-scene]:where(:not(.sg-context-task)) > .sg-scene-actions {
+	grid-area: actions;
+	align-self: end;
+	margin: 0;
+	padding: 0;
+}
+.sg-task-layout[data-scene]:where(:not(.sg-context-task))
+	.decision-form
+	> .consequence[data-reserved-feedback] {
+	display: flex;
+	flex-direction: column;
+	min-block-size: 5rem;
+	gap: var(--sg-space-related);
+	margin: 0;
+}
+.sg-task-layout[data-scene]:where(:not(.sg-context-task))
+	.decision-form
+	> .consequence[data-reserved-feedback]
+	> .field-help {
+	margin: 0;
+}
+.sg-task-layout[data-scene]:where(:not(.sg-context-task)) .decision-form > .sg-field {
+	margin: 0;
+}
+@container (max-width: 46rem) {
+	.sg-task-layout[data-scene]:where(:not(.sg-context-task)) {
+		grid-template-columns: minmax(0, 1fr);
+		grid-template-rows: minmax(1.5rem, 0.8fr) auto auto minmax(2rem, 1fr) auto;
+		grid-template-areas: "." "context" "interaction" "." "actions";
+		row-gap: var(--sg-space-section);
+		align-items: start;
+	}
+	.sg-task-layout[data-scene]:where(:not(.sg-context-task)) > .intro {
+		align-self: end;
+	}
+	.sg-task-layout[data-scene]:where(:not(.sg-context-task)) > .content {
+		align-self: start;
+	}
+	.sg-task-layout[data-scene]:where(:not(.sg-context-task)) > .sg-scene-actions {
+		align-self: end;
+	}
+}
+/* Physical height shrinks naturally: min-content rows grow the document rather than clipping it. */
+@media (max-height: 600px) {
+	body[data-task-scene] > .sg-page {
+		padding-block-start: var(--sg-space-section);
+	}
+	.sg-task-layout[data-scene]:where(:not(.sg-context-task)) {
+		row-gap: var(--sg-space-sibling);
+	}
+}
+
+/* Quiet states use one reading lane; empty columns do not determine their position. */
+.sg-task-layout[data-scene="summary"] {
+	grid-template-columns: minmax(0, 1fr);
+	grid-template-rows: minmax(1.5rem, 0.8fr) auto auto minmax(2rem, 1fr) auto;
+	grid-template-areas: "." "context" "interaction" "." "actions";
+	max-inline-size: var(--sg-focus);
+	inline-size: 100%;
+	margin-inline: auto;
+	row-gap: var(--sg-space-section);
+}
+
+/* Gallery navigation: anchor the shared icon button to the content canvas, outside its masked track. */
+.sg-page-back.sg-button[data-sg-button] {
+	position: absolute;
+	inset-inline-start: max(var(--sg-safe-start), calc((100% - var(--sg-frame)) / 2));
+	inset-block-start: var(--sg-page-gap);
+	z-index: 160;
+}
+
+/* Short canvases trade elastic whitespace for content; type and hit areas keep their roles. */
+@media (max-height: 600px) {
+	body[data-task-scene] > .sg-page {
+		min-block-size: 0;
+		overflow: auto;
+	}
+	.sg-task-layout[data-scene="decision"] {
+		grid-template-rows: auto auto;
+		grid-template-areas: "context interaction" ". actions";
+		align-content: start;
+		row-gap: var(--sg-space-sibling);
+	}
+	.sg-task-layout[data-scene="summary"] {
+		grid-template-rows: auto auto auto;
+		grid-template-areas: "context" "interaction" "actions";
+		align-content: start;
+		row-gap: var(--sg-space-sibling);
+	}
+	.sg-task-layout[data-scene]:where(:not(.sg-context-task)) > .content:empty {
+		display: none;
+	}
+}
+@media (max-height: 600px) {
+	@container (max-width: 46rem) {
+		.sg-task-layout[data-scene="decision"] {
+			grid-template-rows: auto auto auto;
+			grid-template-areas: "context" "interaction" "actions";
+		}
+	}
+}
+
+/* Short workspaces first reclaim header and outer whitespace, keeping type and targets. */
+@media (max-height: 500px) {
+	:root {
+		--sg-toolbar-height: var(--sg-target);
+	}
+	.sg-product-bar {
+		min-block-size: calc(var(--sg-target) + 2 * var(--sg-related));
+		padding-block: var(--sg-related);
+	}
+	.sg-page[data-width="split"] {
+		padding-block-end: var(--sg-related);
+	}
+}
+
+/* End is the existing summary recipe: one reading lane and the shared action rail. */
+.sg-terminal-page.sg-page {
+	flex: 1;
+	display: flex;
+	flex-direction: column;
+	min-block-size: min-content;
+	padding-block: var(--sg-space-task) max(var(--sg-space-section), env(safe-area-inset-bottom));
+	margin-block: 0;
+}
+.sg-terminal-page .sg-task-layout[data-scene="summary"] {
+	flex: 1;
+	grid-template-rows: minmax(var(--sg-space-section), 0.8fr) auto minmax(var(--sg-space-task), 1fr) auto;
+	grid-template-areas: "." "context" "." "actions";
+}
+.sg-terminal-page .content {
+	display: none;
+}
+@media (max-height: 600px) {
+	.sg-terminal-page .sg-task-layout[data-scene="summary"] {
+		grid-template-rows: auto auto;
+		grid-template-areas: "context" "actions";
+		align-content: start;
+		row-gap: var(--sg-space-task);
+	}
+}
+
+/* Full-width App host. Its navigation and reading content own separate canvases. */
+.sg-inset-pane {
+	--sg-pane-inset: var(--sg-space-surface);
+	inline-size: 100%;
+	max-inline-size: none;
+	padding-inline: 0;
+	margin-inline: auto;
+}
+.sg-inset-pane.sg-page {
+	max-inline-size: none;
+}
+.sg-inset-pane > :is(.sg-context-task, .sg-task-context-rail) {
+	inline-size: calc(
+		100% -
+		max(var(--sg-pane-inset), var(--sg-safe-start)) -
+		max(var(--sg-pane-inset), var(--sg-safe-end))
+	);
+	margin-inline: auto;
+}
+.sg-inset-pane > .sg-task-context-rail {
+	max-inline-size: var(--sg-work);
+}
+.sg-inset-pane > .sg-state-content {
+	inline-size: calc(
+		100% -
+		max(var(--sg-pane-inset), var(--sg-safe-start)) -
+		max(var(--sg-pane-inset), var(--sg-safe-end))
+	);
+	max-inline-size: var(--sg-focus);
+	margin-inline: auto;
+}
+/* Align the visible back glyph to the reading guide, independently of its full target. */
+.sg-pane-toolbar {
+	--sg-nav-target: var(--sg-button-compact);
+	--sg-nav-leading-overhang: min(
+		var(--sg-space-surface),
+		calc((var(--sg-nav-target) - var(--sg-icon-action)) / 2 + var(--sg-icon-action) / 4)
+	);
+}
+.sg-pane-toolbar > .sg-button[data-sg-button]:first-child:has(svg[data-sg-icon="back"]) {
+	inline-size: var(--sg-nav-target);
+	block-size: var(--sg-nav-target);
+	min-inline-size: var(--sg-nav-target);
+	min-block-size: var(--sg-nav-target);
+	justify-self: start;
+	margin-inline-start: calc(-1 * var(--sg-nav-leading-overhang));
+}
+
+/* A hanging target at the viewport edge keeps its transient keyboard focus inside its own bounds. */
+.sg-pane-toolbar
+> .sg-button[data-sg-button]:first-child:has(svg[data-sg-icon="back"]):focus-visible {
+	outline-offset: -2px;
+}
+
+/* Text enlargement preserves a two-character App name before spending space on side gaps. */
+@container (max-width: 14rem) {
+	.sg-toolbar {
+		column-gap: 0;
+		grid-template-columns: minmax(var(--sg-nav-target, var(--sg-target)), 1fr) minmax(2em, auto) minmax(
+				var(--sg-nav-target, var(--sg-target)),
+				1fr
+			);
+	}
+}
+
+/* Short entry flows consume the actual flex shell remainder, even when its header grows. */
+.sg-entry-flow.sg-page {
+	flex: 1;
+	display: flex;
+	flex-direction: column;
+	min-block-size: min-content;
+	margin-block: 0;
+	padding-block: var(--sg-space-task) max(var(--sg-space-section), env(safe-area-inset-bottom));
+	gap: var(--sg-space-section);
+}
+.sg-entry-flow > footer {
+	margin-block-start: auto;
+	display: flex;
+	justify-content: flex-end;
+}
+</style><style>:root {
+	--avatar-reply: 28px;
+	--avatar-message: 32px;
+	--avatar-context: 36px;
+	--avatar-row: 44px;
+	--avatar-profile: 52px;
+	--avatar-detail: 80px;
+}
+.sg-avatar {
+	--avatar-size: var(--avatar-row);
+	display: inline-grid;
+	position: relative;
+	place-items: center;
+	width: var(--avatar-size);
+	height: var(--avatar-size);
+	flex: none;
+	vertical-align: middle;
+	isolation: isolate;
+	border-radius: 50%;
+	background: transparent;
+	color: var(--secondary, #535a55);
+	line-height: 0;
+}
+.sg-avatar > img {
+	display: block;
+	width: 100%;
+	height: 100%;
+	aspect-ratio: 1;
+	object-fit: cover;
+	object-position: center;
+	border-radius: 50%;
+	user-select: none;
+	-webkit-user-select: none;
+}
+.sg-avatar[data-size="reply"] {
+	--avatar-size: var(--avatar-reply);
+}
+.sg-avatar[data-size="message"] {
+	--avatar-size: var(--avatar-message);
+}
+.sg-avatar[data-size="context"] {
+	--avatar-size: var(--avatar-context);
+}
+.sg-avatar[data-size="profile"] {
+	--avatar-size: var(--avatar-profile);
+}
+.sg-avatar[data-size="detail"] {
+	--avatar-size: var(--avatar-detail);
+}
+.sg-avatar[data-ready="true"] > img {
+	outline: 0;
+}
+.sg-avatar > .sg-avatar-badge {
+	position: absolute;
+	right: -1px;
+	bottom: -1px;
+	display: grid;
+	place-items: center;
+	width: 18px;
+	height: 18px;
+	box-sizing: border-box;
+	border: 0;
+	border-radius: 50%;
+	background: var(--surface, #fff);
+	color: var(--secondary, #535a55);
+	line-height: 0;
+}
+.sg-avatar > .sg-avatar-badge > svg {
+	display: block;
+	width: 10px;
+	height: 10px;
+	fill: none;
+	stroke: currentColor;
+	stroke-width: 1.8;
+	stroke-linecap: round;
+	stroke-linejoin: round;
+}
+
+/* Native image consumers share the same crop/display rule without changing their layout sizes. */
+img.avatar {
+	display: block;
+	aspect-ratio: 1;
+	object-fit: cover;
+	object-position: center;
+	border-radius: 50%;
+	flex: none;
+}
+</style><style>/* Profile geometry; typography consumes foundation/product-language roles, not descendant paragraph overrides. */
+body {
+	height: 100dvh;
+	min-height: 0;
+	background: var(--canvas);
+	font-size: var(--sg-type-body);
+}
+body > .sg-page {
+	margin-top: 0;
+	min-height: 0;
+	overflow: auto;
+	padding-bottom: max(var(--sg-space-section), env(safe-area-inset-bottom));
+}
+[hidden] {
+	display: none !important;
+}
+#profile-toolbar {
+	position: sticky;
+	top: 0;
+	z-index: 2;
+	background: var(--canvas);
+}
+#profile-list {
+	background: var(--surface);
+	border-radius: var(--sg-radius-surface);
+	padding-inline: var(--sg-space-surface);
+}
+.profile-row {
+	display: flex;
+	align-items: center;
+	gap: var(--sg-space-paragraph);
+	width: 100%;
+	min-height: 88px;
+	padding: var(--sg-space-sibling) 0;
+	border: 0;
+	background: none;
+	text-align: left;
+	color: var(--label);
+	font: inherit;
+	cursor: pointer;
+}
+.profile-copy {
+	flex: 1;
+	min-width: 0;
+}
+.profile-copy strong {
+	font-size: var(--sg-text-name);
+	font-weight: var(--sg-weight-name);
+	overflow-wrap: anywhere;
+}
+.profile-copy small {
+	display: block;
+	font-size: var(--sg-text-help);
+	line-height: var(--sg-leading-copy);
+	color: var(--secondary);
+	margin-top: var(--sg-space-related);
+	white-space: pre-line;
+	overflow-wrap: anywhere;
+}
+.profile-row > svg {
+	width: var(--sg-icon-chevron);
+	height: var(--sg-icon-chevron);
+	color: var(--secondary);
+	flex: none;
+	fill: none;
+	stroke: currentColor;
+	stroke-width: var(--sg-icon-stroke);
+	stroke-linecap: round;
+	stroke-linejoin: round;
+}
+.profile-row:focus-visible {
+	outline: 2px solid var(--ink);
+	outline-offset: 3px;
+	border-radius: 8px;
+}
+#profile-edit {
+	display: grid;
+	gap: var(--sg-space-section);
+}
+.profile-avatar {
+	display: flex;
+	justify-content: center;
+	padding-top: var(--sg-space-section);
+}
+.profile-fields {
+	padding: var(--sg-space-surface);
+	border-radius: var(--sg-radius-surface);
+	background: var(--surface);
+	display: grid;
+	gap: var(--sg-space-section);
+}
+.profile-fields label {
+	display: grid;
+	gap: var(--sg-space-related);
+	font-size: var(--sg-text-help);
+}
+.profile-fields input,
+.profile-fields textarea {
+	font: inherit;
+	font-size: var(--sg-type-input);
+	line-height: var(--sg-leading-copy);
+	width: 100%;
+	padding: 10px 12px;
+	color: var(--label);
+	background: var(--sg-control-fill);
+	border: 0;
+	border-radius: var(--sg-control-radius);
+}
+.profile-fields textarea {
+	resize: vertical;
+	min-height: 120px;
+}
+.profile-fields :is(input, textarea):focus-visible {
+	outline: 2px solid var(--ink);
+	outline-offset: 2px;
+}
+#profile-status {
+	font-size: var(--sg-text-meta);
+	line-height: var(--sg-leading-interface);
+	color: var(--secondary);
+	margin: 0;
+	min-height: 21px;
+}
+#detail-body {
+	display: grid;
+	gap: var(--sg-space-section);
+	padding-bottom: var(--sg-space-section);
+	font: 400 var(--sg-type-body) / var(--sg-leading-body) var(--sg-font-ui);
+}
+#detail-body p {
+	margin: 0;
+	white-space: pre-wrap;
+	overflow-wrap: anywhere;
+}
+.profile-filter {
+	margin: 0 0 var(--sg-space-paragraph);
+	display: flex;
+	justify-content: flex-start;
+}
+.profile-empty {
+	margin: 0;
+	padding: var(--sg-space-section) 0;
+	color: var(--secondary);
+	font-size: var(--sg-text-help);
+}
+.profile-follow:empty {
+	display: none;
+}
+.profile-follow {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: var(--sg-space-related);
+}
+.profile-error {
+	width: 100%;
+	font: 400 var(--sg-text-meta) / var(--sg-leading-interface) var(--sg-font-ui);
+	color: var(--sg-control-danger);
+	margin: 0;
+}
+.profile-relation,
+.profile-activity-status,
+.profile-activity-meta {
+	font: 400 var(--sg-text-help) / var(--sg-leading-interface) var(--sg-font-ui);
+	color: var(--secondary);
+}
+.profile-activity,
+.profile-game-item,
+.profile-activity-item {
+	min-width: 0;
+}
+.profile-activity-heading {
+	margin: 0 0 var(--sg-space-paragraph);
+	font: 550 var(--sg-type-body) / var(--sg-leading-interface) var(--sg-font-ui);
+	color: var(--label);
+}
+.profile-activity-content {
+	display: block;
+	padding-top: 0;
+	min-width: 0;
+}
+.profile-activity-list {
+	display: grid;
+	gap: var(--sg-space-section);
+}
+.profile-activity-item {
+	display: grid;
+	gap: var(--sg-space-related);
+	font: 400 var(--sg-type-body) / var(--sg-leading-body) var(--sg-font-ui);
+}
+.profile-activity-tag {
+	display: block;
+	font: 400 var(--sg-type-meta) / var(--sg-leading-interface) var(--sg-font-ui);
+	color: var(--secondary);
+	margin: 0;
+}
+.profile-activity .sg-game-round-copy {
+	gap: var(--sg-space-related);
+	padding-block: 0;
+}
+.profile-activity-status:empty {
+	display: none;
+}
+.profile-activity-actions {
+	display: flex;
+	align-items: center;
+	gap: var(--sg-space-related);
+	padding-top: var(--sg-space-related);
+}
+.profile-unread {
+	flex: none;
+	min-width: 20px;
+	text-align: center;
+	color: var(--ink);
+	font: 400 var(--sg-text-meta) / var(--sg-leading-interface) var(--sg-font-number);
+	font-variant-numeric: tabular-nums;
+}
+.profile-quota {
+	font: 400 var(--sg-text-meta) / var(--sg-leading-interface) var(--sg-font-ui);
+	color: var(--secondary);
+}
+
+/* Existing detail content inside the host Reading: one surface, header and scroll owner. */
+html[data-profile-peek],
+html[data-profile-peek] body[data-sg-shell][data-scroll="workspace"] {
+	height: auto;
+	block-size: auto;
+	min-block-size: 0;
+	margin: 0;
+	display: block;
+	overflow: hidden;
+	background: transparent;
+}
+html[data-profile-peek] main {
+	display: none !important;
+}
+html[data-profile-peek] #profile-detail[open] {
+	display: block;
+	position: static;
+	inset: auto;
+	inline-size: 100%;
+	max-inline-size: none;
+	block-size: auto;
+	max-block-size: none;
+	margin: 0;
+	padding: 0;
+	border: 0;
+	border-radius: 0;
+	box-shadow: none;
+	background: transparent;
+	overflow: visible;
+}
+html[data-profile-peek] #profile-detail > .sg-reading-head {
+	display: none;
+}
+html[data-profile-peek] #detail-body {
+	padding: 0;
+	max-block-size: none;
+	overflow: visible;
+}
+</style><style>/* Static source metadata: not buttons, filters or additional disclosure controls. */
+.sg-activity-meta {
+	display: flex;
+	align-items: center;
+	flex-wrap: wrap;
+	gap: var(--sg-space-related) var(--sg-space-related);
+	font: 400 var(--sg-type-meta) / var(--sg-leading-interface) var(--sg-font-ui);
+	color: var(--secondary);
+}
+.sg-activity-kind {
+	display: inline-flex;
+	align-items: center;
+	min-height: 24px;
+	padding: 2px 8px;
+	border: 0;
+	border-radius: var(--sg-radius-action);
+	background: color-mix(in srgb, var(--wash) 38%, var(--surface));
+	font-weight: 500;
+	color: var(--secondary);
+	white-space: nowrap;
+	cursor: inherit;
+}
+.sg-activity-detail {
+	font: inherit;
+	color: inherit;
+}
+</style><style>/* Shared game-event typography: React game records and participant activity consume the same token projection. */
+.sg-game-records {
+	display: grid;
+	gap: var(--sg-space-section);
+	min-width: 0;
+}
+.sg-game-records > .sg-game-round {
+	min-width: 0;
+	background: transparent;
+	border: 0;
+	padding: 0;
+}
+.sg-game-round > summary {
+	min-height: 44px;
+	cursor: pointer;
+	display: flex;
+	align-items: center;
+	min-width: 0;
+}
+.sg-game-round-copy {
+	display: grid;
+	gap: var(--sg-space-related);
+	min-width: 0;
+	padding-block: var(--sg-space-related);
+	overflow-wrap: anywhere;
+}
+.sg-game-round-title {
+	font: 550 var(--sg-type-body) / var(--sg-leading-interface) var(--sg-font-ui);
+}
+.sg-game-round-events {
+	display: grid;
+	gap: var(--sg-space-paragraph);
+	padding-block: var(--sg-space-related);
+}
+.sg-game-event {
+	min-width: 0;
+	overflow-wrap: anywhere;
+}
+.sg-game-records .sg-game-event {
+	display: grid;
+	gap: var(--sg-space-related);
+	padding-block: var(--sg-space-paragraph);
+}
+.sg-game-records .sg-game-event-title,
+.sg-game-event-title {
+	margin: 0;
+	font: 550 var(--sg-type-body) / var(--sg-leading-body) var(--sg-font-ui);
+}
+.sg-game-records .sg-game-event-detail,
+.sg-game-event-detail {
+	margin: 0;
+	color: var(--secondary);
+	font: 400 var(--sg-type-body) / var(--sg-leading-body) var(--sg-font-ui);
+}
+</style><style>:root {
+	--font-ui: var(--sg-font-number);
+	--number-primary: var(--sg-type-metric);
+	--number-input: var(--sg-type-number-input);
+	--number-amount: var(--sg-type-amount);
+	--number-data: var(--sg-type-body);
+	--number-meta: var(--sg-type-meta);
+}
+.ui-number {
+	font-family: var(--font-ui);
+	font-variant-numeric: lining-nums tabular-nums;
+	display: inline-flex;
+	align-items: baseline;
+	gap: 0.3em;
+	max-width: 100%;
+	min-width: 0;
+	line-height: 1.4;
+	letter-spacing: 0;
+	color: inherit;
+	flex-wrap: wrap;
+	text-align: inherit;
+	vertical-align: baseline;
+}
+.numeric-value {
+	min-width: 0;
+	max-width: 100%;
+	overflow-wrap: anywhere;
+}
+.numeric-unit {
+	font-size: 0.7em;
+	font-weight: 400;
+	letter-spacing: 0;
+	line-height: 1.6;
+	color: var(--secondary);
+	white-space: nowrap;
+}
+.num--primary {
+	font-size: var(--number-primary);
+	font-weight: 550;
+	letter-spacing: -0.025em;
+	line-height: 1.15;
+}
+.num--primary .numeric-unit {
+	font-size: var(--sg-type-compact);
+}
+.num--amount {
+	font-size: var(--number-amount);
+	font-weight: 550;
+	letter-spacing: -0.01em;
+}
+.num--amount .numeric-unit {
+	font-size: var(--sg-type-caption);
+}
+.num--data {
+	font-size: var(--number-data);
+}
+.num--meta {
+	font-size: var(--number-meta);
+}
+.num--data .numeric-unit,
+.num--meta .numeric-unit {
+	font-size: inherit;
+	color: inherit;
+}
+.number-approx {
+	border: 0;
+	background: transparent;
+	padding: 0;
+	cursor: pointer;
+	position: relative;
+	min-height: 44px;
+	text-decoration-line: underline;
+	text-decoration-style: dotted;
+	text-decoration-color: var(--line);
+	text-underline-offset: 0.18em;
+}
+.number-approx:focus-visible {
+	outline: 2px solid var(--ink);
+	outline-offset: 4px;
+	border-radius: 4px;
+}
+.number-approx:active {
+	transform: none !important;
+}
+.number-detail {
+	position: fixed;
+	inset: auto;
+	margin: 0;
+	border: 0;
+	border-radius: var(--sg-radius-reading);
+	padding: var(--sg-space-sibling) var(--sg-space-surface);
+	background: var(--surface);
+	color: var(--label);
+	box-shadow: var(--sg-shadow-popover);
+	max-width: calc(100vw - 32px);
+}
+.number-detail::backdrop {
+	background: transparent;
+}
+.number-detail p {
+	margin: 0;
+}
+.number-detail-label {
+	font: var(--sg-type-meta) / 1.6 var(--font-ui);
+	color: var(--secondary);
+}
+.number-detail-value {
+	display: flex;
+	align-items: baseline;
+	gap: 6px;
+	font: 550 var(--sg-type-value) / 1.6 var(--font-ui);
+	font-variant-numeric: tabular-nums;
+	margin-top: 6px !important;
+}
+.number-detail-digits {
+	min-width: 0;
+	overflow-wrap: anywhere;
+}
+.number-detail-value .numeric-unit {
+	font-size: var(--sg-type-meta);
+	flex-shrink: 0;
+	line-height: 1.6;
+}
+.number-detail-note {
+	font: var(--sg-type-meta) / 1.75 var(--font-ui);
+	color: var(--secondary);
+	margin-top: 9px !important;
+}
+#round,
+.phase-label,
+.phase-line,
+.line-number,
+.config-input,
+.number-input,
+.option-numeric,
+.player-meta,
+.count,
+.distribution-row,
+.tool-badge {
+	font-variant-numeric: lining-nums tabular-nums;
+}
+.number-input {
+	font-family: var(--font-ui);
+	font-size: var(--number-input);
+}
+.metric-value {
+	font-size: inherit;
+	letter-spacing: inherit;
+}
+.metric-value > .ui-number {
+	color: var(--ink);
+}
+.record-event-amount {
+	font-size: inherit;
+	font-weight: inherit;
+	letter-spacing: inherit;
+	white-space: normal;
+}
+.record-event-amount .numeric-value {
+	font-size: inherit;
+	margin: 0;
+	font-weight: inherit;
+	letter-spacing: inherit;
+	color: inherit;
+}
+.record-event-amount .numeric-unit {
+	margin: 0;
+}
+.record-round-metric {
+	white-space: normal;
+}
+.record-round-metric .numeric-value {
+	color: inherit;
+}
+.record-event-wide > .record-event-amount {
+	grid-column: 2 / -1;
+	justify-self: start;
+	margin-top: -4px;
+}
+.record-round-wide {
+	flex-wrap: wrap;
+}
+.record-round-wide > .record-round-heading {
+	flex-basis: calc(100% - 32px);
+}
+.record-round-wide > .record-round-metric {
+	order: 3;
+	margin: 0 0 0 0;
+	flex-basis: 100%;
+}
+.record-round-wide > .record-chevron {
+	order: 2;
+}
+.record-fact dd {
+	overflow-wrap: anywhere;
+	min-width: 0;
+}
+.record-fact dd .ui-number {
+	justify-content: flex-end;
+}
+.rating-summary .mean {
+	font-size: inherit;
+	letter-spacing: inherit;
+	font-weight: inherit;
+}
+.rating-summary .mean .ui-number {
+	color: var(--label);
+}
+.distribution-row > span:last-child {
+	text-align: right;
+}
+.player-meta .ui-number {
+	font-size: inherit;
+}
+@media (max-width: 760px) {
+	:root {
+		--number-primary: var(--sg-type-metric);
+	}
+}
+
+.record-group[open] > .record-round .ui-number {
+	color: var(--ink);
+}
+
+.number-pair {
+	display: flex;
+	align-items: baseline;
+	justify-content: flex-end;
+	flex-wrap: wrap;
+	gap: 6px;
+}
+.number-pair-separator {
+	color: var(--secondary);
+}
+.game-title > span,
+.review-time,
+.quota {
+	font-variant-numeric: lining-nums tabular-nums;
+}
+</style><style>/* The same circular identity image, disclosed only when the player chooses to edit it. */
+.profile-avatar .sg-avatar-trigger[data-sg-button] {
+	width: var(--avatar-detail);
+	height: var(--avatar-detail);
+	padding: 0;
+	background: transparent;
+}
+.sg-avatar-picker .sg-reading-body {
+	overflow: auto;
+}
+.sg-avatar-options {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(60px, 1fr));
+	gap: var(--sg-space-related);
+	border: 0;
+	padding: 0;
+	margin: 0;
+	min-width: 0;
+}
+.sg-avatar-picker .sg-avatar-choice[data-sg-button] {
+	width: 100%;
+	height: 60px;
+	min-width: 44px;
+	min-height: 44px;
+	padding: 8px;
+	background: transparent;
+	border-radius: var(--sg-control-radius);
+}
+.sg-avatar-picker .sg-avatar-choice .sg-avatar-badge {
+	color: var(--ink);
+}
+@media (min-width: 761px) {
+	.sg-avatar-picker {
+		width: min(400px, calc(100vw - 48px));
+	}
+}
+</style><style>/* Product text roles: same meaning -> same role, not every string the same size. */
+
+body {
+	font-family: var(--sg-font-ui);
+	-webkit-font-smoothing: antialiased;
+}
+button,
+input,
+select,
+textarea {
+	font-family: var(--sg-font-ui);
+}
+.sg-person-name {
+	font: inherit;
+	color: inherit;
+	min-width: 0;
+	overflow-wrap: anywhere;
+}
+.sg-person-you,
+.sg-self,
+.self-label,
+.you,
+.profile-self {
+	font: 400 0.75rem / 1.5 var(--sg-font-ui);
+	color: var(--secondary);
+	margin-inline-start: 0.5rem;
+	white-space: nowrap;
+}
+.sg-person-mention {
+	display: inline;
+	font-family: var(--sg-font-ui);
+	font-size: inherit;
+	line-height: inherit;
+	font-weight: 500;
+	color: var(--ink);
+	overflow-wrap: anywhere;
+	cursor: text;
+	text-decoration: none;
+}
+.sg-person-at {
+	font-weight: 400;
+}
+.sg-person-self,
+.sg-person-unknown {
+	font: inherit;
+	color: inherit;
+}
+:is(
+	.profile-copy strong,
+	.identity > strong,
+	.player-name,
+	.conversation-copy > strong,
+	.member-name
+) {
+	font-size: var(--sg-text-name);
+	font-weight: var(--sg-weight-name);
+	line-height: 1.5;
+	overflow-wrap: anywhere;
+}
+:is(
+	.author h2,
+	.reply-heading strong,
+	.message-name,
+	.review-name,
+	.composer-byline,
+	.newpost-byline
+) {
+	font-family: var(--sg-font-ui);
+	font-size: var(--sg-text-author);
+	font-weight: var(--sg-weight-name);
+	line-height: 1.5;
+	overflow-wrap: anywhere;
+}
+:is(
+	.author small,
+	.reply-heading small,
+	.review-time,
+	.step-label,
+	.compose-meta,
+	.create-budget,
+	.quota,
+	.local-status,
+	.identity-meta,
+	.identity p,
+	.player-meta,
+	.count,
+	.person-sub
+) {
+	font-size: var(--sg-text-meta);
+	line-height: 1.5;
+	color: var(--secondary);
+	font-variant-numeric: tabular-nums;
+}
+:is(.thread > p, .bubble, .review-text) {
+	font-size: var(--sg-text-body);
+	line-height: var(--sg-leading-copy);
+	overflow-wrap: anywhere;
+}
+.profile-copy small {
+	font-size: var(--sg-text-help);
+	line-height: var(--sg-leading-copy);
+}
+.reply-content > p {
+	font-size: var(--sg-text-body);
+	line-height: var(--sg-leading-copy);
+	overflow-wrap: anywhere;
+}
+:is(.description, .intro > .description) {
+	font-size: var(--sg-type-description, 1rem);
+	line-height: var(--sg-leading-description, 1.75);
+}
+:is(.profile-fields label, .first-message-label, .inline-editor > label) {
+	font-size: var(--sg-text-help);
+	line-height: 1.5;
+	font-weight: 500;
+}
+:is(
+	.profile-fields textarea,
+	.profile-fields input,
+	.first-message,
+	.inline-editor textarea,
+	#review-text,
+	#message-input
+) {
+	font-size: var(--sg-type-body);
+	line-height: var(--sg-leading-copy);
+	caret-color: var(--ink);
+}
+::selection {
+	background: var(--wash);
+	color: var(--label);
+}
+
+/* Inline identity candidates: text keeps its natural line box, artwork follows its optical baseline. */
+.sg-person-mention.sg-person-inline {
+	display: inline;
+	line-height: inherit;
+	overflow-wrap: anywhere;
+}
+.sg-person-inline .sg-avatar {
+	--avatar-size: var(--sg-inline-avatar-size);
+	display: inline-grid;
+	inline-size: var(--avatar-size);
+	block-size: var(--avatar-size);
+	font-size: inherit;
+	margin-inline: var(--sg-person-inline-gap);
+	vertical-align: var(--sg-inline-avatar-baseline);
+}
+.sg-person-inline .sg-person-visible-name,
+.sg-person-inline .sg-person-text {
+	font: inherit;
+	line-height: inherit;
+	overflow-wrap: anywhere;
+}
+.sg-person-inline .sg-person-at {
+	font-weight: 400;
+}
+
+/* Inline navigation is text, not a command pill; its line box keeps the reading rhythm. */
+button.sg-person-link {
+	appearance: none;
+	display: inline;
+	background: none;
+	border: 0;
+	border-radius: 2px;
+	padding: 0;
+	margin: 0;
+	font: inherit;
+	line-height: inherit;
+	color: var(--ink);
+	text-align: inherit;
+	vertical-align: baseline;
+	white-space: inherit;
+	cursor: pointer;
+	touch-action: manipulation;
+	-webkit-tap-highlight-color: transparent;
+}
+button.sg-person-link:focus-visible {
+	outline: 2px solid var(--ink);
+	outline-offset: 2px;
+}
+@media (hover: hover) and (pointer: fine) {
+	button.sg-person-link:hover .sg-person-text {
+		text-decoration: underline;
+		text-underline-offset: 0.18em;
+	}
+}
+
+/* Workspace detail identities share the panel-title role, independently of list names. */
+:is(.person-heading h2, .dm-chat-head h2, .create-head h2) {
+	font-size: var(--sg-type-title);
+	line-height: var(--sg-leading-interface);
+	font-weight: 600;
+	overflow-wrap: anywhere;
+}
+
+/* Reply source metadata grows with text; its reading column owns the available measure. */
+.reply-heading small {
+	max-inline-size: 100%;
+	white-space: normal;
+	overflow-wrap: anywhere;
+}
+</style><script>/* Product-wide identity text. Only explicit authorised IDs may resolve to names. */
+(() => {
+	"use strict";
+	const settings = { avatars: true, order: "at-name-avatar" };
+	const element = (tag, cls, text) => {
+		const n = document.createElement(tag);
+		if (cls) n.className = cls;
+		if (text != null) n.textContent = String(text);
+		return n;
+	};
+	const resolve = (id, identities) => {
+		const value = identities && Object.hasOwn(identities, id) ? identities[id] : null;
+		return typeof value?.name === "string" && value.name ? value : null;
+	};
+	function label(
+		id,
+		identities,
+		{
+			mention = false,
+			viewerId,
+			selfMarker = false,
+			avatar = settings.avatars,
+			order = settings.order,
+		} = {},
+	) {
+		const value = resolve(id, identities);
+		if (!value) return element("span", "sg-person-unknown", "该玩家");
+		if (mention && id === viewerId) return element("span", "sg-person-self", "你");
+		const n = element(
+			mention ? "button" : "span",
+			mention ? "sg-person-mention sg-person-link" : "sg-person-name",
+		);
+		n.dataset.person = id;
+		if (mention) {
+			n.type = "button";
+			n.dataset.sgProfilePerson = id;
+			n.setAttribute("aria-label", "查看" + value.name + "的资料");
+		}
+		if (mention && avatar && window.SGGAvatar) {
+			n.classList.add("sg-person-inline");
+			n.dataset.personOrder = order;
+			const at = element("span", "sg-person-at", "@"),
+				name = element(
+					"span",
+					"sg-person-visible-name",
+					value.name.startsWith("@") ? value.name.slice(1) : value.name,
+				),
+				image = SGGAvatar.node({ preset: value.avatar || "default", size: "message", person: id });
+			at.setAttribute("aria-hidden", "true");
+			if (order === "at-name-avatar") {
+				const text = element("span", "sg-person-text");
+				text.append(at, name);
+				n.append(text, image);
+			} else if (order === "avatar-at-name") {
+				const text = element("span", "sg-person-text");
+				text.append(at, name);
+				n.append(image, text);
+			} else {
+				n.append(at, image, name);
+			}
+		} else {
+			if (mention && !value.name.startsWith("@")) {
+				const at = element("span", "sg-person-at", "@");
+				at.setAttribute("aria-hidden", "true");
+				n.append(at);
+			}
+			n.append(document.createTextNode(value.name));
+		}
+		if (!mention && selfMarker && id === viewerId) n.append(element("span", "sg-person-you", "你"));
+		return n;
+	}
+
+	function person(id, identities, options = {}) {
+		return label(id, identities, { ...options, mention: true });
+	}
+	function render(
+		root,
+		parts,
+		{ identities, viewerId, avatar = settings.avatars, order = settings.order } = {},
+	) {
+		root.replaceChildren();
+		for (const part of parts) {
+			if (part && typeof part === "object") {
+				if (typeof part.personId !== "string")
+					throw new TypeError("Person part requires an explicit ID");
+				root.append(person(part.personId, identities, { viewerId, avatar, order }));
+			} else root.append(document.createTextNode(String(part ?? "")));
+		}
+		return root;
+	}
+	function replace(root, text, { personId, identities, viewerId } = {}) {
+		if (!resolve(personId, identities)) {
+			root.textContent = text;
+			return;
+		}
+		const parts = String(text)
+			.split("对方")
+			.flatMap((part, i) => (i ? [{ personId }, part] : [part]));
+		render(root, parts, { identities, viewerId });
+	}
+	function html(id, identities, options) {
+		return label(id, identities, options).outerHTML;
+	}
+	function text(id, identities, options) {
+		return label(id, identities, options).textContent;
+	}
+	let opener = null;
+	document.addEventListener(
+		"click",
+		(event) => {
+			const link =
+				event.target instanceof Element
+					? event.target.closest("button[data-sg-profile-person]")
+					: null;
+			if (!link || link.closest("[inert],[aria-hidden=true]")) return;
+			event.preventDefault();
+			event.stopPropagation();
+			opener = link;
+			const detail = { personId: link.dataset.sgProfilePerson, keyboard: event.detail === 0 };
+			if (window.SessionApp)
+				SessionApp.request("ui.open-profile", {
+					target: detail.personId,
+					keyboard: detail.keyboard,
+				}).catch(() => {});
+			else link.dispatchEvent(new CustomEvent("sgg:profile-request", { detail, bubbles: true }));
+		},
+		true,
+	);
+	addEventListener("message", (event) => {
+		if (
+			event.source === parent &&
+			event.origin === new URL(document.baseURI).origin &&
+			event.data?.channel === "q146-profile-return" &&
+			opener?.isConnected
+		)
+			opener.focus({ preventScroll: true });
+	});
+	window.SGGInlinePerson = Object.freeze({
+		label,
+		person,
+		render,
+		replace,
+		html,
+		text,
+		configure(options) {
+			if (typeof options.avatars === "boolean") settings.avatars = options.avatars;
+			if (["at-avatar-name", "avatar-at-name", "at-name-avatar"].includes(options.order))
+				settings.order = options.order;
+		},
+	});
+})();
+</script><script>/* Display-only language. No phase, quota, identity or permission inference. */
+(() => {
+	"use strict";
+	const positive = (n) => Number.isSafeInteger(Number(n)) && Number(n) > 0;
+	const apps = Object.freeze({
+		profile: "资料",
+		forum: "论坛",
+		dm: "私信",
+		rating: "评分",
+		game: "游戏",
+		questionnaire: "问卷",
+	});
+	function quota(count) {
+		return Number.isSafeInteger(count) && count >= 0 ? "本步剩余 " + count + " 次" : "次数暂不可用";
+	}
+	function stamp({ round, step, steps } = {}) {
+		const parts = [];
+		if (positive(round)) parts.push("第 " + round + " 轮");
+		if (positive(step))
+			parts.push(
+				positive(steps) && Number(step) <= Number(steps)
+					? "社交 " + step + "/" + steps + " 步"
+					: "社交第 " + step + " 步",
+			);
+		return parts.join(" · ");
+	}
+	function identities(context) {
+		return Object.fromEntries(
+			(context?.people || []).map((p) => [
+				p.id,
+				{ name: p.name, avatar: context.profiles?.[p.id]?.avatar || "default" },
+			]),
+		);
+	}
+	window.SGGProductLanguage = Object.freeze({ apps, quota, stamp, identities });
+})();
+</script><style>html[data-session-app] body {
+	min-height: 100dvh;
+	height: 100dvh;
+	overflow: hidden;
+	background: var(--canvas, #f9fbfa);
+}
+html[data-session-app] body > .app-header,
+html[data-session-app] body > .product-header,
+html[data-session-app] body > .site,
+html[data-session-app] .sg-product-bar,
+html[data-session-app] body > .phase,
+html[data-session-app] .sg-progress,
+html[data-session-app] .phase-line {
+	display: none !important;
+}
+html[data-session-app] .sg-page {
+	padding-top: 0 !important;
+	margin: 0 auto !important;
+	min-height: 0 !important;
+}
+html[data-session-app="profile"] #tool-home {
+	display: none !important;
+}
+html[data-session-app="profile"] #app-stage {
+	display: block !important;
+}
+
+html[data-session-app] .readonly-indicator {
+	font-size: var(--sg-type-meta);
+	font-weight: 400;
+	color: var(--secondary, #535a55);
+	margin-left: var(--sg-space-related);
+	white-space: nowrap;
+}
+html[data-session-app] .local-status {
+	font-size: var(--sg-type-meta);
+	line-height: var(--sg-leading-interface);
+	color: var(--secondary, #535a55);
+	margin: var(--sg-space-paragraph) 0;
+	min-height: 1.5em;
+}
+html[data-readonly="true"] .compose-hit,
+html[data-readonly="true"] .compose-surface,
+html[data-readonly="true"] .compose-copy,
+html[data-readonly="true"] .compose-icon,
+html[data-readonly="true"] .entry-spacer,
+html[data-readonly="true"] #composer,
+html[data-readonly="true"] .reply-root,
+html[data-readonly="true"] .inline-editor,
+html[data-readonly="true"] .new-conversation,
+html[data-readonly="true"] .message-compose,
+html[data-readonly="true"] .dm-input,
+html[data-readonly="true"] .save,
+html[data-readonly="true"] .change {
+	display: none !important;
+}
+html[data-readonly="true"] .forum-app .feed {
+	padding-top: 16px !important;
+}
+html[data-session-app="game"] body {
+	height: auto;
+	min-height: 100dvh;
+	overflow: auto;
+}
+html[data-session-app="game"] #app {
+	flex: 1;
+}
+
+html[data-session-app="game"] .sg-game-toolbar .toolbar-end {
+	width: 44px;
+	display: flex;
+	justify-content: flex-end;
+}
+html[data-session-app="game"][data-readonly="true"] .action-footer {
+	visibility: hidden;
+	pointer-events: none;
+}
+html[data-session-app="profile"] .profile-heading:empty {
+	display: none;
+}
+html[data-session-app] .preview-empty {
+	padding: var(--sg-space-section) var(--sg-space-surface);
+	color: var(--secondary, #535a55);
+	font-size: var(--sg-type-compact);
+}
+
+.avatar-picker {
+	width: 360px;
+	max-width: calc(100vw - 32px);
+	padding: 20px;
+	border: 0;
+	border-radius: var(--sg-radius-reading);
+	color: var(--label);
+	background: var(--surface);
+	box-shadow: var(--sg-shadow-dialog);
+}
+.avatar-picker::backdrop {
+	background: var(--sg-backdrop);
+}
+.avatar-picker h2 {
+	font-size: 17px;
+	margin: 0 0 20px;
+}
+.avatar-picker > button {
+	position: absolute;
+	right: 12px;
+	top: 8px;
+}
+.avatar-preset-grid {
+	display: grid;
+	grid-template-columns: repeat(4, 1fr);
+	gap: 12px;
+}
+.avatar-option {
+	display: grid;
+	place-items: center;
+	min-height: 56px;
+	border: 0;
+	border-radius: 12px;
+	background: none;
+	cursor: pointer;
+}
+.avatar-option:hover {
+	background: var(--wash);
+}
+
+html[data-session-app] .dm-composer,
+html[data-session-app] .message-composer {
+	min-height: 0;
+}
+
+html[data-session-app="game"] .sg-game-toolbar {
+	margin-inline: auto;
+}
+html[data-session-app="game"] .sg-game-toolbar h2 {
+	font-size: var(--sg-type-title);
+}
+
+html[data-session-app="rating"] .app-toolbar #back-list {
+	visibility: visible !important;
+	font-size: 0;
+}
+html[data-session-app="rating"] .app-toolbar #back-list span {
+	display: none;
+}
+html[data-session-app="forum"] .newpost-footer .quota {
+	font-size: var(--sg-type-meta);
+	color: var(--secondary);
+	margin: 0 auto 0 0;
+}
+
+html[data-session-app]:not([data-session-ready="true"]) body {
+	visibility: hidden;
+}
+
+/* The host owns desktop navigation; local arrows only navigate within an app. */
+
+html[data-session-app="rating"] .rating-app:not(.mobile-detail) .app-toolbar #back-list {
+	visibility: hidden !important;
+	pointer-events: none;
+}
+html[data-session-app="dm"] .dm-back[aria-label="返回桌面"] {
+	visibility: hidden !important;
+	pointer-events: none;
+}
+
+.readonly-indicator {
+	display: inline-grid !important;
+	place-items: center;
+	vertical-align: middle;
+	line-height: 1;
+}
+.readonly-indicator svg {
+	width: 17px;
+	height: 17px;
+	fill: none;
+	stroke: currentColor;
+	stroke-width: 1.65;
+	stroke-linecap: round;
+	stroke-linejoin: round;
+}
+
+.readonly-indicator {
+	display: none !important;
+}
+</style></head><body data-sg-shell data-scroll="workspace"><main class="sg-page" data-width="focus"><nav id="profile-toolbar"></nav><div id="profile-filter" class="profile-filter"></div><section id="profile-list" aria-label="玩家资料"></section><form id="profile-edit" hidden><div class="profile-avatar" id="profile-avatar"></div><div class="profile-fields"><label>称呼<input id="profile-name" aria-describedby="profile-status" autocomplete="nickname" required></label><label>简介<textarea id="profile-bio" aria-describedby="profile-status" rows="4" placeholder="简单介绍一下自己"></textarea></label></div><p id="profile-status" role="status"></p></form></main><dialog id="avatar-picker" class="sg-reading" aria-labelledby="avatar-picker-title"><header class="sg-reading-head"><h2 id="avatar-picker-title">头像</h2></header><div class="sg-reading-body"><fieldset id="avatar-options" aria-label="头像"></fieldset></div></dialog><dialog id="profile-detail" class="sg-reading" aria-labelledby="detail-name"><header class="sg-reading-head"><h2 id="detail-name"></h2></header><div id="detail-body" class="sg-reading-body"></div></dialog><script>/* No business timer, success assumption, or framework dependency. */
+(() => {
+	"use strict";
+	const reduce = matchMedia("(prefers-reduced-motion:reduce)"),
+		groups = new WeakMap();
+	const block = (b) =>
+		b.disabled ||
+		b.getAttribute("aria-disabled") === "true" ||
+		b.getAttribute("aria-busy") === "true";
+	const getButton = (target) =>
+		target instanceof Element ? target.closest("[data-sg-button]") : null;
+	function enhance(root = document) {
+		for (const b of root.querySelectorAll("[data-sg-button]")) {
+			if (b.dataset.sgReady) continue;
+			b.dataset.sgReady = "true";
+			b.classList.add("sg-button");
+			if (b.tagName === "BUTTON" && !b.hasAttribute("type")) b.type = "button";
+		}
+		for (const group of root.querySelectorAll("[data-sg-segmented]")) {
+			if (groups.has(group)) continue;
+			const indicator = document.createElement("span");
+			indicator.className = "sg-selection";
+			indicator.setAttribute("aria-hidden", "true");
+			group.prepend(indicator);
+			group.classList.add("sg-segmented");
+			function update(instant = false) {
+				const selected = group.querySelector("[data-sg-button][aria-pressed=true]");
+				if (!selected) {
+					indicator.hidden = true;
+					return;
+				}
+				indicator.hidden = false;
+				const g = group.getBoundingClientRect(),
+					r = selected.getBoundingClientRect();
+				instant =
+					instant ||
+					reduce.matches ||
+					window.SGGMotion?.instant() ||
+					selected.dataset.sgInput === "keyboard";
+				if (instant) group.dataset.sgInstant = "";
+				indicator.style.clipPath = `inset(${r.top - g.top}px ${g.right - r.right}px ${g.bottom - r.bottom}px ${r.left - g.left}px round ${getComputedStyle(group).getPropertyValue("--sg-button-selection-radius").trim() || "10px"})`;
+				if (instant && !reduce.matches) requestAnimationFrame(() => delete group.dataset.sgInstant);
+			}
+			const resize = new ResizeObserver(() => update(true));
+			resize.observe(group);
+			const mutation = new MutationObserver(() => update());
+			mutation.observe(group, {
+				subtree: true,
+				attributes: true,
+				attributeFilter: ["aria-pressed"],
+			});
+			groups.set(group, { update, resize, mutation });
+			update(true);
+		}
+	}
+	let pressed = null,
+		pointer = null;
+	function release() {
+		pressed?.classList.remove("sg-pressed");
+		pressed = null;
+		pointer = null;
+	}
+	document.addEventListener(
+		"pointerdown",
+		(event) => {
+			const b = getButton(event.target);
+			if (!b || block(b) || event.button !== 0 || !event.isPrimary) return;
+			release();
+			b.dataset.sgInput = "pointer";
+			pressed = b;
+			pointer = event.pointerId;
+			if (!reduce.matches) {
+				b.style.setProperty(
+					"--sg-press-scale",
+					Math.max(0.97, 1 - 2 / Math.max(44, b.getBoundingClientRect().width)),
+				);
+				b.classList.add("sg-pressed");
+			}
+		},
+		{ passive: true },
+	);
+	document.addEventListener(
+		"pointerout",
+		(event) => {
+			if (pressed && !pressed.contains(event.relatedTarget)) release();
+		},
+		{ passive: true },
+	);
+	for (const event of ["pointerup", "pointercancel"])
+		document.addEventListener(
+			event,
+			(e) => {
+				if (e.pointerId === pointer) release();
+			},
+			{ passive: true },
+		);
+	window.SGGMotion?.onSettle(() => {
+		release();
+		for (const group of document.querySelectorAll("[data-sg-segmented]"))
+			groups.get(group)?.update(true);
+	});
+	window.addEventListener("blur", release);
+	document.addEventListener("visibilitychange", () => {
+		if (document.hidden) release();
+	});
+	document.addEventListener(
+		"keydown",
+		(event) => {
+			if (pressed) pressed.dataset.sgInput = "keyboard";
+			release();
+			const b = getButton(event.target);
+			if (b) b.dataset.sgInput = "keyboard";
+		},
+		true,
+	);
+	document.addEventListener(
+		"click",
+		(event) => {
+			const b = getButton(event.target);
+			if (b && block(b)) {
+				event.preventDefault();
+				event.stopImmediatePropagation();
+			}
+		},
+		true,
+	);
+	function busy(button, value) {
+		if (value) {
+			if (button.getAttribute("aria-busy") === "true") return;
+			button.dataset.sgWasDisabled = String(button.getAttribute("aria-disabled") === "true");
+			const label = document.createElement("span");
+			label.className = "sg-button-label";
+			while (button.firstChild) label.append(button.firstChild);
+			button.append(label);
+			const spinner = document.createElement("span");
+			spinner.className = "sg-button-spinner";
+			spinner.setAttribute("aria-hidden", "true");
+			spinner.innerHTML =
+				'<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8" opacity=".3"/><path d="M12 4a8 8 0 0 1 8 8"/></svg>';
+			button.append(spinner);
+			button.setAttribute("aria-busy", "true");
+			button.setAttribute("aria-disabled", "true");
+			button.classList.remove("sg-pressed");
+		} else {
+			if (button.getAttribute("aria-busy") !== "true") return;
+			const label = button.querySelector(":scope > .sg-button-label");
+			button.querySelector(":scope > .sg-button-spinner")?.remove();
+			if (label) label.replaceWith(...label.childNodes);
+			button.removeAttribute("aria-busy");
+			if (button.dataset.sgWasDisabled !== "true") button.removeAttribute("aria-disabled");
+			delete button.dataset.sgWasDisabled;
+		}
+	}
+	function create({
+		label,
+		role = "quiet",
+		size = "regular",
+		icon,
+		ariaLabel,
+		type = "button",
+		disabled = false,
+	}) {
+		if (!label && !ariaLabel) throw Error("Button needs an accessible name");
+		if (!["primary", "soft", "quiet", "icon", "icon-primary", "danger"].includes(role))
+			throw Error("Unknown button role");
+		if (!["regular", "compact"].includes(size)) throw Error("Unknown button size");
+		if ((role === "icon" || role === "icon-primary") && !ariaLabel)
+			throw Error("Icon button needs an accessible name");
+		const b = document.createElement("button");
+		b.type = type;
+		b.dataset.sgButton = "";
+		b.dataset.sgRole = role;
+		b.dataset.sgSize = size;
+		b.disabled = disabled;
+		if (icon instanceof SVGElement) {
+			icon.setAttribute("aria-hidden", "true");
+			b.append(icon);
+		}
+		if (label) b.append(document.createTextNode(label));
+		if (ariaLabel) b.setAttribute("aria-label", ariaLabel);
+		const holder = document.createElement("span");
+		holder.append(b);
+		enhance(holder);
+		return b;
+	}
+
+	function iconize(button, { name, label, motion }) {
+		if (!label) throw Error("Icon action needs a label");
+		button.dataset.sgButton = "";
+		button.dataset.sgRole = button.dataset.sgRole === "icon-primary" ? "icon-primary" : "icon";
+		if (button.getAttribute("aria-busy") === "true") return;
+		if (
+			button.dataset.sgIconName === name &&
+			button.querySelector(":scope > .sg-icon-label") &&
+			button.getAttribute("aria-label") === label
+		)
+			return;
+		button.dataset.sgIconName = name;
+		button.setAttribute("aria-label", label);
+		button.dataset.sgTooltip = label;
+		button.removeAttribute("title");
+		if (motion) button.dataset.sgMotion = motion;
+		const text = document.createElement("span");
+		text.className = "sg-icon-label";
+		text.textContent = label;
+		button.replaceChildren(window.SGGIcons.create(name), text);
+	}
+	function feedback(button, state) {
+		if (!["idle", "confirmed", "error"].includes(state)) throw Error("Unknown feedback state");
+		if (button.dataset.sgFeedback === state) return;
+		button.dataset.sgFeedback = state;
+	}
+	let tip = null,
+		owner = null,
+		timer = 0,
+		lastClose = -Infinity;
+	const tipOwnerObserver = new MutationObserver(() => {
+		if (owner && !owner.isConnected) hideTip();
+	});
+	function hideTip() {
+		clearTimeout(timer);
+		timer = 0;
+		const wasVisible = tip && !tip.hidden;
+		if (tip) {
+			if (tip.matches(":popover-open")) tip.hidePopover();
+			tip.hidden = true;
+		}
+		owner = null;
+		tipOwnerObserver.disconnect();
+		if (wasVisible) lastClose = performance.now();
+	}
+	function showTip(button, keyboard = false) {
+		clearTimeout(timer);
+		if (!button?.isConnected || !button.dataset.sgTooltip) return;
+		if (!tip) {
+			tip = document.createElement("div");
+			tip.className = "sg-tooltip";
+			tip.setAttribute("role", "tooltip");
+			tip.setAttribute("popover", "manual");
+			tip.hidden = true;
+			document.body.append(tip);
+		}
+		owner = button;
+		tip.textContent = button.getAttribute("aria-label") || button.dataset.sgTooltip;
+		tip.hidden = false;
+		tipOwnerObserver.observe(document.body, { childList: true, subtree: true });
+		if (tip.showPopover && !tip.matches(":popover-open")) tip.showPopover();
+		const r = button.getBoundingClientRect(),
+			t = tip.getBoundingClientRect();
+		tip.style.left =
+			Math.max(8, Math.min(innerWidth - t.width - 8, r.x + (r.width - t.width) / 2)) + "px";
+		tip.style.top =
+			(r.bottom + t.height + 12 < innerHeight ? r.bottom + 8 : Math.max(8, r.top - t.height - 8)) +
+			"px";
+	}
+	document.addEventListener(
+		"pointerover",
+		(event) => {
+			if (!matchMedia("(hover:hover) and (pointer:fine)").matches) return;
+			const b = getButton(event.target);
+			if (!b?.dataset.sgTooltip || b.contains(event.relatedTarget)) return;
+			clearTimeout(timer);
+			timer = setTimeout(() => showTip(b), performance.now() - lastClose < 120 ? 0 : 400);
+		},
+		{ passive: true },
+	);
+	document.addEventListener(
+		"pointerout",
+		(event) => {
+			const b = getButton(event.target);
+			if (b?.dataset.sgTooltip && !b.contains(event.relatedTarget)) hideTip();
+		},
+		{ passive: true },
+	);
+	document.addEventListener("focusin", (event) => {
+		const b = getButton(event.target);
+		if (b?.matches(":focus-visible"))
+			queueMicrotask(() => {
+				if (document.activeElement === b && b.isConnected && b.matches(":focus-visible"))
+					showTip(b, true);
+			});
+	});
+	document.addEventListener("focusout", hideTip);
+	document.addEventListener("pointerdown", hideTip, true);
+	document.addEventListener(
+		"keydown",
+		(e) => {
+			if (e.key === "Escape") hideTip();
+		},
+		true,
+	);
+	document.addEventListener("scroll", hideTip, true);
+	window.addEventListener("resize", hideTip);
+	reduce.addEventListener("change", () => {
+		release();
+		for (const group of document.querySelectorAll("[data-sg-segmented]"))
+			groups.get(group)?.update(true);
+	});
+	window.SGGButtons = Object.freeze({ version: "1.3.0", enhance, busy, create, iconize, feedback });
+	enhance();
+	requestAnimationFrame(() =>
+		requestAnimationFrame(() => (document.documentElement.dataset.sgMounted = "true")),
+	);
+})();
+</script><script>/* Presentational DOM assets. Callers own validation, permissions, storage and acceptance. */
+(() => {
+	"use strict";
+	const numberStates = new WeakMap();
+	const el = (tag, cls, text) => {
+		const n = document.createElement(tag);
+		if (cls) n.className = cls;
+		if (text != null) n.textContent = String(text);
+		return n;
+	};
+	function choice(field, selected, onChange) {
+		const box = el("fieldset", "field sg-field");
+		box.append(el("legend", "", field.label));
+		const options = el("div", "choice-options sg-choice");
+		if (field.help) {
+			const help = el("p", "field-help", field.help);
+			help.id = "help-" + field.key;
+			box.append(help);
+			box.setAttribute("aria-describedby", help.id);
+		}
+		if (field.options.length <= 5 && field.options.every((o) => o.label.length <= 3)) {
+			options.classList.add("short-options");
+			options.style.display = "grid";
+			options.style.gridTemplateColumns = field.options
+				.map((o) => "minmax(0," + (o.label.length > 1 ? 1.6 : 1) + "fr)")
+				.join(" ");
+		}
+		for (const option of field.options) {
+			const label = el("label", "option"),
+				input = el("input"),
+				text = el("span", "option-label", option.label);
+			input.type = "radio";
+			input.name = field.key;
+			input.value = option.value;
+			input.checked = selected === option.value;
+			input.disabled = Boolean(field.disabled || option.disabled);
+			input.addEventListener("change", () => onChange(option.value));
+			if (option.numeric) text.classList.add("option-numeric");
+			label.append(input, text);
+			options.append(label);
+		}
+		box.append(options);
+		return box;
+	}
+	function number(field, selected, onChange) {
+		const box = el("div", "field sg-field"),
+			label = el("label", "control-label", field.label),
+			id = "input-" + field.key,
+			line = el("div", "number-control sg-number"),
+			input = el("input", "number-input");
+		label.htmlFor = id;
+		input.id = id;
+		input.type = field.raw ? "text" : "number";
+		if (field.raw) {
+			input.setAttribute("role", "spinbutton");
+			input.setAttribute("aria-valuemin", field.min);
+			if (field.max != null) input.setAttribute("aria-valuemax", field.max);
+		}
+		input.min = field.min;
+		if (field.max != null) input.max = field.max;
+		input.step = field.raw ? (field.step ?? 1) : 1;
+		input.inputMode = field.raw && !Number.isInteger(field.step ?? 1) ? "decimal" : "numeric";
+		input.value = selected ?? "";
+		input.placeholder = field.raw ? "输入数值" : "请选择";
+		input.disabled = Boolean(field.disabled);
+		const stepButton = (delta, name) => {
+			const b = el("button", "stepper");
+			b.type = "button";
+			b.setAttribute("aria-label", name + field.label);
+			b.dataset.sgButton = "";
+			b.dataset.sgRole = "quiet";
+			b.append(SGGIcons.create(delta > 0 ? "plus" : "minus"));
+			b.addEventListener("click", () => {
+				if (field.raw) {
+					if (b.disabled) return;
+					const next = field.stepValue?.(input.value, delta);
+					if (next === undefined) return;
+					input.value = String(next);
+					onChange(input.value);
+					sync();
+					return;
+				}
+				const value =
+					input.value === ""
+						? delta < 0
+							? field.min
+							: Math.min(field.max ?? Infinity, field.min + 1)
+						: Math.min(field.max ?? Infinity, Math.max(field.min, Number(input.value) + delta));
+				input.value = value;
+				onChange(value);
+				sync();
+			});
+			return b;
+		};
+		const minus = stepButton(-1, "减少"),
+			plus = stepButton(1, "增加"),
+			error = field.raw
+				? el("p", "sg-control-error", field.invalidMessage || "请输入有效数值。")
+				: null;
+		let checked = false;
+		if (error) {
+			error.id = id + "-error";
+			error.hidden = true;
+			error.setAttribute("role", "alert");
+			input.addEventListener("blur", () => {
+				checked = true;
+				sync();
+			});
+		}
+		function sync() {
+			if (field.raw) {
+				input.disabled = Boolean(field.disabled);
+				minus.disabled = Boolean(field.disabled) || Boolean(field.stepDisabled?.(input.value, -1));
+				plus.disabled = Boolean(field.disabled) || Boolean(field.stepDisabled?.(input.value, 1));
+				const value = field.numberValue?.(input.value);
+				if (value === undefined) input.removeAttribute("aria-valuenow");
+				else input.setAttribute("aria-valuenow", value);
+				const invalid = input.value !== "" && value === undefined;
+				input.setAttribute("aria-invalid", String(invalid));
+				error.hidden = !checked || !invalid || Boolean(field.disabled);
+				const described = [field.help ? "help-" + field.key : "", !error.hidden ? error.id : ""]
+					.filter(Boolean)
+					.join(" ");
+				if (described) input.setAttribute("aria-describedby", described);
+				else input.removeAttribute("aria-describedby");
+				return;
+			}
+			minus.disabled =
+				Boolean(field.disabled) || (input.value !== "" && Number(input.value) <= field.min);
+			plus.disabled =
+				Boolean(field.disabled) ||
+				(input.value !== "" && field.max != null && Number(input.value) >= field.max);
+		}
+		input.addEventListener("input", () => {
+			onChange(field.raw ? input.value : input.value === "" ? null : Number(input.value));
+			sync();
+		});
+		if (field.raw) {
+			numberStates.set(box, sync);
+			input.addEventListener("keydown", (e) => {
+				if (e.key !== "ArrowUp" && e.key !== "ArrowDown") return;
+				e.preventDefault();
+				const button = e.key === "ArrowUp" ? plus : minus;
+				if (!button.disabled) button.click();
+			});
+		}
+		line.append(minus, input, plus);
+		box.append(label, line);
+		if (error) box.append(error);
+		if (field.help) {
+			const help = el("p", "field-help", field.help);
+			help.id = "help-" + field.key;
+			input.setAttribute("aria-describedby", help.id);
+			box.append(help);
+		}
+		sync();
+		return box;
+	}
+	function text(field, value, onChange) {
+		const box = el("div", "sg-field"),
+			label = el("label", "", field.label),
+			input = el(field.multiline ? "textarea" : "input", "sg-input");
+		label.htmlFor = input.id = "input-" + field.key;
+		if (!field.multiline) input.type = "text";
+		input.value = value ?? "";
+		if (field.placeholder) input.placeholder = field.placeholder;
+		if (field.maxLength != null) input.maxLength = field.maxLength;
+		input.disabled = Boolean(field.disabled);
+		input.addEventListener("input", () => onChange(input.value));
+		box.append(label, input);
+		return box;
+	}
+	function select(field, value, onChange) {
+		if (field.readonly) {
+			const box = el("div", "sg-field"),
+				label = el("span", "sg-field-label", field.label),
+				copy = el(
+					"p",
+					"sg-field-value",
+					field.options.find((o) => o.value === value)?.label || "—",
+				);
+			label.id = "label-" + field.key;
+			box.setAttribute("role", "group");
+			box.setAttribute("aria-labelledby", label.id);
+			box.append(label, copy);
+			return box;
+		}
+		const box = el("div", "sg-field"),
+			label = el("label", "", field.label),
+			input = el("select", "sg-input");
+		label.htmlFor = input.id = "input-" + field.key;
+		input.disabled = Boolean(field.disabled);
+		if (value == null) {
+			const placeholder = el("option", "", field.placeholder || "请选择");
+			placeholder.value = "";
+			placeholder.disabled = true;
+			placeholder.selected = true;
+			input.append(placeholder);
+		}
+		for (const [i, option] of field.options.entries()) {
+			const item = el("option", "", option.label);
+			item.value = String(i);
+			item.selected = value === option.value;
+			item.disabled = Boolean(option.disabled);
+			input.append(item);
+		}
+		input.addEventListener("change", () => {
+			const item = field.options[Number(input.value)];
+			if (item) onChange(item.value);
+		});
+		box.append(label, input);
+		enhance(box);
+		if (field.help) {
+			const help = el("p", "field-help", field.help);
+			help.id = "help-" + field.key;
+			input.setAttribute("aria-describedby", help.id);
+			box.append(help);
+		}
+		return box;
+	}
+	function enhance(root = document) {
+		if (!window.SGGIcons) return;
+		const inputs = root.matches?.("select:not([multiple])")
+			? [root]
+			: root.querySelectorAll("select:not([multiple])");
+		for (const input of inputs) {
+			if (input.parentElement?.classList.contains("sg-select")) continue;
+			const shell = el("span", "sg-select"),
+				arrow = SGGIcons.create("chevron-down");
+			arrow.classList.add("sg-select-chevron");
+			arrow.setAttribute("aria-hidden", "true");
+			input.before(shell);
+			shell.append(input, arrow);
+		}
+		const summaries = root.matches?.("summary") ? [root] : root.querySelectorAll("summary");
+		for (const summary of summaries) {
+			if (summary.querySelector("svg") || summary.dataset.sgDisclosure === "custom") continue;
+			summary.classList.add("sg-disclosure");
+			const arrow = SGGIcons.create("chevron-down");
+			arrow.classList.add("sg-disclosure-chevron");
+			arrow.setAttribute("aria-hidden", "true");
+			summary.append(arrow);
+		}
+	}
+	// Local draft success never resolves a rejected service submission. Reveal after local sizing settles.
+	const errorStates = new WeakMap();
+	function paintError(node, state, reveal) {
+		const source = state.submit ? "submit" : state.draft ? "draft" : null;
+		node.hidden = !source;
+		if (!source) {
+			delete node.dataset.errorSource;
+			return;
+		}
+		node.dataset.errorSource = source;
+		node.textContent = state[source];
+		if (reveal) {
+			const message = node.textContent;
+			requestAnimationFrame(() =>
+				requestAnimationFrame(() => {
+					if (
+						node.isConnected &&
+						!node.hidden &&
+						node.dataset.errorSource === source &&
+						node.textContent === message
+					)
+						node.scrollIntoView({ block: "nearest", inline: "nearest", behavior: "instant" });
+				}),
+			);
+		}
+	}
+	function showError(node, message, source = "submit") {
+		if (!node) return;
+		const state = errorStates.get(node) || {};
+		state[source] = String(message);
+		errorStates.set(node, state);
+		paintError(node, state, true);
+	}
+	function clearError(node, source) {
+		if (!node) return;
+		const state = errorStates.get(node);
+		if (!state) return;
+		delete state[source];
+		paintError(node, state, false);
+	}
+	document.addEventListener(
+		"keydown",
+		() => (document.documentElement.dataset.sgControlsInput = "keyboard"),
+		true,
+	);
+	document.addEventListener(
+		"pointerdown",
+		() => (document.documentElement.dataset.sgControlsInput = "pointer"),
+		{ passive: true, capture: true },
+	);
+	document.addEventListener("DOMContentLoaded", () => enhance());
+	window.SGGControls = Object.freeze({
+		choice,
+		number,
+		syncNumber: (box) => numberStates.get(box)?.(),
+		text,
+		select,
+		enhance,
+		showError,
+		clearError,
+	});
+})();
+</script><script>/* Layout primitives take nodes and authorised display data; they do not infer game rules. */
+(() => {
+	"use strict";
+	const node = (tag, cls, text) => {
+		const n = document.createElement(tag);
+		n.className = cls;
+		if (text != null) n.textContent = text;
+		return n;
+	};
+	function header(root) {
+		root.classList.add("sg-product-bar");
+		root
+			.querySelector(":scope>nav,:scope>.reading,:scope>#session-tools")
+			?.classList.add("sg-header-actions");
+		return root;
+	}
+	function progress(root, { group, name, count, trailing } = {}) {
+		root.classList.add("sg-progress");
+		group ??= root.querySelector(":scope>.sg-progress-group");
+		if (!group) {
+			group = node("div", "sg-progress-group");
+			root.prepend(group);
+		}
+		group.classList.add("sg-progress-group");
+		if (name) {
+			name.classList.add("sg-progress-name");
+			group.append(name);
+		}
+		if (count) {
+			count.classList.add("sg-progress-count");
+			group.append(count);
+		}
+		if (trailing?.length) {
+			let actions = root.querySelector(":scope>.sg-progress-actions");
+			if (!actions) {
+				actions = node("div", "sg-progress-actions");
+				root.append(actions);
+			}
+			actions.append(...trailing);
+		}
+		return root;
+	}
+	function toolbar(root) {
+		root.classList.add("sg-toolbar", "sg-pane-toolbar");
+		// App navigation has its own frame, independent of the content reading width.
+		// Profile peeks belong to the host Reading and have no product-level App bar.
+		const page = root.parentElement;
+		if (
+			document.documentElement.dataset.sessionApp &&
+			!document.documentElement.hasAttribute("data-profile-peek") &&
+			page?.matches("body > .sg-page")
+		) {
+			if (root.hasAttribute("data-sg-navigation-scroll")) {
+				// A scroll-owned navigation overlay needs the full navigation viewport;
+				// its children retain the page's independent reading-width role.
+				page.classList.add("sg-navigation-scroll-canvas");
+			} else {
+				root.classList.add("sg-navigation-canvas");
+				page.before(root);
+			}
+			root.dispatchEvent(new Event("sgg:navigation-mounted"));
+		}
+		const title = [...root.children].find((n) =>
+			n.matches("h1,h2,.app-title,.sg-task-toolbar-label"),
+		);
+		if (title) title.classList.add("sg-toolbar-title");
+		let before = true;
+		for (const n of [...root.children]) {
+			if (n === title) {
+				before = false;
+				continue;
+			}
+			n.classList.add(before ? "sg-toolbar-leading" : "sg-toolbar-trailing");
+		}
+		return root;
+	}
+	function stage({ name, step }) {
+		const root = node("div", "sg-progress");
+		const label = node("span", "sg-progress-name", name),
+			count = step ? node("span", "sg-progress-count", step) : null;
+		return progress(root, { name: label, count });
+	}
+	function task({ context, interaction, actions, recipe = "flow" }) {
+		if (!["flow", "decision", "summary"].includes(recipe))
+			throw new TypeError("Unknown task recipe");
+		const root = node("div", "workspace sg-task-layout");
+		if (recipe !== "flow") root.dataset.scene = recipe;
+		context.classList.add("intro");
+		interaction.classList.add("content");
+		root.append(context, interaction);
+		if (actions) {
+			if (recipe === "flow") interaction.append(actions);
+			else {
+				actions.classList.add("sg-scene-actions");
+				root.append(actions);
+			}
+		}
+		return root;
+	}
+	function frame({
+		brand,
+		gameName,
+		round,
+		phase,
+		actions = [],
+		width = "work",
+		scroll = "flow",
+		space = "flow",
+	} = {}) {
+		if (
+			!["focus", "work", "split", "gallery"].includes(width) ||
+			!["flow", "workspace"].includes(scroll) ||
+			!["flow", "decision", "summary"].includes(space)
+		)
+			throw new TypeError("Unknown layout role");
+		const bar = node("header", "sg-product-bar"),
+			logo = brand || node("span", "brand", "SocialGameGym"),
+			context = node("div", "game-context"),
+			nav = node("nav", "sg-header-actions");
+		logo.classList.add("brand");
+		context.classList.add("sg-context-line");
+		const pair = node("span", "sg-context-game");
+		pair.append(node("span", "", gameName));
+		if (round) pair.append(node("span", "round", round));
+		context.append(pair);
+		nav.setAttribute("aria-label", "本场查阅");
+		nav.append(...actions);
+		bar.append(logo, context, nav);
+		const main = node("main", "sg-page");
+		main.dataset.width = width;
+		if (space !== "flow") main.dataset.space = "scene";
+		const rail = phase ? stage(phase) : null;
+		if (rail) context.append(rail);
+		return {
+			header: bar,
+			progress: rail,
+			main,
+			scroll,
+			mount(host) {
+				host.dataset.sgShell = "";
+				host.dataset.scroll = scroll;
+				if (space !== "flow") host.dataset.taskScene = space;
+				if (rail) host.dataset.contextProgress = "";
+				host.append(bar, main);
+				return main;
+			},
+		};
+	}
+	window.SGGLayout = Object.freeze({
+		header,
+		progress,
+		toolbar,
+		stage,
+		task,
+		frame,
+		version: "q184-1",
+	});
+})();
+</script><script>/* Generated by build-avatars.py from one form and palette source. */
+window.SGGAvatarRegistry=Object.freeze({"default":{"label":"默认","paper":"#EAEDE9","selectable":true,"file":"default.svg"},"group":{"label":"群组","paper":"#EAEDE9","selectable":false,"file":"group.svg"},"socialgamegym":{"label":"SocialGameGym","paper":"#eeeeee","selectable":true,"file":"socialgamegym.svg"},"coordination":{"label":"协调","paper":"#e2edf7","selectable":true,"file":"coordination.svg"},"information":{"label":"信息","paper":"#e7ebf8","selectable":true,"file":"information.svg"},"creation":{"label":"共创","paper":"#dfefed","selectable":true,"file":"creation.svg"},"cooperation":{"label":"合作","paper":"#eaeddf","selectable":true,"file":"cooperation.svg"},"trust":{"label":"信任","paper":"#e2efe6","selectable":true,"file":"trust.svg"},"allocation":{"label":"分配","paper":"#f6e8e1","selectable":true,"file":"allocation.svg"},"market":{"label":"市场","paper":"#f2eade","selectable":true,"file":"market.svg"},"protection":{"label":"保障","paper":"#deeff3","selectable":true,"file":"protection.svg"},"incentives":{"label":"激励","paper":"#f1e8f3","selectable":true,"file":"incentives.svg"},"governance":{"label":"治理","paper":"#e0edf6","selectable":true,"file":"governance.svg"},"competition":{"label":"竞争","paper":"#ece9f6","selectable":true,"file":"competition.svg"},"matching":{"label":"匹配","paper":"#f5e7ed","selectable":true,"file":"matching.svg"}});
+</script><script>/* Bounded identity presentation; never derives a preset from role, state or game. */
+(() => {
+	const registry = window.SGGAvatarRegistry,
+		base = new URL("../assets/avatars/", new URL("/SocialGameGym-Playtest/visual/q146-product-language/shared/avatar.js", document.baseURI).href),
+		aliases = { neutral: "default", "default-neutral": "default", fairness: "allocation" };
+	const escape = (value) =>
+		String(value).replace(
+			/[&<>"']/g,
+			(c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c],
+		);
+	function resolve(preset) {
+		const key = aliases[preset] || preset;
+		return registry[key] ? key : "default";
+	}
+	function url(preset) {
+		return new URL(registry[resolve(preset)].file, base).href;
+	}
+	function html({ preset = "default", size = "row", src, person } = {}) {
+		preset = resolve(preset);
+		size = ["reply", "message", "context", "row", "profile", "detail"].includes(size)
+			? size
+			: "row";
+		return (
+			'<span class="sg-avatar" data-preset="' +
+			preset +
+			'" data-family="' +
+			preset +
+			'" data-size="' +
+			size +
+			'"' +
+			(person ? ' data-person="' + escape(person) + '"' : "") +
+			' aria-hidden="true"><img data-avatar-preset="' +
+			preset +
+			'" src="' +
+			escape(src || url(preset)) +
+			'" width="64" height="64" alt="" draggable="false"></span>'
+		);
+	}
+	function node({ preset = "default", size = "row", src, badge, ready = false, person } = {}) {
+		const template = document.createElement("template");
+		template.innerHTML = html({ preset, size, src, person });
+		const n = template.content.firstElementChild;
+		if (ready) n.dataset.ready = "true";
+		if (badge && window.SGGIcons) {
+			const tag = document.createElement("span");
+			tag.className = "sg-avatar-badge";
+			tag.append(SGGIcons.create(badge));
+			n.append(tag);
+		}
+		return n;
+	}
+	document.addEventListener(
+		"error",
+		(e) => {
+			const img = e.target;
+			if (
+				!(img instanceof HTMLImageElement) ||
+				!img.hasAttribute("data-avatar-preset") ||
+				img.dataset.avatarFallback
+			)
+				return;
+			img.dataset.avatarFallback = "true";
+			img.src = url("default");
+		},
+		true,
+	);
+	window.SGGAvatar = Object.freeze({ version: "avatar@1.0.0", registry, resolve, url, html, node });
+})();
+</script><script>/* Reading-layer motion owns no content, permission or phase. Reopening invalidates old exits. */
+(() => {
+	"use strict";
+	const reduced = matchMedia("(prefers-reduced-motion: reduce)"),
+		active = new WeakMap(),
+		known = new Set();
+	function clear(dialog) {
+		const a = active.get(dialog);
+		active.delete(dialog);
+		a?.cancel();
+		delete dialog.dataset.closing;
+		dialog.inert = false;
+	}
+	function finish(dialog) {
+		clear(dialog);
+		if (dialog.open) dialog.close();
+	}
+	function open(dialog, { event, instant = false } = {}) {
+		enhance(dialog);
+		const interrupted = active.has(dialog),
+			style = interrupted ? getComputedStyle(dialog) : null,
+			from = style ? { opacity: style.opacity, transform: style.transform } : null;
+		clear(dialog);
+		dialog.dataset.keyboardOpen = String(instant || window.SGGMotion?.instant(event) || false);
+		if (!dialog.open) {
+			// A top-layer reading takes over from an entering scene; never animate both layers.
+			for (let parent = dialog.parentElement; parent; parent = parent.parentElement)
+				window.SGGMotion?.cancel(parent);
+			if (dialog.dataset.keyboardOpen === "true") dialog.removeAttribute("tabindex");
+			dialog.showModal();
+			// Native showModal autofocus otherwise puts a ring on Close after some pointer paths.
+			// The dialog is the initial reading target; Tab still starts at its first control.
+			if (dialog.dataset.keyboardOpen !== "true") {
+				dialog.tabIndex = -1;
+				dialog.focus({ preventScroll: true });
+			}
+		}
+		if (interrupted && from) {
+			for (const a of dialog.getAnimations()) a.cancel();
+			window.SGGMotion?.run(
+				dialog,
+				[
+					{ ...from, opacity: 1 },
+					{ opacity: 1, transform: "translateY(0)" },
+				],
+				{
+					immediate: instant,
+					event,
+				},
+			);
+		}
+	}
+	function close(dialog, { instant = false } = {}) {
+		if (!dialog?.open) return;
+		if (instant || reduced.matches || window.SGGMotion?.instant()) {
+			finish(dialog);
+			return;
+		}
+		if (active.has(dialog)) return;
+		const style = getComputedStyle(dialog),
+			from = { opacity: style.opacity, transform: style.transform };
+		for (const a of dialog.getAnimations()) a.cancel();
+		dialog.dataset.closing = "true";
+		dialog.inert = true;
+		const css = getComputedStyle(document.documentElement),
+			a = dialog.animate(
+				[
+					from,
+					{
+						opacity: style.getPropertyValue("--sg-reading-exit-opacity").trim() || "0",
+						transform:
+							style.getPropertyValue("--sg-reading-exit-transform").trim() || "translateY(6px)",
+					},
+				],
+				{
+					duration: parseFloat(css.getPropertyValue("--sg-motion-exit")) || 120,
+					easing: css.getPropertyValue("--sg-ease").trim() || "linear",
+					fill: "forwards",
+				},
+			);
+		active.set(dialog, a);
+		a.finished
+			.then(() => {
+				if (active.get(dialog) === a) finish(dialog);
+			})
+			.catch(() => {});
+	}
+	function enhance(dialog) {
+		if (known.has(dialog)) return;
+		known.add(dialog);
+		dialog.addEventListener("cancel", (event) => {
+			event.preventDefault();
+			close(dialog, { instant: true });
+		});
+		dialog.addEventListener("close", () => clear(dialog));
+	}
+	for (const dialog of document.querySelectorAll("dialog.sg-reading")) enhance(dialog);
+	window.SGGMotion?.onSettle(() => {
+		for (const d of known) {
+			if (active.has(d)) finish(d);
+			else for (const a of d.getAnimations()) a.cancel();
+		}
+	});
+	reduced.addEventListener("change", () => {
+		if (reduced.matches) for (const d of known) if (active.has(d)) finish(d);
+	});
+	window.SGGReading = Object.freeze({ enhance, open, close });
+})();
+</script><script>/* Preset identity choice: presentation and local draft only; the host owns saving and quotas. */
+(() => {
+	"use strict";
+	function mount({ host, dialog, options, value = "default", allowedPresets, onChange }) {
+		const A = window.SGGAvatar,
+			B = window.SGGButtons,
+			I = window.SGGIcons,
+			R = window.SGGReading;
+		let selected = A.resolve(value),
+			visible = true;
+		const trigger = B.create({ role: "icon", ariaLabel: "编辑头像" });
+		trigger.classList.add("sg-avatar-trigger");
+		trigger.setAttribute("aria-haspopup", "dialog");
+		trigger.setAttribute("aria-controls", dialog.id);
+		trigger.setAttribute("aria-expanded", "false");
+		host.replaceChildren(trigger);
+		const close = B.create({ role: "icon", ariaLabel: "关闭头像选择", icon: I.create("close") });
+		dialog.querySelector("header").append(close);
+		dialog.classList.add("sg-avatar-picker");
+		options.classList.add("sg-avatar-options");
+		function render() {
+			trigger.replaceChildren(A.node({ preset: selected, size: "detail", badge: "edit" }));
+			options.replaceChildren();
+			const allowed = typeof allowedPresets === "function" ? allowedPresets() : allowedPresets;
+			for (const [key, item] of Object.entries(A.registry)) {
+				if (!item.selectable || (Array.isArray(allowed) && !allowed.includes(key))) continue;
+				const button = B.create({ role: "icon", ariaLabel: item.label + "头像" });
+				button.classList.add("sg-avatar-choice");
+				button.dataset.preset = key;
+				button.setAttribute("aria-pressed", String(key === selected));
+				button.append(
+					A.node({ preset: key, size: "row", ...(key === selected ? { badge: "check" } : {}) }),
+				);
+				button.onclick = (event) => {
+					selected = key;
+					render();
+					onChange?.(key);
+					R.close(dialog, { instant: window.SGGMotion?.instant(event) });
+				};
+				options.append(button);
+			}
+		}
+		trigger.onclick = (event) => {
+			render();
+			R.open(dialog, { event });
+			trigger.setAttribute("aria-expanded", "true");
+			(
+				options.querySelector("[aria-pressed=true]") ||
+				options.querySelector("button") ||
+				close
+			).focus({ preventScroll: true });
+		};
+		close.onclick = (event) => R.close(dialog, { instant: window.SGGMotion?.instant(event) });
+		const closed = () => {
+			trigger.setAttribute("aria-expanded", "false");
+			if (visible && trigger.isConnected) trigger.focus({ preventScroll: true });
+		};
+		dialog.addEventListener("close", closed);
+		const outside = (event) => {
+			if (event.target !== dialog) return;
+			const r = dialog.getBoundingClientRect();
+			if (
+				event.clientX < r.left ||
+				event.clientX > r.right ||
+				event.clientY < r.top ||
+				event.clientY > r.bottom
+			)
+				R.close(dialog);
+		};
+		dialog.addEventListener("click", outside);
+		const keys = (event) => {
+			const buttons = [...options.querySelectorAll("button")],
+				index = buttons.indexOf(document.activeElement);
+			if (index < 0) return;
+			const columns = getComputedStyle(options).gridTemplateColumns.split(" ").length;
+			const offset = { ArrowLeft: -1, ArrowRight: 1, ArrowUp: -columns, ArrowDown: columns }[
+				event.key
+			];
+			let next;
+			if (offset !== undefined) next = (index + offset + buttons.length) % buttons.length;
+			else if (event.key === "Home") next = 0;
+			else if (event.key === "End") next = buttons.length - 1;
+			else return;
+			event.preventDefault();
+			buttons[next].focus({ preventScroll: true });
+		};
+		options.addEventListener("keydown", keys);
+		const visibility = (event) => {
+			if (event.source === parent && event.data?.channel === "q146-app-visibility") {
+				visible = Boolean(event.data.visible);
+				if (!visible && dialog.open) R.close(dialog, { instant: true });
+			}
+		};
+		window.addEventListener("message", visibility);
+		R.enhance(dialog);
+		render();
+		return Object.freeze({
+			setValue(value) {
+				selected = A.resolve(value);
+				render();
+			},
+			destroy() {
+				window.removeEventListener("message", visibility);
+				dialog.removeEventListener("close", closed);
+				dialog.removeEventListener("click", outside);
+				options.removeEventListener("keydown", keys);
+				if (dialog.open) R.close(dialog, { instant: true });
+			},
+		});
+	}
+	window.SGGAvatarPicker = Object.freeze({ version: "avatar-picker/1", mount });
+})();
+</script><script>/* Generated by build-activity.py; edit source/activity-source.json. */
+window.SGGActivityDefinition = Object.freeze({"version":"sgg.player-activity/3","authority":"viewer-authorized-player-activity: public-social + actor-bound-game-records","kinds":{"social.profile.update.v2":{"label":"更新资料","actorField":"actor","bodyFields":["displayName","bio","avatar"],"tag":"资料"},"social.forum.post.v2":{"label":"发帖","actorField":"actor","bodyFields":["body"],"tag":"发帖"},"social.forum.reply.v1":{"label":"回复帖子","actorField":"actor","objectField":"postId","bodyFields":["body"],"tag":"回复"},"social.rating.set.v1":{"label":"公开评分","actorField":"actor","personObjectField":"targetSeatId","bodyFields":["score","note"],"tag":"评分"}},"identity":{"scope":["episodeId","seatId","participationId"],"validateReaderAndTarget":"before-and-after-each-read","names":"shared-authorized-participant-identities","cursor":"opaque-original-target-bound","activityKey":["episodeId","targetParticipationId","gameId","round"]},"exclude":["pending-writes","first-profile-confirmation","private-messages","follow-relations","questionnaire","hidden-or-partial-audience-records","frontend-inferred-activity","unregistered-game-records","hidden-choices","inferred-final-score-or-rank"],"notifications":{"unit":"unread-social-content-record or unread-game-person-round-group","dedupe":["app","recordId"],"rowGroupIsCount":false,"profileAuthors":"effective-own-following (social author / game subject)","ownContent":false,"profileChannel":"profile-only","synthesizeDM":false,"followHistory":"seed already-published social IDs and game round-group IDs before newly accepted follow; no retrospective badges","unfollow":"remove-author-from-followed-unread","readAck":"explicit-visible-recordIds-intersect-authorized-document-snapshot","markTargetAlone":false},"presentation":{"order":"actual-mixed-publication-desc; a game round appears at its newest covered event","pagination":"one explicit cursor; advance beyond pages already consumed by round completion","timestamps":"only actual authorized metadata; never fabricate clock values","personReference":"SGGInlinePerson","defaultOpen":"existing authorized event title/details directly visible on opening profile detail","surface":"profile-detail-reading-layer","reader":"shared/notice-reader.js","hierarchy":"single flat activity stream; no disclosure controls or game/social sections","tags":"non-interactive quiet source tag (游戏/社交), followed by round/action metadata; shared/activity.css","gameDetails":"existing GameRecords event content directly visible in profile; no folding or extra narrative layer","typeRoles":{"tagAndMeta":"--sg-type-meta","details":"shared game-records.css","family":"--sg-font-ui","numeric":"--sg-font-number","eventBody":"--sg-type-body"}},"extension":{"unknownKinds":"exclude","newGameMayInferFromRecords":false,"requires":["formal-authorized-public-activity-policy","versioned-registered-kind","semantic-content-projection","privacy-and-original-binding-tests","shared-renderer-and-notice-tests","independent-visual-review"]},"game":{"reader":"records.recent actor={seatId,participationId}, original reader guarded before/after","projection":"apps/web/src/experience/game-record-events.ts","kinds":["stag-hunt.interaction-settled.v1","trust.transfer-settled.v1","trust.interaction-settled.v1","network-pd.edge-settled.v1","ultimatum.offer-settled.v1","ultimatum.interaction-settled.v1","best-shot.round-settled.v1","cooperative-search.step-settled.v1","dictator.interaction-settled.v1","threshold-public-good.period-settled.v1","hidden-profile.self-action.v1","hidden-profile.clue-published.v1","hidden-profile.result.v1","double-auction.batch-settled.v1"],"details":"reuse exact GameRecords event title/details; no separate summary or persona copy","partialAndFinal":"coalesce-by-stable-interaction-key","permission":"same-current-viewer-permission-as-game-records; never relabel as globally-public","countsAsUnread":true,"updatesWithinSameRound":"update existing event group without second round notification","extraNarrativeTemplates":false,"groupUnit":"one-person-round-group, existing important events only","coverage":"authorized-records-only; round completeness unknown"}});
+</script><script>window.NUMBER_POLICY = {
+	version: "a6.numbers/0.1",
+	locale: "zh-CN",
+	recurringFractionDigits: 2,
+	finiteExactDigits: 4,
+	detailFractionDigits: 12,
+	grouping: true,
+};
+</script><script>(() => {
+	"use strict";
+	const policy = window.NUMBER_POLICY;
+	const digit = (value) =>
+		typeof value === "bigint"
+			? value
+			: typeof value === "number" && Number.isSafeInteger(value)
+				? BigInt(value)
+				: typeof value === "string" && /^-?(0|[1-9][0-9]*)$/.test(value)
+					? BigInt(value)
+					: null;
+	function ratio(value) {
+		if (value === null || value === undefined || value === "") return null;
+		if (typeof value === "object") {
+			const n = digit(value.n),
+				d = digit(value.d);
+			if (n === null || d === null || d <= 0n) return null;
+			return { n, d };
+		}
+		if (typeof value === "string" && /^-?\d+(\.\d+)?$/.test(value)) {
+			const negative = value.startsWith("-"),
+				[whole, fraction = ""] = value.replace(/^-/, "").split(".");
+			return {
+				n: BigInt(whole + fraction) * (negative ? -1n : 1n),
+				d: 10n ** BigInt(fraction.length),
+			};
+		}
+		const n = digit(value);
+		return n === null ? null : { n, d: 1n };
+	}
+	const grouped = (s) => (policy.grouping ? s.replace(/\B(?=(\d{3})+(?!\d))/g, ",") : s);
+	function expand(n, d, max) {
+		const integer = n / d;
+		let rem = n % d,
+			tail = "";
+		while (rem && tail.length < max) {
+			rem *= 10n;
+			tail += String(rem / d);
+			rem %= d;
+		}
+		return { integer: String(integer), tail, more: rem !== 0n };
+	}
+	function rounded(n, d, places) {
+		const scale = 10n ** BigInt(places),
+			q = (n * scale) / d,
+			rem = (n * scale) % d,
+			v = q + (rem * 2n >= d ? 1n : 0n),
+			s = String(v).padStart(places + 1, "0");
+		return {
+			integer: places ? s.slice(0, -places) : s,
+			tail: places ? s.slice(-places).replace(/0+$/, "") : "",
+			approx: rem !== 0n,
+		};
+	}
+	function format(
+		value,
+		{ signed = false, unit = "", digits = policy.recurringFractionDigits } = {},
+	) {
+		const r = ratio(value);
+		if (!r) return { text: "—", aria: "暂无数值", missing: true, approx: false, unit };
+		const negative = r.n < 0n,
+			n = negative ? -r.n : r.n,
+			d = r.d,
+			sign = negative ? "−" : signed && n !== 0n ? "+" : "";
+		const exact = expand(n, d, policy.finiteExactDigits);
+		let result,
+			exponent = "";
+		if (!exact.more) result = { ...exact, approx: false };
+		else {
+			let places = digits;
+			if (n !== 0n && n < d) {
+				let first = 0,
+					scaled = n;
+				while (scaled < d && first < 1024) {
+					scaled *= 10n;
+					first++;
+				}
+				if (first > 8) {
+					result = rounded(n * 10n ** BigInt(first), d, digits);
+					exponent =
+						"×10" +
+						String(-first).replace(
+							/[-0-9]/g,
+							(c) =>
+								({
+									"-": "⁻",
+									0: "⁰",
+									1: "¹",
+									2: "²",
+									3: "³",
+									4: "⁴",
+									5: "⁵",
+									6: "⁶",
+									7: "⁷",
+									8: "⁸",
+									9: "⁹",
+								})[c],
+						);
+				} else if (n * 10n ** BigInt(places) * 2n < d) places = Math.max(places, first + 1);
+			}
+			if (!result) result = rounded(n, d, places);
+		}
+		const magnitude =
+			(exponent ? result.integer : grouped(result.integer)) +
+			(result.tail ? "." + result.tail : "") +
+			exponent;
+		const text = (result.approx ? "≈" : "") + sign + magnitude;
+		const detail = expand(n, d, policy.detailFractionDigits),
+			detailText =
+				sign +
+				grouped(detail.integer) +
+				(detail.tail ? "." + detail.tail : "") +
+				(detail.more ? "…" : "");
+		return {
+			text,
+			detail: detailText,
+			approx: result.approx,
+			missing: false,
+			unit,
+			aria:
+				(result.approx ? "约" : "") +
+				(negative ? "负" : signed && n !== 0n ? "正" : "") +
+				magnitude +
+				(unit ? " " + unit : ""),
+			r,
+		};
+	}
+	const e = (tag, cls, text) => {
+		const n = document.createElement(tag);
+		if (cls) n.className = cls;
+		if (text !== undefined) n.textContent = text;
+		return n;
+	};
+	let popup;
+	function showDetail(trigger, value) {
+		if (!popup) {
+			popup = e("div", "number-detail");
+			popup.id = "number-detail";
+			popup.setAttribute("popover", "auto");
+			popup.setAttribute("role", "note");
+			document.body.append(popup);
+		}
+		if (popup.matches(":popover-open")) popup.hidePopover();
+		const detail = e("p", "number-detail-value");
+		detail.append(e("span", "number-detail-digits", value.detail));
+		if (value.unit) detail.append(e("span", "numeric-unit", value.unit));
+		popup.replaceChildren(
+			e("p", "number-detail-label", "更精确的数值"),
+			detail,
+			e("p", "number-detail-note", "当前显示为近似值，结果判断不受显示精度影响。"),
+		);
+		const host = trigger.closest("dialog[open]") || document.body;
+		if (popup.parentElement !== host) host.append(popup);
+		trigger.setAttribute("aria-controls", popup.id);
+		popup.showPopover({ source: trigger });
+		let zoom = 1;
+		for (let parent = popup.parentElement; parent; parent = parent.parentElement)
+			zoom *= Number.parseFloat(getComputedStyle(parent).zoom) || 1;
+		const box = trigger.getBoundingClientRect(),
+			viewportWidth = innerWidth / zoom,
+			viewportHeight = innerHeight / zoom,
+			width = Math.min(320, viewportWidth - 32);
+		popup.style.width = width + "px";
+		popup.style.left = Math.max(16, Math.min(box.left / zoom, viewportWidth - width - 16)) + "px";
+		popup.style.top =
+			Math.max(16, Math.min(box.bottom / zoom + 8, viewportHeight - popup.offsetHeight - 16)) +
+			"px";
+	}
+	function element(value, { role = "data", signed = false, unit = "", digits } = {}) {
+		const f = format(value, { signed, unit, digits }),
+			root = e(f.approx ? "button" : "span", "ui-number num--" + role);
+		if (f.approx) {
+			root.type = "button";
+			root.classList.add("number-approx");
+			root.setAttribute("aria-label", f.aria + "，查看更精确的数值");
+			root.addEventListener("click", () => showDetail(root, f));
+		} else root.setAttribute("aria-label", f.aria);
+		if (f.text.length > 11) root.classList.add("number-wide");
+		const text = e("span", "numeric-value");
+		for (const [i, part] of f.text.split(",").entries()) {
+			if (i) {
+				text.append(document.createTextNode(","), document.createElement("wbr"));
+			}
+			text.append(document.createTextNode(part));
+		}
+		root.append(text);
+		if (unit && !f.missing) root.append(e("span", "numeric-unit", unit));
+		return root;
+	}
+	function text(value, options = {}) {
+		const f = format(value, options);
+		return f.text + (f.unit && !f.missing ? "\u202f" + f.unit : "");
+	}
+	function progress(current, total, unit) {
+		const a = ratio(current),
+			b = ratio(total);
+		if (!a || !b || a.d !== 1n || b.d !== 1n || a.n < 0n || b.n < 1n || a.n > b.n) return "—";
+		return text(a.n) + "/" + text(b.n) + "\u202f" + unit;
+	}
+	window.NumberUI = { format, element, text, progress, ratio };
+})();
+</script><script>/* Reads authorized profile/activity projections; writes use only offered actions. */
+(() => {
+	"use strict";
+	const A = window.SessionApp;
+	if (!A) {
+		const note = document.createElement("p");
+		note.textContent = "请从本场桌面打开资料。";
+		note.setAttribute("role", "status");
+		document.querySelector("main").replaceChildren(note);
+		document.documentElement.dataset.sessionReady = "true";
+		return;
+	}
+	const B = SGGButtons,
+		I = SGGIcons,
+		V = SGGAvatar,
+		c = A.context,
+		list = document.querySelector("#profile-list"),
+		filter = document.querySelector("#profile-filter"),
+		form = document.querySelector("#profile-edit"),
+		toolbar = document.querySelector("#profile-toolbar"),
+		name = document.querySelector("#profile-name"),
+		bio = document.querySelector("#profile-bio"),
+		status = document.querySelector("#profile-status"),
+		dialog = document.querySelector("#profile-detail"),
+		main = document.querySelector("main"),
+		draftKey = ["q146.profile-draft", c.room, c.viewer, c.participation, c.window].join(":"),
+		scrollKey = draftKey + ".scroll",
+		editorKey = draftKey + ".editing";
+	addEventListener("sgg:notice-update", () => {
+		if (!editing) drawList();
+	});
+	let memoryDraft = null,
+		editing = false,
+		preset = "default",
+		savedScroll = Number(sessionStorage.getItem(scrollKey) || 0),
+		followedOnly = false,
+		selected = null,
+		activityGeneration = 0,
+		activityCleanup = () => {},
+		appVisible = true;
+	const seenActivity = new Set();
+	const initial = window.__SGG_INITIAL_PROFILE__ === true,
+		peek = window.__SGG_PROFILE_PEEK__;
+	for (const [k, v] of Object.entries(c.colors || {}))
+		document.documentElement.style.setProperty("--" + k, v);
+	const node = (tag, cls, text) => {
+		const n = document.createElement(tag);
+		if (cls) n.className = cls;
+		if (text !== undefined) n.textContent = text;
+		return n;
+	};
+	const own = () =>
+		A.context.profiles[c.viewer] || {
+			name: c.people.find((p) => p.id === c.viewer)?.name || "",
+			bio: "",
+			avatar: "default",
+		};
+	const canEdit = () => (A.context.profileActions ? A.context.profileActions.edit : !A.readonly);
+	function showError(n, message) {
+		SGGControls.showError(n, message, "submit");
+	}
+	function rememberDraft() {
+		if (window.__SGG_RETIRED__) return;
+		memoryDraft = { name: name.value, bio: bio.value, avatar: preset };
+		try {
+			localStorage.setItem(draftKey, JSON.stringify(memoryDraft));
+		} catch {
+			status.dataset.errorSource = "draft";
+			status.textContent = "未能保留草稿，请保持当前页面打开。";
+		}
+	}
+	function avatar(person, size = "row") {
+		const p = A.context.profiles[person.id];
+		return V.node({
+			preset: p?.avatar || person.avatarPreset || "default",
+			size,
+			person: person.id,
+		});
+	}
+	function bar() {
+		toolbar.replaceChildren();
+		const back = B.create({
+				role: "icon",
+				ariaLabel: editing && !initial ? "返回资料" : "返回应用桌面",
+				icon: I.create("back"),
+			}),
+			title = node("h1", "", "资料");
+		if (!editing || initial) back.classList.add("sg-root-back");
+		back.onclick = (event) => (editing && !initial ? showList(event) : A.close());
+		toolbar.append(back, title);
+		if (canEdit()) {
+			const action = B.create({
+				role: "icon",
+				ariaLabel: editing ? "保存资料" : "编辑资料",
+				icon: I.create(editing ? "check" : "edit"),
+			});
+			action.onclick = (event) => (editing ? save(action, event) : edit(event));
+			toolbar.append(action);
+		}
+		SGGLayout.toolbar(toolbar);
+	}
+	function drawFilter() {
+		const existing = filter.querySelector("[data-sg-segmented]");
+		if (existing) {
+			for (const button of existing.querySelectorAll("button"))
+				button.setAttribute(
+					"aria-pressed",
+					String(button.dataset.followedOnly === String(followedOnly)),
+				);
+			return;
+		}
+		const group = node("div");
+		group.dataset.sgSegmented = "";
+		group.setAttribute("role", "group");
+		group.setAttribute("aria-label", "选手筛选");
+		for (const [value, label] of [
+			[false, "全部"],
+			[true, "已关注"],
+		]) {
+			const button = B.create({ label });
+			button.dataset.followedOnly = String(value);
+			button.setAttribute("aria-pressed", String(followedOnly === value));
+			button.onclick = () => {
+				savedScroll = 0;
+				followedOnly = value;
+				drawFilter();
+				drawList();
+				filter.querySelector(`[aria-pressed="true"]`).focus({ preventScroll: true });
+			};
+			group.append(button);
+		}
+		filter.append(group);
+		B.enhance(filter);
+	}
+	function drawList() {
+		list.replaceChildren();
+		for (const person of A.context.people) {
+			if (followedOnly && !A.context.following?.includes(person.id)) continue;
+			const p = A.context.profiles[person.id],
+				row = node("button", "profile-row");
+			row.type = "button";
+			row.dataset.person = person.id;
+			row.append(avatar(person));
+			const copy = node("span", "profile-copy"),
+				title = node("strong");
+			title.append(
+				SGGInlinePerson.label(person.id, SGGProductLanguage.identities(A.context), {
+					viewerId: c.viewer,
+					selfMarker: true,
+				}),
+			);
+			copy.append(title);
+			if (p?.bio) copy.append(node("small", "", p.bio));
+			const chevron = I.create("back");
+			chevron.style.transform = "rotate(180deg)";
+			row.append(copy);
+			const unread = (A.context.appNoticeEvents?.profile?.[person.id] || []).filter(
+				(id) => !seenActivity.has(id),
+			).length;
+			if (unread) {
+				const count = node("span", "profile-unread", String(unread));
+				count.setAttribute("aria-label", unread + " 条未读动态");
+				row.append(count);
+			}
+			row.append(chevron);
+			row.onclick = (event) => detail(person, event);
+			list.append(row);
+		}
+		if (!list.children.length) list.append(node("p", "profile-empty", "还没有关注的玩家。"));
+		requestAnimationFrame(() => (main.scrollTop = savedScroll));
+	}
+	function editorMode(value) {
+		try {
+			if (value) sessionStorage.setItem(editorKey, "true");
+			else sessionStorage.removeItem(editorKey);
+		} catch {}
+	}
+	function showList(event) {
+		SGGMotion.cancel(form);
+		editing = false;
+		editorMode(false);
+		form.hidden = true;
+		list.hidden = false;
+		filter.hidden = false;
+		bar();
+		drawFilter();
+		drawList();
+		if (event) {
+			SGGMotion.scene(list, { direction: "back", event });
+			toolbar.querySelector('[aria-label="编辑资料"]')?.focus({ preventScroll: true });
+		}
+	}
+	function drawFollow(host, person) {
+		host.replaceChildren();
+		if (person.id === c.viewer) return;
+		const following = A.context.following?.includes(person.id) || false,
+			values = A.context.profileActions?.follow?.[person.id] || [];
+		if (!A.readonly && values.includes(!following)) {
+			const button = B.create({ label: following ? "取消关注" : "关注" }),
+				error = node("p", "profile-error");
+			error.hidden = true;
+			error.setAttribute("role", "alert");
+			button.onclick = async () => {
+				try {
+					await A.submit(button, "profile.follow", { target: person.id, following: !following });
+					drawFollow(host, person);
+					drawList();
+					bar();
+					(host.querySelector("button") || dialog.querySelector("header button"))?.focus({
+						preventScroll: true,
+					});
+				} catch (e) {
+					showError(error, e.message);
+				}
+			};
+			host.append(
+				button,
+				node("span", "profile-quota", SGGProductLanguage.quota(A.context.remaining)),
+				error,
+			);
+		} else if (following) host.append(node("p", "profile-relation", "已关注"));
+	}
+	function activityMeta(source, detail) {
+		const meta = node("span", "profile-activity-tag sg-activity-meta");
+		meta.append(node("span", "sg-activity-kind", source));
+		if (detail) meta.append(node("span", "sg-activity-detail", detail));
+		return meta;
+	}
+	function activityContent(record) {
+		const entry = node("article", "profile-activity-item");
+		entry.dataset.activityId = record.recordId;
+		const d = record.data || {},
+			labels = Object.fromEntries(
+				Object.entries(SGGActivityDefinition.kinds).map(([kind, definition]) => [
+					kind,
+					definition.label,
+				]),
+			);
+		if (!labels[record.recordKind]) return null;
+		entry.append(
+			activityMeta(
+				"社交",
+				record.activityTag ||
+					SGGActivityDefinition.kinds[record.recordKind].tag ||
+					labels[record.recordKind],
+			),
+		);
+		if (record.recordKind === "social.profile.update.v2") {
+			if (d.displayName !== undefined) entry.append(node("p", "", d.displayName));
+			if (d.bio !== undefined) entry.append(node("p", "", d.bio || "清空了简介"));
+			if (d.avatar !== undefined) entry.append(node("p", "profile-activity-meta", "更新了头像"));
+		} else if (record.recordKind === "social.rating.set.v1") {
+			const line = node("p");
+			SGGInlinePerson.render(
+				line,
+				[{ personId: d.targetSeatId }, " · " + String(d.score) + " 星"],
+				{ identities: SGGProductLanguage.identities(A.context), viewerId: c.viewer },
+			);
+			entry.append(line);
+			if (d.note) entry.append(node("p", "", d.note));
+		} else entry.append(node("p", "", d.body || ""));
+		return entry;
+	}
+	function gameLine(host, tokens) {
+		for (const token of tokens || []) {
+			if (token.type === "person")
+				host.append(
+					SGGInlinePerson.person(token.seatId, SGGProductLanguage.identities(A.context), {
+						viewerId: c.viewer,
+					}),
+				);
+			else if (token.type === "number") host.append(NumberUI.element(token.value));
+			else if (token.type === "text") host.append(document.createTextNode(token.value));
+		}
+		return host;
+	}
+	function gameActivityContent(item) {
+		if (item.itemKind !== "game-round") return null;
+		const article = node("article", "profile-game-item"),
+			copy = node("span", "sg-game-round-copy"),
+			tag = activityMeta("游戏"),
+			roundLabel = node("span", "sg-activity-detail"),
+			events = node("div", "sg-game-round-events");
+		article.dataset.activityId = item.recordId;
+		gameLine(roundLabel, item.title);
+		tag.append(roundLabel);
+		copy.append(tag);
+		for (const event of item.events || []) {
+			const entry = node("article", "sg-game-event");
+			entry.dataset.activityId = item.recordId;
+			entry.dataset.activityRead = "";
+			entry.append(gameLine(node("p", "sg-game-event-title"), event.title));
+			for (const line of event.details || [])
+				entry.append(gameLine(node("p", "sg-game-event-detail"), line));
+			events.append(entry);
+		}
+		copy.append(events);
+		article.append(copy);
+		return article;
+	}
+	function mountActivity(body, person) {
+		activityCleanup();
+		const section = node("section", "profile-activity"),
+			heading = node("h3", "profile-activity-heading", "动态"),
+			content = node("div", "profile-activity-content"),
+			records = node("div", "profile-activity-list sg-game-records"),
+			status = node("p", "profile-activity-status"),
+			error = node("p", "profile-error"),
+			actions = node("div", "profile-activity-actions");
+		heading.id = "profile-activity-title";
+		section.setAttribute("aria-labelledby", heading.id);
+		error.hidden = true;
+		error.setAttribute("role", "alert");
+		status.setAttribute("role", "status");
+		content.append(status, records, error, actions);
+		section.append(heading, content);
+		body.append(section);
+		const generation = ++activityGeneration,
+			binding = A.context.profileBindings?.[person.id];
+		let items = [],
+			cursor = null,
+			loaded = false,
+			busy = false,
+			retryCursor;
+		const observer = new IntersectionObserver(
+			(entries) => {
+				if (!dialog.open || !appVisible || document.hidden) return;
+				const unread = new Set(A.context.appNoticeEvents?.profile?.[person.id] || []),
+					ids = [
+						...new Set(
+							entries
+								.filter((e) => e.isIntersecting && e.intersectionRatio >= 0.5)
+								.map((e) => e.target.dataset.activityId)
+								.filter((id) => unread.has(id) && !seenActivity.has(id)),
+						),
+					];
+				if (!ids.length) return;
+				ids.forEach((id) => seenActivity.add(id));
+				drawList();
+				A.request("ui.seen", { ids: [person.id], recordIds: ids }).catch(() => {
+					ids.forEach((id) => seenActivity.delete(id));
+					drawList();
+				});
+			},
+			{ threshold: [0.5] },
+		);
+		activityCleanup = () => {
+			observer.disconnect();
+			removeEventListener("sgg:notice-update", observe);
+			removeEventListener("sgg:app-visible", observe);
+			document.removeEventListener("visibilitychange", resume);
+		};
+		addEventListener("sgg:notice-update", observe);
+		addEventListener("sgg:app-visible", observe);
+		document.addEventListener("visibilitychange", resume);
+		function resume() {
+			if (appVisible && !document.hidden) observe();
+		}
+		function observe() {
+			observer.disconnect();
+			for (const item of records.querySelectorAll("[data-activity-read]")) observer.observe(item);
+		}
+		function draw() {
+			records.replaceChildren(
+				...items
+					.map((item) => {
+						const game = item.itemKind === "game-round",
+							entry = game ? gameActivityContent(item) : activityContent(item);
+						if (entry && !game) entry.dataset.activityRead = "";
+						return entry;
+					})
+					.filter(Boolean),
+			);
+			observe();
+			actions.replaceChildren();
+			status.textContent = busy ? "正在读取" : loaded && !items.length ? "暂无动态。" : "";
+			if (error.hidden && cursor) {
+				const more = B.create({ label: "查看更早", disabled: busy });
+				more.onclick = () => load(cursor);
+				actions.append(more);
+			}
+			if (!error.hidden && binding) {
+				const retry = B.create({ label: "重试", disabled: busy });
+				retry.onclick = () => load(retryCursor);
+				actions.append(retry);
+			}
+		}
+		async function load(older) {
+			if (busy || generation !== activityGeneration) return;
+			if (!binding) {
+				showError(error, "暂时无法确认该玩家的本场身份，请重新打开资料。");
+				return;
+			}
+			busy = true;
+			retryCursor = older;
+			draw();
+			try {
+				const page = await A.request("ui.profile-activity", {
+					target: person.id,
+					participationId: binding,
+					source: "all",
+					...(older ? { cursor: older } : {}),
+				});
+				if (generation !== activityGeneration || !dialog.open) return;
+				if (page?.participant?.seatId !== person.id || page.participant.participationId !== binding)
+					throw Error("资料读取身份已变化，请重新打开。");
+				items = older
+					? [...new Map([...items, ...page.items].map((r) => [r.recordId, r])).values()]
+					: page.items;
+				cursor = page.nextCursor;
+				loaded = true;
+				SGGControls.clearError(error, "submit");
+			} catch (e) {
+				if (generation !== activityGeneration) return;
+				showError(error, e.message);
+			} finally {
+				if (generation === activityGeneration) {
+					busy = false;
+					draw();
+				}
+			}
+		}
+		void load();
+	}
+	function detail(person, event) {
+		selected = person.id;
+		const p = A.context.profiles[person.id];
+		document.querySelector("#detail-name").textContent = p?.name || person.name;
+		const head = dialog.querySelector("header");
+		head.querySelector("button")?.remove();
+		const close = B.create({ role: "icon", ariaLabel: "关闭资料", icon: I.create("close") });
+		close.onclick = (e) => SGGReading.close(dialog, { instant: e.detail === 0 });
+		if (!peek) head.append(close);
+		const body = document.querySelector("#detail-body");
+		body.replaceChildren(avatar(person, "detail"));
+		if (p?.bio) body.append(node("p", "", p.bio));
+		const follow = node("div", "profile-follow");
+		body.append(follow);
+		drawFollow(follow, person);
+		if (!peek || A.context.profileBindings?.[person.id]) mountActivity(body, person);
+		if (peek) {
+			dialog.setAttribute("open", "");
+			dialog.setAttribute("role", "group");
+		} else {
+			SGGReading.open(dialog, { event });
+			close.focus({ preventScroll: true });
+		}
+	}
+	function edit(event) {
+		SGGMotion.cancel(list);
+		editing = true;
+		editorMode(true);
+		savedScroll = main.scrollTop;
+		list.hidden = true;
+		filter.hidden = true;
+		form.hidden = false;
+		const profile = own();
+		let draft = memoryDraft;
+		try {
+			draft ??= JSON.parse(localStorage.getItem(draftKey));
+		} catch {}
+		name.value = typeof draft?.name === "string" ? draft.name : profile.name;
+		bio.value = typeof draft?.bio === "string" ? draft.bio : profile.bio || "";
+		preset = V.resolve(draft?.avatar || profile.avatar);
+		validateFields();
+		avatarPicker.setValue(preset);
+		bar();
+		if (event) {
+			SGGMotion.scene(form, { direction: "forward", event });
+			if (event.detail === 0 || document.documentElement.dataset.sgMotionInput === "keyboard")
+				name.focus({ preventScroll: true });
+		}
+	}
+	const avatarPicker = SGGAvatarPicker.mount({
+		host: document.querySelector("#profile-avatar"),
+		dialog: document.querySelector("#avatar-picker"),
+		options: document.querySelector("#avatar-options"),
+		allowedPresets: () => A.context.avatarPresets,
+		onChange: (key) => {
+			preset = key;
+			rememberDraft();
+		},
+	});
+	function validateFields(report = false) {
+		const nameError = !name.value.trim()
+				? "请输入称呼。"
+				: [...name.value].length > 80
+					? "称呼最多80个字符。"
+					: "",
+			bioError = [...bio.value].length > 500 ? "简介最多500个字符。" : "";
+		name.setCustomValidity(nameError);
+		bio.setCustomValidity(bioError);
+		for (const input of [name, bio])
+			input.setAttribute("aria-invalid", String(!input.validity.valid));
+		const message = nameError || bioError;
+		if (report && message) {
+			status.textContent = message;
+			status.dataset.errorSource = "validation";
+		} else if (!message && status.dataset.errorSource === "validation") {
+			status.textContent = "";
+			delete status.dataset.errorSource;
+		}
+		return !message;
+	}
+	async function save(button, event) {
+		if (!validateFields(true)) {
+			form.reportValidity();
+			return;
+		}
+		if (!form.reportValidity()) return;
+		rememberDraft();
+		try {
+			await A.submit(button, "profile.save", { name: name.value, bio: bio.value, avatar: preset });
+			memoryDraft = null;
+			status.textContent = "";
+			delete status.dataset.errorSource;
+			try {
+				localStorage.removeItem(draftKey);
+			} catch {}
+			if (initial) A.close();
+			else showList(event);
+		} catch (e) {
+			status.dataset.errorSource = "submit";
+			status.textContent = e.message;
+			rememberDraft();
+		}
+	}
+	for (const input of [name, bio])
+		input.addEventListener("input", () => {
+			validateFields();
+			rememberDraft();
+		});
+	form.onsubmit = (e) => {
+		e.preventDefault();
+		const b = toolbar.querySelector(".sg-toolbar-trailing");
+		if (b) save(b, e);
+	};
+	main.addEventListener(
+		"scroll",
+		(e) => {
+			if (!editing) {
+				savedScroll = e.target.scrollTop;
+				sessionStorage.setItem(scrollKey, savedScroll);
+			}
+		},
+		{ passive: true },
+	);
+	SGGReading.enhance(dialog);
+	dialog.addEventListener("close", () => {
+		const id = selected;
+		selected = null;
+		activityGeneration++;
+		activityCleanup();
+		const row = [...list.querySelectorAll("[data-person]")].find((n) => n.dataset.person === id);
+		(row || filter.querySelector('[aria-pressed="true"]'))?.focus({ preventScroll: true });
+	});
+	dialog.addEventListener("cancel", () => activityGeneration++);
+	dialog.addEventListener("click", (e) => {
+		if (e.target === dialog) {
+			const r = dialog.getBoundingClientRect();
+			if (e.clientX < r.left || e.clientX > r.right || e.clientY < r.top || e.clientY > r.bottom)
+				SGGReading.close(dialog);
+		}
+	});
+	addEventListener("message", (event) => {
+		if (
+			event.source === parent &&
+			event.origin === new URL(document.baseURI).origin &&
+			event.data?.channel === "q146-app-visibility"
+		) {
+			appVisible = Boolean(event.data.visible);
+			if (appVisible) dispatchEvent(new Event("sgg:app-visible"));
+		}
+	});
+	if (peek) {
+		document.addEventListener("keydown", (event) => {
+			if (event.key === "Escape") {
+				event.preventDefault();
+				event.stopPropagation();
+				A.close();
+			}
+		});
+		const person = A.context.people.find((p) => p.id === peek);
+		if (person) detail(person);
+		else {
+			dialog.setAttribute("open", "");
+			document
+				.querySelector("#detail-body")
+				.append(node("p", "profile-error", "暂时无法读取该玩家资料。"));
+		}
+		const measure = () =>
+			parent.postMessage(
+				{
+					channel: "sgg-profile-size",
+					height: Math.ceil(document.body.getBoundingClientRect().height),
+				},
+				new URL(document.baseURI).origin,
+			);
+		new ResizeObserver(measure).observe(document.body);
+		measure();
+	} else {
+		let restoreEditor = false;
+		try {
+			restoreEditor = sessionStorage.getItem(editorKey) === "true";
+		} catch {}
+		if ((initial || restoreEditor) && canEdit()) edit();
+		else showList();
+	}
+	document.documentElement.dataset.sessionReady = "true";
+})();
+</script><script>/* Acknowledge visible content IDs from this document's authorized snapshot, never a target alone. */
+(() => {
+	"use strict";
+	const A = window.SessionApp;
+	if (!A || A.app === "profile") return;
+	let visible = true,
+		scheduled = false;
+	const acknowledged = new Set();
+	const inView = (node) => {
+		if (!node || !node.getClientRects().length) return false;
+		const r = node.getBoundingClientRect();
+		let left = Math.max(r.left, 0),
+			right = Math.min(r.right, innerWidth),
+			top = Math.max(r.top, 0),
+			bottom = Math.min(r.bottom, innerHeight);
+		for (let parent = node.parentElement; parent; parent = parent.parentElement) {
+			const style = getComputedStyle(parent),
+				box = parent.getBoundingClientRect();
+			if (/^(auto|scroll|hidden|clip)$/.test(style.overflowX)) {
+				left = Math.max(left, box.left + parent.clientLeft);
+				right = Math.min(right, box.left + parent.clientLeft + parent.clientWidth);
+			}
+			if (/^(auto|scroll|hidden|clip)$/.test(style.overflowY)) {
+				top = Math.max(top, box.top + parent.clientTop);
+				bottom = Math.min(bottom, box.top + parent.clientTop + parent.clientHeight);
+			}
+		}
+		return (
+			right > left &&
+			bottom > top &&
+			(right - left) * (bottom - top) >=
+				Math.min(r.height, innerHeight) * Math.min(r.width, innerWidth) * 0.5
+		);
+	};
+	function inspect() {
+		scheduled = false;
+		if (!visible || document.hidden) return;
+		const events = A.context.appNoticeEvents?.[A.app] || {},
+			pendingRecords = new Set(
+				Object.values(events)
+					.flat()
+					.filter((id) => !acknowledged.has(id)),
+			),
+			visibleRecords = new Set(
+				[...document.querySelectorAll("[data-notice-record]")]
+					.filter((n) => pendingRecords.has(n.dataset.noticeRecord) && inView(n))
+					.map((n) => n.dataset.noticeRecord),
+			);
+		for (const [target, ids] of Object.entries(events)) {
+			let readable = [];
+			if (A.app === "forum" || A.app === "dm")
+				readable = ids.filter((id) => visibleRecords.has(id));
+			else if (A.app === "rating") {
+				const app = document.querySelector(".rating-app"),
+					selected = document.querySelector("[data-player][aria-current=true]");
+				if (
+					(!matchMedia("(max-width:760px)").matches || app?.classList.contains("mobile-detail")) &&
+					selected?.dataset.player === target &&
+					inView(document.querySelector(".rating-summary"))
+				)
+					readable = ids;
+			}
+			const fresh = readable.filter((id) => !acknowledged.has(id));
+			if (!fresh.length) continue;
+			fresh.forEach((id) => acknowledged.add(id));
+			A.request("ui.seen", { ids: [target], recordIds: fresh }).catch(() =>
+				fresh.forEach((id) => acknowledged.delete(id)),
+			);
+		}
+	}
+	function schedule() {
+		if (!scheduled) {
+			scheduled = true;
+			requestAnimationFrame(inspect);
+		}
+	}
+	new MutationObserver(schedule).observe(document.body, {
+		subtree: true,
+		childList: true,
+		attributes: true,
+		attributeFilter: ["hidden", "class", "aria-current"],
+	});
+	addEventListener("scroll", schedule, true);
+	addEventListener("resize", schedule);
+	addEventListener("sgg:notice-update", () => {
+		if (A.app === "dm")
+			for (const row of document.querySelectorAll("[data-conversation]")) {
+				const dot = row.querySelector(".unread-dot");
+				if (dot) dot.hidden = !A.context.appNoticeEvents?.dm?.[row.dataset.conversation]?.length;
+			}
+		schedule();
+	});
+	addEventListener("visibilitychange", schedule);
+	addEventListener("message", (event) => {
+		if (event.source !== parent) return;
+		if (event.data?.channel === "q146-app-visibility") visible = Boolean(event.data.visible);
+		schedule();
+	});
+	schedule();
+})();
+</script></body></html>

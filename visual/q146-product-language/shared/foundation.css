@@ -62,8 +62,8 @@
 		0 6px 18px -10px color-mix(in srgb, var(--label, #1f2320) 10%, transparent),
 		0 24px 64px -24px color-mix(in srgb, var(--label, #1f2320) 18%, transparent);
 	--sg-backdrop: color-mix(in srgb, var(--label, #1f2320) 14%, transparent);
-	--sg-motion-app-open: 160ms;
-	--sg-motion-app-close: 120ms;
+	--sg-motion-app-open: 240ms;
+	--sg-motion-app-close: 200ms;
 	--sg-motion-expand: 200ms;
 	--sg-motion-collapse: 160ms;
 	--sg-motion-enter: 160ms;
