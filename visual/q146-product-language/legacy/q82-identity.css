@@ -1,0 +1,24 @@
+@import url("../shared/avatar.css");
+.sg-identity {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	min-width: 0;
+}
+.sg-identity-copy {
+	min-width: 0;
+}
+.sg-name {
+	font-size: 15px;
+	font-weight: 600;
+	line-height: 1.5;
+	overflow-wrap: anywhere;
+	min-width: 0;
+}
+.sg-self {
+	color: var(--secondary, #68736d);
+	font-size: 12px;
+	font-weight: 400;
+	margin-left: 7px;
+	white-space: nowrap;
+}

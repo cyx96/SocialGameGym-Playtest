@@ -1,0 +1,96 @@
+/* Shared primitives and semantic roles. Themes remain owned by theme-source.json. */
+:root {
+	--sg-font-ui: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", sans-serif;
+	--sg-font-art: "Songti SC", "Noto Serif CJK SC", serif;
+	--sg-font-number: var(--sg-font-ui);
+	--sg-inline-avatar-size: 1em;
+	--sg-person-inline-gap: 0.16em;
+	--sg-inline-avatar-baseline: -0.14em;
+	--sg-icon-action: 20px;
+	--sg-icon-control: 18px;
+	--sg-icon-chevron: 16px;
+	--sg-icon-stroke: 1.65;
+	--sg-type-body: 1rem;
+	--sg-type-description: var(--sg-type-body);
+	--sg-type-title: 1.1875rem;
+	--sg-type-meta: 0.8125rem;
+	--sg-type-context: 0.875rem;
+	--sg-type-value: 1.125rem;
+	--sg-type-amount: 1.25rem;
+	--sg-type-compact: 0.9375rem;
+	--sg-type-caption: 0.75rem;
+	--sg-type-input: 1rem;
+	--sg-type-number-input: 1.0625rem;
+	--sg-type-metric: 3rem;
+	--sg-text-body: var(--sg-type-body);
+	--sg-text-author: 0.875rem;
+	--sg-text-name: 1rem;
+	--sg-text-meta: var(--sg-type-meta);
+	--sg-text-help: 0.875rem;
+	--sg-weight-name: 550;
+	--sg-weight-value: 550;
+	--sg-text-task-support: var(--sg-type-body);
+	--sg-leading-copy: 1.75;
+	--sg-leading-body: 1.75;
+	--sg-leading-description: 1.75;
+	--sg-leading-interface: 1.5;
+	--sg-task-title-wide: 2.5rem;
+	--sg-task-title: 2rem;
+	--sg-task-title-leading: 1.35;
+	--sg-space-related: 0.5rem;
+	--sg-space-paragraph: 0.75rem;
+	--sg-space-sibling: 1rem;
+	--sg-space-section: 1.5rem;
+	--sg-space-task: 2rem;
+	--sg-space-surface: 1.5rem;
+	--sg-radius-action: 10px;
+	--sg-radius-control: 12px;
+	--sg-radius-surface: 16px;
+	--sg-radius-paper: 14px;
+	--sg-radius-reading: 18px;
+	--sg-radius-sheet: 22px;
+	--sg-line-separator: color-mix(in srgb, var(--label, #1f2320) 10%, var(--surface, #fff));
+	--sg-line-control: color-mix(in srgb, var(--label, #1f2320) 24%, var(--surface, #fff));
+	--sg-line-paper: color-mix(in srgb, var(--label, #1f2320) 8%, var(--surface, #fff));
+	--sg-shadow-paper:
+		0 1px 2px color-mix(in srgb, var(--label, #1f2320) 4%, transparent),
+		0 10px 24px -20px color-mix(in srgb, var(--label, #1f2320) 22%, transparent);
+	--sg-shadow-popover:
+		0 4px 12px -6px color-mix(in srgb, var(--label, #1f2320) 12%, transparent),
+		0 12px 28px -12px color-mix(in srgb, var(--label, #1f2320) 16%, transparent);
+	--sg-shadow-dialog:
+		0 6px 18px -10px color-mix(in srgb, var(--label, #1f2320) 10%, transparent),
+		0 24px 64px -24px color-mix(in srgb, var(--label, #1f2320) 18%, transparent);
+	--sg-backdrop: color-mix(in srgb, var(--label, #1f2320) 14%, transparent);
+	--sg-motion-app-open: 240ms;
+	--sg-motion-app-close: 200ms;
+	--sg-motion-expand: 200ms;
+	--sg-motion-collapse: 160ms;
+	--sg-motion-enter: 160ms;
+	--sg-motion-exit: 120ms;
+	--sg-motion-state: 140ms;
+	--sg-motion-press: 80ms;
+	--sg-motion-release: 160ms;
+	--sg-ease: cubic-bezier(0.23, 1, 0.32, 1);
+}
+body {
+	font-family: var(--sg-font-ui);
+	-webkit-font-smoothing: antialiased;
+}
+.sg-number-text {
+	font-family: var(--sg-font-number);
+	font-variant-numeric: lining-nums tabular-nums;
+}
+@media (max-width: 760px) {
+	:root {
+		--sg-task-title: 1.75rem;
+		--sg-type-context: 0.8125rem;
+		--sg-type-metric: 2.75rem;
+		--sg-space-surface: 1.25rem;
+	}
+}
+@media (max-width: 359px) {
+	:root {
+		--sg-space-surface: 1rem;
+	}
+}

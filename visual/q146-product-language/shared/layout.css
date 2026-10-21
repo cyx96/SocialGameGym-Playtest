@@ -1,0 +1,741 @@
+/* One owner for screen geometry. Components own only their internal layout. */
+:root {
+	--sg-layout-version: q184-1;
+
+	--sg-frame: 70rem;
+	--sg-work: 65rem;
+	--sg-task-reading-width: 52rem;
+	--sg-focus: 40rem;
+	--sg-gutter: 2.5rem;
+	--sg-safe-start: max(var(--sg-gutter), env(safe-area-inset-left));
+	--sg-safe-end: max(var(--sg-gutter), env(safe-area-inset-right));
+	--sg-related: 0.5rem;
+	--sg-section: 1.5rem;
+	--sg-page-gap: 0.5rem;
+	--sg-page-top: 2rem;
+	--sg-task-gap: 4rem;
+	--sg-toolbar-height: 3.5rem;
+	--sg-target: 2.75rem;
+	--sg-header-height: 4.75rem;
+}
+body[data-sg-shell] {
+	margin: 0;
+	min-block-size: 100dvh;
+	display: flex;
+	flex-direction: column;
+	isolation: isolate;
+}
+body[data-sg-shell][data-scroll="workspace"] {
+	block-size: 100dvh;
+	overflow: hidden;
+}
+/* ProductBar is full bleed; game/round and phase/step share its context guide. */
+.sg-product-bar {
+	flex: none;
+	position: relative;
+	z-index: 10;
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: var(--sg-section);
+	box-sizing: border-box;
+	min-block-size: var(--sg-header-height);
+	block-size: auto;
+	inline-size: 100%;
+	margin: 0;
+	padding-block: 0.75rem;
+	padding-inline: max(var(--sg-safe-start), calc((100% - var(--sg-frame)) / 2))
+		max(var(--sg-safe-end), calc((100% - var(--sg-frame)) / 2));
+	background: var(--surface, #fff);
+	border: 0;
+	border-block-end: 0;
+}
+.sg-product-bar > .brand {
+	display: inline-flex;
+	align-items: center;
+	min-block-size: var(--sg-target);
+	position: static;
+	inset: auto;
+	transform: none;
+	white-space: nowrap;
+	flex: none;
+	font: 650 1.125rem / 1.5 var(--sg-font-ui);
+	letter-spacing: -0.025em;
+	color: var(--ink);
+	text-decoration: none;
+}
+.sg-product-bar > .game-context,
+.sg-product-bar > .page-name {
+	position: static;
+	inset: auto;
+	transform: none;
+	flex: 1 1 16rem;
+	min-inline-size: min(16rem, 100%);
+	max-inline-size: 100%;
+	display: flex;
+	align-items: baseline;
+	flex-wrap: wrap;
+	gap: 0.125rem var(--sg-related);
+	padding-inline-start: var(--sg-section);
+	border-inline-start: 0;
+	font-size: var(--sg-type-context);
+	line-height: 1.5;
+	color: var(--label, #1f2320);
+}
+.sg-product-bar > .game-context > :first-child {
+	min-inline-size: 0;
+	max-inline-size: 100%;
+	overflow-wrap: anywhere;
+	white-space: normal;
+	overflow: visible;
+	text-overflow: clip;
+}
+.sg-product-bar :is(.round, .rounds, #round) {
+	margin: 0;
+	flex: none;
+	white-space: nowrap;
+	font-size: var(--sg-type-meta);
+	line-height: 1.5;
+	color: var(--secondary, #535a55);
+	font-variant-numeric: tabular-nums;
+}
+.sg-product-bar > .sg-header-actions {
+	position: static;
+	inset: auto;
+	transform: none;
+	margin: 0 0 0 auto;
+	padding: 0;
+	display: flex;
+	align-items: center;
+	gap: 0;
+	inline-size: auto;
+	block-size: auto;
+	flex: none;
+}
+.sg-product-bar > .sg-header-actions > .sg-button[data-sg-button] {
+	inline-size: var(--sg-target);
+	min-inline-size: var(--sg-target);
+	block-size: var(--sg-target);
+	min-block-size: var(--sg-target);
+	padding: 0;
+	color: var(--secondary, #535a55);
+}
+body.config-open > .sg-product-bar {
+	z-index: 60;
+}
+.sg-shell-width {
+	box-sizing: border-box;
+	inline-size: calc(100% - var(--sg-safe-start) - var(--sg-safe-end));
+	max-inline-size: var(--sg-frame);
+	margin-inline: auto;
+}
+/* Progress group is mounted inside the common context line, before content. */
+.sg-progress {
+	display: inline-flex;
+	align-items: center;
+	flex-wrap: wrap;
+	gap: var(--sg-related);
+	flex: none;
+	min-block-size: 0;
+	margin: 0;
+	padding: 0;
+	font-size: var(--sg-type-meta);
+	line-height: 1.5;
+	color: var(--secondary, #535a55);
+}
+.sg-progress-group {
+	display: inline-flex;
+	align-items: baseline;
+	gap: var(--sg-related);
+	margin: 0;
+	min-inline-size: 0;
+	flex: none;
+	font-size: inherit;
+	line-height: inherit;
+}
+.sg-progress-name {
+	margin: 0;
+	font-size: inherit;
+	font-weight: 550;
+	line-height: inherit;
+	color: var(--label, #1f2320);
+}
+.sg-progress-count {
+	margin: 0;
+	font-size: inherit;
+	line-height: inherit;
+	white-space: nowrap;
+	color: var(--secondary, #535a55);
+	font-variant-numeric: tabular-nums;
+}
+.sg-progress-actions {
+	margin-inline-start: auto;
+	display: flex;
+	align-items: center;
+	gap: var(--sg-related);
+	min-inline-size: 0;
+	flex: 0 1 auto;
+	max-inline-size: 65%;
+}
+
+/* Content lanes express the task. They do not own the product header or progress. */
+.sg-page {
+	box-sizing: border-box;
+	inline-size: calc(100% - var(--sg-safe-start) - var(--sg-safe-end));
+	max-inline-size: var(--sg-frame);
+	min-inline-size: 0;
+	margin: var(--sg-page-top) auto 0;
+	padding: 0 0 max(2rem, env(safe-area-inset-bottom));
+	container-type: inline-size;
+}
+.sg-page[data-width="focus"] {
+	max-inline-size: var(--sg-focus);
+}
+.sg-page[data-width="work"] {
+	max-inline-size: var(--sg-work);
+}
+.sg-page[data-width="split"] {
+	max-inline-size: var(--sg-frame);
+}
+
+body[data-scroll="workspace"] > .sg-page {
+	flex: 1;
+	min-block-size: 0;
+	display: flex;
+	flex-direction: column;
+}
+body[data-scroll="workspace"] > .sg-page[data-flow="feed"] {
+	display: block;
+}
+/* All navigable page bars use equal side tracks; the title stays optically centered. */
+.sg-toolbar {
+	position: relative;
+	display: grid;
+	grid-template-columns: minmax(var(--sg-target), 1fr) minmax(0, auto) minmax(var(--sg-target), 1fr);
+	align-items: center;
+	gap: var(--sg-related);
+	flex: none;
+	min-block-size: var(--sg-toolbar-height);
+	block-size: auto;
+	inline-size: 100%;
+	margin: 0 0 var(--sg-page-gap);
+	padding: 0;
+	background: var(--canvas, var(--paper));
+}
+.sg-toolbar > .sg-toolbar-leading {
+	grid-column: 1;
+	grid-row: 1;
+	justify-self: start;
+	position: static;
+	inset: auto;
+	margin: 0;
+	max-inline-size: 100%;
+}
+.sg-toolbar > .sg-toolbar-title {
+	grid-column: 2;
+	grid-row: 1;
+	justify-self: center;
+	min-inline-size: 0;
+	position: static;
+	inset: auto;
+	transform: none;
+	margin: 0;
+	text-align: center;
+}
+.sg-toolbar > .sg-toolbar-trailing {
+	grid-column: 3;
+	grid-row: 1;
+	justify-self: end;
+	position: static;
+	inset: auto;
+	margin: 0;
+	max-inline-size: 100%;
+}
+.sg-toolbar > .sg-toolbar-title,
+.sg-toolbar > .sg-toolbar-title :is(h1, h2) {
+	font-size: var(--sg-type-title);
+	line-height: 1.5;
+	font-weight: 600;
+	letter-spacing: 0;
+	margin: 0;
+	overflow-wrap: anywhere;
+}
+.sg-toolbar > .sg-toolbar-leading.sg-button[data-sg-button],
+.sg-toolbar > .sg-toolbar-trailing.sg-button[data-sg-button] {
+	min-inline-size: var(--sg-target);
+	min-block-size: var(--sg-target);
+}
+.sg-toolbar[data-sticky] {
+	position: sticky;
+	inset-block-start: 0;
+	z-index: 3;
+}
+.sg-task-layout {
+	display: grid;
+	grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+	gap: var(--sg-task-gap);
+	align-items: start;
+}
+.sg-task-layout > * {
+	min-inline-size: 0;
+}
+@container (max-width: 46rem) {
+	.sg-task-layout {
+		grid-template-columns: minmax(0, 1fr);
+		gap: var(--sg-section);
+	}
+}
+/* Workspace takes the remaining shell row, without subtracting an assumed header height. */
+.sg-workspace {
+	flex: 1;
+	min-block-size: 0;
+	block-size: auto;
+	max-block-size: none;
+}
+body[data-layout-surface="rating"] .rating-app {
+	block-size: auto;
+	min-block-size: 0;
+	max-block-size: none;
+}
+body[data-layout-surface="rating"] .player-list {
+	min-block-size: 0;
+	overflow: auto;
+}
+body[data-layout-surface="rating"] .players-pane {
+	min-block-size: 0;
+	block-size: auto;
+}
+.sg-page[data-width="gallery"] {
+	max-inline-size: var(--sg-frame);
+	inline-size: 100%;
+	container-type: normal;
+	margin: 0 auto;
+	padding: clamp(32px, calc((100svh - 668px) / 2), 112px) var(--sg-gutter) 120px;
+}
+body[data-layout-surface="catalog"] > .workspace {
+	display: contents;
+}
+body[data-layout-surface="social"] > .tool-home {
+	max-inline-size: var(--sg-focus);
+	padding-block: 2rem;
+	min-block-size: 0;
+	gap: 2rem;
+}
+/* Reading sheets and configuration keep their own content; common insets define the frame. */
+.sg-panel-toolbar {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: var(--sg-related);
+	min-block-size: var(--sg-toolbar-height);
+}
+.sg-panel-toolbar h2 {
+	font-size: var(--sg-type-title);
+	line-height: 1.5;
+	font-weight: 550;
+}
+@media (max-width: 760px) {
+	:root {
+		--sg-gutter: 1.25rem;
+		--sg-header-height: 5.75rem;
+		--sg-page-top: 1.5rem;
+		--sg-task-gap: 1.5rem;
+	}
+	.sg-product-bar {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.25rem var(--sg-related);
+		padding-block: 0.625rem 0.75rem;
+	}
+	.sg-product-bar > .brand {
+		grid-column: 1;
+		grid-row: 1;
+		font-size: 1.0625rem;
+		min-block-size: 2.75rem;
+		display: flex;
+		align-items: center;
+	}
+	.sg-product-bar > .game-context,
+	.sg-product-bar > .page-name {
+		grid-column: 1 / -1;
+		grid-row: 2;
+		order: 2;
+		flex: 1 0 100%;
+		min-inline-size: 0;
+		padding: 0;
+		border: 0;
+	}
+	.sg-product-bar :is(.round, .rounds, #round) {
+		font-size: 0.75rem;
+	}
+	.sg-product-bar > .sg-header-actions {
+		grid-column: 2;
+		grid-row: 1;
+		order: 1;
+		margin: 0 0 0 auto;
+	}
+	.sg-page[data-width="gallery"] {
+		padding-block-start: clamp(24px, calc((100svh - 642px) / 2), 96px);
+	}
+	.sg-page {
+		padding-block-end: max(1.5rem, env(safe-area-inset-bottom));
+	}
+	.sg-progress-actions {
+		max-inline-size: 60%;
+	}
+	.sg-workspace {
+		min-block-size: 0;
+	}
+	body[data-layout-surface="rating"] .rating-app {
+		height: auto;
+		min-height: 0;
+		overflow: hidden;
+	}
+	body[data-layout-surface="rating"] .rating-app.mobile-detail {
+		height: auto;
+		min-height: 0;
+	}
+	body[data-layout-surface="rating"] .players-pane,
+	body[data-layout-surface="rating"] .detail-pane {
+		block-size: 100%;
+	}
+	body[data-layout-surface="rating"] .player-list {
+		block-size: 100%;
+		padding-block-end: 1rem;
+	}
+	body[data-layout-surface="rating"] .detail-scroll {
+		min-block-size: 0;
+	}
+	body[data-layout-surface="social"] > .tool-home {
+		padding-block: 1.5rem;
+	}
+}
+@media (max-width: 359px) {
+	:root {
+		--sg-gutter: 1rem;
+	}
+	.sg-progress {
+		column-gap: 0.75rem;
+	}
+}
+@media (prefers-reduced-motion: reduce) {
+	.sg-product-bar,
+	.sg-progress,
+	.sg-page,
+	.sg-toolbar {
+		scroll-behavior: auto;
+		animation: none;
+		transition: none;
+	}
+}
+
+/* Game / round and phase / step share one context line (latest user decision). */
+.sg-product-bar > .game-context {
+	align-items: center;
+	gap: 0.25rem var(--sg-section);
+	min-block-size: 1.75rem;
+}
+.sg-context-game {
+	display: inline-flex;
+	align-items: baseline;
+	flex-wrap: wrap;
+	gap: 0.125rem var(--sg-related);
+	min-inline-size: 0;
+	max-inline-size: 100%;
+}
+.sg-context-game > :first-child {
+	min-inline-size: 0;
+	overflow-wrap: anywhere;
+}
+.sg-context-line > .sg-progress {
+	inline-size: auto;
+	max-inline-size: none;
+	min-block-size: 0;
+	margin: 0;
+	padding: 0;
+	display: inline-flex;
+	align-items: center;
+	flex-wrap: wrap;
+	gap: var(--sg-related);
+}
+.sg-context-line .sg-progress-group {
+	font-size: var(--sg-type-meta);
+	line-height: 1.5;
+}
+.sg-context-line .sg-progress-actions {
+	margin: 0;
+	max-inline-size: none;
+}
+body[data-context-progress] > .sg-page {
+	margin-block-start: var(--sg-page-gap);
+}
+.sg-toolbar > .sg-toolbar-leading {
+	margin-inline: 0;
+}
+@media (max-width: 760px) {
+	.sg-product-bar {
+		padding-block: 0.375rem 0.5rem;
+	}
+	.sg-product-bar > .game-context {
+		gap: 0.25rem 1rem;
+	}
+	.sg-context-line > .sg-progress {
+		gap: 0.75rem;
+	}
+}
+
+/* Semantic spacing: related < paragraph / siblings < sections < independent tasks. */
+
+.decision-form {
+	display: flex;
+	flex-direction: column;
+	gap: var(--sg-space-section);
+}
+.decision-form > .sg-field {
+	margin-block: 0;
+}
+.decision-form > .consequence:empty {
+	display: none;
+}
+.decision-form > .consequence.has-content {
+	margin: 0;
+}
+.decision-form > .action-footer {
+	margin-block-start: 0;
+	gap: var(--sg-space-sibling);
+}
+@media (max-width: 760px) {
+	.sg-task-layout {
+		gap: var(--sg-space-section);
+	}
+}
+
+/* TaskScene: the viewport is a canvas, with a reading band and a reachable action rail. */
+body[data-task-scene] > .sg-page {
+	flex: 1;
+	display: flex;
+	flex-direction: column;
+	margin-block-start: 0;
+	padding-block: var(--sg-space-task) max(var(--sg-space-section), env(safe-area-inset-bottom));
+}
+.sg-task-layout[data-scene]:where(:not(.sg-context-task)) {
+	flex: 1;
+	min-block-size: min-content;
+	grid-template-rows: minmax(1.5rem, 0.8fr) auto minmax(2rem, 1fr) auto;
+	grid-template-areas: ". ." "context interaction" ". ." ". actions";
+	column-gap: var(--sg-task-gap);
+	row-gap: var(--sg-space-task);
+	align-items: start;
+}
+.sg-task-layout[data-scene]:where(:not(.sg-context-task)) > .intro {
+	grid-area: context;
+	align-self: start;
+}
+.sg-task-layout[data-scene]:where(:not(.sg-context-task)) > .content {
+	grid-area: interaction;
+	min-block-size: 0;
+}
+.sg-task-layout[data-scene]:where(:not(.sg-context-task)) > .sg-scene-actions {
+	grid-area: actions;
+	align-self: end;
+	margin: 0;
+	padding: 0;
+}
+.sg-task-layout[data-scene]:where(:not(.sg-context-task))
+	.decision-form
+	> .consequence[data-reserved-feedback] {
+	display: flex;
+	flex-direction: column;
+	min-block-size: 5rem;
+	gap: var(--sg-space-related);
+	margin: 0;
+}
+.sg-task-layout[data-scene]:where(:not(.sg-context-task))
+	.decision-form
+	> .consequence[data-reserved-feedback]
+	> .field-help {
+	margin: 0;
+}
+.sg-task-layout[data-scene]:where(:not(.sg-context-task)) .decision-form > .sg-field {
+	margin: 0;
+}
+@container (max-width: 46rem) {
+	.sg-task-layout[data-scene]:where(:not(.sg-context-task)) {
+		grid-template-columns: minmax(0, 1fr);
+		grid-template-rows: minmax(1.5rem, 0.8fr) auto auto minmax(2rem, 1fr) auto;
+		grid-template-areas: "." "context" "interaction" "." "actions";
+		row-gap: var(--sg-space-section);
+		align-items: start;
+	}
+	.sg-task-layout[data-scene]:where(:not(.sg-context-task)) > .intro {
+		align-self: end;
+	}
+	.sg-task-layout[data-scene]:where(:not(.sg-context-task)) > .content {
+		align-self: start;
+	}
+	.sg-task-layout[data-scene]:where(:not(.sg-context-task)) > .sg-scene-actions {
+		align-self: end;
+	}
+}
+/* Physical height shrinks naturally: min-content rows grow the document rather than clipping it. */
+@media (max-height: 600px) {
+	body[data-task-scene] > .sg-page {
+		padding-block-start: var(--sg-space-section);
+	}
+	.sg-task-layout[data-scene]:where(:not(.sg-context-task)) {
+		row-gap: var(--sg-space-sibling);
+	}
+}
+
+/* Quiet states use one reading lane; empty columns do not determine their position. */
+.sg-task-layout[data-scene="summary"] {
+	grid-template-columns: minmax(0, 1fr);
+	grid-template-rows: minmax(1.5rem, 0.8fr) auto auto minmax(2rem, 1fr) auto;
+	grid-template-areas: "." "context" "interaction" "." "actions";
+	max-inline-size: var(--sg-focus);
+	inline-size: 100%;
+	margin-inline: auto;
+	row-gap: var(--sg-space-section);
+}
+
+/* Gallery navigation: anchor the shared icon button to the content canvas, outside its masked track. */
+.sg-page-back.sg-button[data-sg-button] {
+	position: absolute;
+	inset-inline-start: max(var(--sg-safe-start), calc((100% - var(--sg-frame)) / 2));
+	inset-block-start: var(--sg-page-gap);
+	z-index: 160;
+}
+
+/* Short canvases trade elastic whitespace for content; type and hit areas keep their roles. */
+@media (max-height: 600px) {
+	body[data-task-scene] > .sg-page {
+		min-block-size: 0;
+		overflow: auto;
+	}
+	.sg-task-layout[data-scene="decision"] {
+		grid-template-rows: auto auto;
+		grid-template-areas: "context interaction" ". actions";
+		align-content: start;
+		row-gap: var(--sg-space-sibling);
+	}
+	.sg-task-layout[data-scene="summary"] {
+		grid-template-rows: auto auto auto;
+		grid-template-areas: "context" "interaction" "actions";
+		align-content: start;
+		row-gap: var(--sg-space-sibling);
+	}
+	.sg-task-layout[data-scene]:where(:not(.sg-context-task)) > .content:empty {
+		display: none;
+	}
+}
+@media (max-height: 600px) {
+	@container (max-width: 46rem) {
+		.sg-task-layout[data-scene="decision"] {
+			grid-template-rows: auto auto auto;
+			grid-template-areas: "context" "interaction" "actions";
+		}
+	}
+}
+
+/* Short workspaces first reclaim header and outer whitespace, keeping type and targets. */
+@media (max-height: 500px) {
+	:root {
+		--sg-toolbar-height: var(--sg-target);
+	}
+	.sg-product-bar {
+		min-block-size: calc(var(--sg-target) + 2 * var(--sg-related));
+		padding-block: var(--sg-related);
+	}
+	.sg-page[data-width="split"] {
+		padding-block-end: var(--sg-related);
+	}
+}
+
+/* End is the existing summary recipe: one reading lane and the shared action rail. */
+.sg-terminal-page.sg-page {
+	flex: 1;
+	display: flex;
+	flex-direction: column;
+	min-block-size: min-content;
+	padding-block: var(--sg-space-task) max(var(--sg-space-section), env(safe-area-inset-bottom));
+	margin-block: 0;
+}
+.sg-terminal-page .sg-task-layout[data-scene="summary"] {
+	flex: 1;
+	grid-template-rows: minmax(var(--sg-space-section), 0.8fr) auto minmax(var(--sg-space-task), 1fr) auto;
+	grid-template-areas: "." "context" "." "actions";
+}
+.sg-terminal-page .content {
+	display: none;
+}
+@media (max-height: 600px) {
+	.sg-terminal-page .sg-task-layout[data-scene="summary"] {
+		grid-template-rows: auto auto;
+		grid-template-areas: "context" "actions";
+		align-content: start;
+		row-gap: var(--sg-space-task);
+	}
+}
+
+/* One content guide: inset hosts derive their outer width from the shared inner work width. */
+.sg-inset-pane {
+	--sg-pane-inset: var(--sg-space-surface);
+	--sg-pane-content-width: var(--sg-work);
+	inline-size: 100%;
+	max-inline-size: calc(var(--sg-pane-content-width) + 2 * var(--sg-pane-inset));
+	padding-inline: var(--sg-pane-inset);
+	margin-inline: auto;
+}
+/* Align the visible back glyph to the reading guide, independently of its full target. */
+.sg-pane-toolbar {
+	--sg-nav-target: var(--sg-button-compact);
+	--sg-nav-leading-overhang: min(
+		var(--sg-space-surface),
+		calc((var(--sg-nav-target) - var(--sg-icon-action)) / 2 + var(--sg-icon-action) / 4)
+	);
+}
+.sg-pane-toolbar > .sg-button[data-sg-button]:first-child:has(svg[data-sg-icon="back"]) {
+	inline-size: var(--sg-nav-target);
+	block-size: var(--sg-nav-target);
+	min-inline-size: var(--sg-nav-target);
+	min-block-size: var(--sg-nav-target);
+	justify-self: start;
+	margin-inline-start: calc(-1 * var(--sg-nav-leading-overhang));
+}
+
+/* A hanging target at the viewport edge keeps its transient keyboard focus inside its own bounds. */
+.sg-pane-toolbar
+> .sg-button[data-sg-button]:first-child:has(svg[data-sg-icon="back"]):focus-visible {
+	outline-offset: -2px;
+}
+
+.sg-inset-pane[data-width="focus"] {
+	--sg-pane-content-width: var(--sg-focus);
+}
+
+/* Text enlargement preserves a two-character App name before spending space on side gaps. */
+@container (max-width: 14rem) {
+	.sg-toolbar {
+		column-gap: 0;
+		grid-template-columns: minmax(var(--sg-target), 1fr) minmax(2em, auto) minmax(
+				var(--sg-target),
+				1fr
+			);
+	}
+}
+
+/* Short entry flows consume the actual flex shell remainder, even when its header grows. */
+.sg-entry-flow.sg-page {
+	flex: 1;
+	display: flex;
+	flex-direction: column;
+	min-block-size: min-content;
+	margin-block: 0;
+	padding-block: var(--sg-space-task) max(var(--sg-space-section), env(safe-area-inset-bottom));
+	gap: var(--sg-space-section);
+}
+.sg-entry-flow > footer {
+	margin-block-start: auto;
+	display: flex;
+	justify-content: flex-end;
+}

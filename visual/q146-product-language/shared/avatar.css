@@ -1,0 +1,87 @@
+:root {
+	--avatar-reply: 28px;
+	--avatar-message: 32px;
+	--avatar-context: 36px;
+	--avatar-row: 44px;
+	--avatar-profile: 52px;
+	--avatar-detail: 80px;
+}
+.sg-avatar {
+	--avatar-size: var(--avatar-row);
+	display: inline-grid;
+	position: relative;
+	place-items: center;
+	width: var(--avatar-size);
+	height: var(--avatar-size);
+	flex: none;
+	vertical-align: middle;
+	isolation: isolate;
+	border-radius: 50%;
+	background: transparent;
+	color: var(--secondary, #535a55);
+	line-height: 0;
+}
+.sg-avatar > img {
+	display: block;
+	width: 100%;
+	height: 100%;
+	aspect-ratio: 1;
+	object-fit: cover;
+	object-position: center;
+	border-radius: 50%;
+	user-select: none;
+	-webkit-user-select: none;
+}
+.sg-avatar[data-size="reply"] {
+	--avatar-size: var(--avatar-reply);
+}
+.sg-avatar[data-size="message"] {
+	--avatar-size: var(--avatar-message);
+}
+.sg-avatar[data-size="context"] {
+	--avatar-size: var(--avatar-context);
+}
+.sg-avatar[data-size="profile"] {
+	--avatar-size: var(--avatar-profile);
+}
+.sg-avatar[data-size="detail"] {
+	--avatar-size: var(--avatar-detail);
+}
+.sg-avatar[data-ready="true"] > img {
+	outline: 0;
+}
+.sg-avatar > .sg-avatar-badge {
+	position: absolute;
+	right: -1px;
+	bottom: -1px;
+	display: grid;
+	place-items: center;
+	width: 18px;
+	height: 18px;
+	box-sizing: border-box;
+	border: 0;
+	border-radius: 50%;
+	background: var(--surface, #fff);
+	color: var(--secondary, #535a55);
+	line-height: 0;
+}
+.sg-avatar > .sg-avatar-badge > svg {
+	display: block;
+	width: 10px;
+	height: 10px;
+	fill: none;
+	stroke: currentColor;
+	stroke-width: 1.8;
+	stroke-linecap: round;
+	stroke-linejoin: round;
+}
+
+/* Native image consumers share the same crop/display rule without changing their layout sizes. */
+img.avatar {
+	display: block;
+	aspect-ratio: 1;
+	object-fit: cover;
+	object-position: center;
+	border-radius: 50%;
+	flex: none;
+}

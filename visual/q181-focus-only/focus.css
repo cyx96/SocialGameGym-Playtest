@@ -1,0 +1,18 @@
+/* The object stays in place; only its reading layer changes on focus. */
+[data-focus-only] .front-layer .identity,
+[data-focus-only] .card-copy,
+[data-focus-only] .card-front .wash,
+[data-focus-only] .flip-button {
+	opacity: 0;
+	transition: opacity 140ms var(--ease-out);
+}
+[data-focus-only]
+	#stage[data-caption-input="instant"]
+	:is(.identity, .card-copy, .wash, .flip-button) {
+	transition: none;
+}
+@media (prefers-reduced-motion: reduce) {
+	[data-focus-only] :is(.identity, .card-copy, .wash, .flip-button) {
+		transition: none;
+	}
+}

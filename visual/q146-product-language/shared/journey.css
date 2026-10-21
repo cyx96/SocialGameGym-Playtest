@@ -1,0 +1,293 @@
+.sg-reading {
+	--sg-reading-entry-transform: translateY(6px);
+	--sg-reading-exit-transform: translateY(6px);
+	--sg-reading-exit-opacity: 0;
+	padding: 0;
+	border: 0;
+	inset: 0;
+	margin: auto;
+	height: fit-content;
+	border-radius: var(--sg-radius-reading);
+	width: 600px;
+	max-width: calc(100vw - 40px);
+	max-height: calc(100dvh - 40px);
+	background: var(--surface, #fff);
+	color: var(--label, #1f2320);
+	overflow: hidden;
+	box-shadow: var(--sg-shadow-dialog);
+}
+.sg-reading::backdrop {
+	background: var(--sg-backdrop);
+}
+.sg-reading > .sg-reading-head {
+	margin: 0;
+	flex: none;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 16px;
+	padding: 16px 24px 8px;
+}
+.sg-reading-head h2 {
+	font-size: var(--sg-type-title);
+	font-weight: 550;
+	line-height: 1.5;
+	margin: 0;
+	text-align: left;
+	flex: 1;
+	min-inline-size: 0;
+	overflow-wrap: anywhere;
+}
+.sg-reading > .sg-reading-body {
+	min-height: 0;
+	padding: 8px 24px 26px;
+	max-height: calc(100dvh - 150px);
+	overflow: auto;
+	overscroll-behavior: contain;
+}
+.sg-reading-body .rules-brief {
+	font-size: var(--sg-type-body);
+	line-height: var(--sg-leading-body);
+	margin: 0;
+}
+.sg-reading-body .rules-brief + .rules-brief {
+	margin-top: 12px;
+}
+.sg-reading-body .game-record-list {
+	max-height: none;
+	overflow: visible;
+}
+.sg-reading[data-keyboard="true"],
+.sg-reading[data-keyboard-open="true"] {
+	animation: none;
+}
+
+body[data-journey-surface="rating"] {
+	background: var(--canvas);
+}
+
+.dm-create .create-head {
+	min-height: 56px;
+	padding: 12px 24px;
+}
+.dm-create .create-body {
+	padding: 16px 24px 20px;
+	scroll-padding-block: 16px;
+}
+.dm-create .member-option {
+	min-height: 48px;
+	padding: 4px;
+	gap: 10px;
+}
+.dm-create .member-option .sg-avatar {
+	--avatar-size: 36px;
+}
+.dm-create .member-options {
+	padding-top: 8px;
+	gap: 0;
+}
+.dm-create .first-message-label {
+	margin: 16px 0 8px;
+}
+.dm-create .first-message {
+	min-height: 126px;
+	scroll-margin-block: 16px;
+	line-height: 1.7;
+}
+.dm-create .create-note {
+	margin: var(--sg-space-paragraph) 0 0;
+	font-size: var(--sg-type-meta);
+	line-height: var(--sg-leading-body);
+}
+.dm-create .create-footer {
+	padding: 12px 24px 16px;
+}
+body:has(#deck) {
+	font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", sans-serif;
+}
+#communication-help:empty {
+	display: none;
+}
+@media (max-width: 760px) {
+	.sg-reading {
+		--sg-reading-entry-transform: translateY(100%);
+		--sg-reading-exit-transform: translateY(100%);
+		--sg-reading-exit-opacity: 1;
+		max-width: none;
+		width: 100%;
+		inset: auto 0 0;
+		max-height: calc(100dvh - 24px);
+		height: auto;
+		margin: 0;
+		border-radius: var(--sg-radius-sheet) var(--sg-radius-sheet) 0 0;
+		padding-bottom: env(safe-area-inset-bottom);
+	}
+	.sg-reading > .sg-reading-head {
+		padding: 14px 20px 8px;
+	}
+	.sg-reading > .sg-reading-body {
+		min-height: 0;
+		padding: 6px 20px 24px;
+		max-height: calc(100dvh - 120px);
+	}
+	.dm-create .create-head {
+		padding: 12px 18px;
+	}
+	.dm-create .create-body {
+		padding: 14px 18px 18px;
+	}
+	.dm-create .create-footer {
+		padding: 12px 18px 14px;
+	}
+}
+@media (max-width: 359px) {
+	.dm-create .create-head,
+	.dm-create .create-body,
+	.dm-create .create-footer {
+		padding-inline: 14px;
+	}
+}
+@media (prefers-reduced-motion: no-preference) {
+	.sg-reading[open]:not([data-keyboard="true"]):not([data-keyboard-open="true"]):not(
+		[data-closing="true"]
+	) {
+		animation: sg-reading-enter var(--sg-motion-enter) var(--sg-ease);
+	}
+	@keyframes sg-reading-enter {
+		from {
+			opacity: 1;
+			transform: var(--sg-reading-entry-transform);
+		}
+		to {
+			opacity: 1;
+			transform: translateY(0);
+		}
+	}
+}
+
+:root {
+	--sg-shell: 1120px;
+	--sg-app-title: 19px;
+	--sg-app-toolbar: 56px;
+	--sg-surface-radius: var(--sg-radius-surface);
+	--sg-control-radius: var(--sg-radius-control);
+}
+body[data-journey-surface="rating"] .rating-app {
+}
+
+.dm-create .create-footer {
+	border-top: 0;
+	padding-top: 20px;
+}
+
+.sg-reading[open] {
+	display: flex;
+	flex-direction: column;
+}
+.sg-reading > .sg-reading-head > .sg-button[data-sg-button] {
+	flex: none;
+	background: transparent;
+	color: var(--secondary);
+}
+.sg-reading > .sg-reading-body :is(.rules-brief, .brief-rules) {
+	font-size: var(--sg-type-body);
+	line-height: var(--sg-leading-body);
+	margin: 0;
+}
+.sg-reading > .sg-reading-body {
+	scrollbar-width: thin;
+	scrollbar-color: var(--line) transparent;
+}
+@media (max-width: 760px) {
+	body[data-journey-surface="rating"] .rating-app {
+		border: 0;
+		border-radius: var(--sg-surface-radius);
+		overflow: hidden;
+		background: var(--surface);
+	}
+	body[data-journey-surface="rating"] .rating-app {
+	}
+	body[data-journey-surface="rating"] .players-pane {
+		height: auto;
+	}
+	body[data-journey-surface="rating"] .player-list {
+		padding: 0 10px 4px;
+		overflow: visible;
+	}
+	body[data-journey-surface="rating"] .detail-scroll {
+		padding: 20px 16px 24px;
+	}
+	.dm-workspace {
+		border: 0;
+		border-radius: var(--sg-surface-radius);
+	}
+	.dm-workspace[data-view="list"] {
+		flex: none;
+		overflow: visible;
+		background: transparent;
+	}
+	.dm-workspace[data-view="list"] .dm-list-pane {
+		background: var(--surface);
+		border: 0;
+		border-radius: var(--sg-surface-radius);
+		overflow: hidden;
+	}
+	.dm-workspace[data-view="list"] .dm-list-scroll {
+		flex: none;
+		overflow: visible;
+	}
+	.dm-create .create-footer {
+		padding-top: 20px;
+	}
+}
+@media (prefers-reduced-motion: no-preference) {
+	.sg-reading[data-closing="true"]::backdrop {
+		animation: sg-reading-backdrop-out var(--sg-motion-exit) var(--sg-ease) both;
+	}
+	@keyframes sg-reading-backdrop-out {
+		to {
+			opacity: 0;
+		}
+	}
+}
+
+html[data-sg-motion-input="keyboard"] .sg-reading {
+	animation: none;
+}
+
+/* Short immediate choices have their own compact measure inside the shared reading owner. */
+.sg-reading[data-purpose="choice"] {
+	inline-size: min(420px, 100%);
+}
+.sg-action-choices {
+	display: grid;
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+	gap: var(--sg-space-sibling);
+}
+.sg-action-choices > .sg-button[data-sg-button] {
+	min-inline-size: 0;
+	min-block-size: 64px;
+	border-radius: var(--sg-radius-control);
+	padding: var(--sg-space-sibling);
+	white-space: normal;
+}
+
+/* A sheet remains a solid surface; only its backdrop fades over the previous task. */
+@media (prefers-reduced-motion: no-preference) {
+	.sg-reading[open]:not([data-keyboard="true"]):not([data-keyboard-open="true"]):not(
+		[data-closing="true"]
+	)::backdrop {
+		animation: sg-reading-backdrop-in var(--sg-motion-enter) var(--sg-ease);
+	}
+	@keyframes sg-reading-backdrop-in {
+		from {
+			opacity: 0;
+		}
+		to {
+			opacity: 1;
+		}
+	}
+}
+html[data-sg-motion-input="keyboard"] .sg-reading::backdrop {
+	animation: none;
+}

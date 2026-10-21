@@ -1,0 +1,59 @@
+/* One identity rail for roster rows and their leading actions; never hand-offset a plus button. */
+.sg-identity-row {
+	--sg-identity-size: var(--avatar-profile);
+	display: flex;
+	align-items: center;
+	gap: var(--sg-space-sibling);
+	min-block-size: 96px;
+	padding-block: var(--sg-space-paragraph);
+}
+.sg-identity-leading {
+	inline-size: var(--sg-identity-size);
+	block-size: var(--sg-identity-size);
+	flex: none;
+	display: grid;
+	place-items: center;
+}
+.sg-identity-leading > :is(.sg-avatar, .experience-avatar) {
+	inline-size: 100%;
+	block-size: 100%;
+}
+.sg-identity-body {
+	flex: 1;
+	min-inline-size: 0;
+	display: grid;
+	gap: 6px;
+}
+.sg-identity-actions {
+	display: flex;
+	flex: none;
+	gap: 4px;
+}
+.sg-identity-leading > .sg-button[data-sg-button][data-sg-role="icon"] {
+	inline-size: 100%;
+	block-size: 100%;
+	min-inline-size: 44px;
+	min-block-size: 44px;
+	border-radius: 50%;
+}
+.sg-identity-leading > .sg-button[data-sg-button].sg-identity-add {
+	background: var(--sg-control-fill);
+}
+.sg-identity-leading > .sg-button .experience-icon > svg {
+	width: 26px;
+	height: 26px;
+}
+@media (max-width: 760px) {
+	.sg-identity-row {
+		--sg-identity-size: var(--avatar-row);
+		gap: var(--sg-space-paragraph);
+		min-block-size: 92px;
+	}
+	.sg-identity-actions {
+		gap: 0;
+	}
+}
+
+.sg-identity-row[data-identity-role="action"] {
+	min-block-size: calc(var(--sg-identity-size) + 2 * var(--sg-space-paragraph));
+}

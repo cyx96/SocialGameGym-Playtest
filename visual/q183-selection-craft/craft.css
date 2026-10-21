@@ -1,0 +1,286 @@
+:root {
+	--catalog-edge-fade: clamp(48px, 10dvh, 80px);
+	--catalog-paper-radius: 14px;
+	--poster-transition-extent: 48px;
+	--poster-transition-ramp: 40px;
+}
+#stage::after {
+	display: none;
+}
+#track-plane {
+	position: absolute;
+	inset: 0;
+	isolation: isolate;
+	mask-image: linear-gradient(
+		to bottom,
+		transparent 0,
+		#000 var(--catalog-edge-fade),
+		#000 calc(100% - var(--catalog-edge-fade)),
+		transparent 100%
+	);
+	-webkit-mask-image: linear-gradient(
+		to bottom,
+		transparent 0,
+		#000 var(--catalog-edge-fade),
+		#000 calc(100% - var(--catalog-edge-fade)),
+		transparent 100%
+	);
+}
+#stage {
+	isolation: isolate;
+	padding-bottom: env(safe-area-inset-bottom);
+	-webkit-tap-highlight-color: transparent;
+}
+.catalog-header {
+	padding-top: env(safe-area-inset-top);
+	height: calc(76px + env(safe-area-inset-top));
+}
+#stage {
+	height: calc(100dvh - 76px - env(safe-area-inset-top));
+}
+.card-front .wash {
+	display: none;
+}
+.card-copy {
+	isolation: isolate;
+	pointer-events: none;
+}
+.card-copy::before {
+	content: "";
+	position: absolute;
+	inset: calc(-1 * var(--poster-transition-extent) * var(--card-inverse, 1))
+		calc(-24px * var(--card-inverse, 1)) calc(-28px * var(--card-inverse, 1));
+	z-index: -1;
+	background: linear-gradient(
+		180deg,
+		transparent 0,
+		var(--paper) calc(var(--poster-transition-ramp) * var(--card-inverse, 1)),
+		var(--paper) 100%
+	);
+}
+.card-copy h1 {
+	font-size: calc(var(--poster-title, 29px) * var(--card-inverse, 1));
+	line-height: 1.3;
+	text-wrap: balance;
+	overflow-wrap: anywhere;
+	line-break: strict;
+}
+.card-copy p {
+	font-size: calc(var(--poster-description, 15px) * var(--card-inverse, 1));
+	line-height: 1.65;
+	text-wrap: pretty;
+	line-break: strict;
+}
+.phrase-tail {
+	white-space: nowrap;
+}
+.front-layer .identity {
+	left: var(--folder-label-inset, 24px);
+	right: var(--folder-label-inset, 24px);
+	bottom: var(--folder-label-bottom, 30px);
+	width: auto;
+	max-width: none;
+	transform: none;
+	display: block;
+}
+.front-layer .identity-text {
+	display: flex;
+	align-items: baseline;
+	justify-content: flex-start;
+	gap: var(--folder-label-gap, 12px);
+}
+.front-layer .identity .theme {
+	font-size: var(--folder-title, 34px);
+	line-height: 1.25;
+	font-weight: 600;
+	letter-spacing: 0.015em;
+}
+.front-layer .identity .count {
+	font-size: var(--folder-count, 16px);
+	line-height: 1.25;
+	font-weight: 400;
+	letter-spacing: 0;
+	font-variant-numeric: tabular-nums;
+	color: var(--ink);
+}
+.card-face {
+	border-radius: calc(var(--catalog-paper-radius) * var(--card-inverse, 1));
+}
+.card-back {
+	inset: 50% auto auto 50%;
+	width: var(--settings-width, 350px);
+	height: var(--settings-height, 560px);
+	transform: translate(-50%, -50%) rotateY(180deg);
+	padding: calc(24px * var(--card-inverse, 1));
+	touch-action: pan-y;
+	scroll-padding: calc(20px * var(--card-inverse, 1));
+	scrollbar-width: thin;
+	scrollbar-color: color-mix(in srgb, var(--ink) 25%, transparent) transparent;
+}
+.card-wrap:focus-visible {
+	outline: 2px solid var(--ink);
+	outline-offset: 5px;
+	border-radius: 14px;
+}
+.card-wrap.ghost {
+	pointer-events: none;
+}
+.compact-wide .card-front {
+	inset: 50% auto auto 50%;
+	width: var(--wide-card-width);
+	height: 450px;
+	transform: translate(-50%, -50%);
+}
+.compact-wide .card-front .art {
+	right: auto;
+	width: 38%;
+	mask-image: linear-gradient(
+		90deg,
+		#000 0,
+		#000 calc(100% - var(--poster-transition-extent) * var(--card-inverse, 1)),
+		transparent
+			calc(
+				100% -
+				(var(--poster-transition-extent) - var(--poster-transition-ramp)) *
+				var(--card-inverse, 1)
+			),
+		transparent 100%
+	);
+	-webkit-mask-image: linear-gradient(
+		90deg,
+		#000 0,
+		#000 calc(100% - var(--poster-transition-extent) * var(--card-inverse, 1)),
+		transparent
+			calc(
+				100% -
+				(var(--poster-transition-extent) - var(--poster-transition-ramp)) *
+				var(--card-inverse, 1)
+			),
+		transparent 100%
+	);
+}
+.compact-wide .card-copy {
+	inset: 50% calc(24px * var(--card-inverse, 1)) auto 43%;
+	transform: translateY(-50%);
+}
+.compact-wide .card-copy::before {
+	display: none;
+}
+.compact-wide .card-copy h1 {
+	font-size: calc(24px * var(--card-inverse, 1));
+}
+.search-head input {
+	font-family: inherit;
+	font-size: 16px;
+	line-height: 1.5;
+	min-height: 44px;
+	caret-color: var(--ink);
+}
+.search-head input:focus-visible {
+	outline: 2px solid var(--ink);
+	outline-offset: 3px;
+	border-radius: 4px;
+}
+.result {
+	min-height: 48px;
+	touch-action: manipulation;
+}
+#results {
+	scrollbar-width: thin;
+	scrollbar-color: color-mix(in srgb, var(--ink) 25%, transparent) transparent;
+	overscroll-behavior: contain;
+}
+@media (hover: hover) and (pointer: fine) {
+	.card-wrap[data-current="true"] .card-front {
+		cursor: pointer;
+	}
+	.result:hover {
+		background: var(--wash);
+	}
+}
+@media (hover: none) {
+	.result:hover {
+		background: #fff;
+	}
+}
+
+/* Local back uses the product icon-button asset, inside the content canvas. */
+.catalog-header {
+	padding-inline: max(var(--sg-safe-start), calc((100% - var(--sg-frame)) / 2))
+		max(var(--sg-safe-end), calc((100% - var(--sg-frame)) / 2));
+}
+
+/* Geometry-driven opacity must follow the gesture, without a second CSS easing. */
+#stage[data-motion="active"] :is(.card-copy, .wash),
+#stage.dragging :is(.identity, .card-copy, .wash) {
+	transition: none;
+}
+html[data-catalog-input="instant"] :is(#stage, .catalog-header .brand) {
+	transition: none;
+}
+
+/* Same system, art-specific composition. Geometry and portrait/landscape gradients stay local. */
+body {
+	font-family: var(--sg-font-ui);
+}
+.card-copy h1,
+.front-layer .identity .theme {
+	font-family: var(--sg-font-art);
+}
+.front-layer .identity .count {
+	font-family: var(--sg-font-number);
+	font-variant-numeric: lining-nums tabular-nums;
+}
+.card-face {
+	box-shadow: var(--sg-shadow-paper);
+}
+#search-dialog {
+	box-shadow: var(--sg-shadow-dialog);
+	border-radius: var(--sg-radius-reading);
+}
+#search-dialog::backdrop {
+	background: var(--sg-backdrop);
+}
+
+/* Current gallery paper and setting controls follow the borderless component contract. */
+.card-face,
+.card-back .config-row,
+.card-back details,
+.card-back summary,
+.card-back .config-scroll {
+	border: 0;
+}
+.card-back :is(input, select) {
+	border: 0;
+	background-color: var(--sg-control-fill);
+}
+.catalog-header {
+	border: 0;
+}
+
+.catalog-header :is(.sg-button, #search) > svg {
+	width: var(--sg-icon-action);
+	height: var(--sg-icon-action);
+	stroke-width: var(--sg-icon-stroke);
+}
+
+/* The settings surface owns its scroll/action tracks, independently of the artwork scale. */
+.card-back {
+	padding: 0;
+	overflow: hidden;
+	touch-action: pan-y;
+}
+.card-back > .settings-content {
+	width: calc(100% / var(--card-inverse, 1));
+	height: calc(100% / var(--card-inverse, 1));
+	transform: scale(var(--card-inverse, 1));
+	transform-origin: top left;
+}
+#stage[data-view="back"] #track-plane {
+	mask-image: none;
+	-webkit-mask-image: none;
+}
+
+#search-dialog .search-head {
+	border: 0;
+}

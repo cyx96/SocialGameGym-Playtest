@@ -1,0 +1,54 @@
+/* Shared game-event typography: React game records and participant activity consume the same token projection. */
+.sg-game-records {
+	display: grid;
+	gap: var(--sg-space-section);
+	min-width: 0;
+}
+.sg-game-records > .sg-game-round {
+	min-width: 0;
+	background: transparent;
+	border: 0;
+	padding: 0;
+}
+.sg-game-round > summary {
+	min-height: 44px;
+	cursor: pointer;
+	display: flex;
+	align-items: center;
+	min-width: 0;
+}
+.sg-game-round-copy {
+	display: grid;
+	gap: var(--sg-space-related);
+	min-width: 0;
+	padding-block: var(--sg-space-related);
+	overflow-wrap: anywhere;
+}
+.sg-game-round-title {
+	font: 550 var(--sg-type-body) / var(--sg-leading-interface) var(--sg-font-ui);
+}
+.sg-game-round-events {
+	display: grid;
+	gap: var(--sg-space-paragraph);
+	padding-block: var(--sg-space-related);
+}
+.sg-game-event {
+	min-width: 0;
+	overflow-wrap: anywhere;
+}
+.sg-game-records .sg-game-event {
+	display: grid;
+	gap: var(--sg-space-related);
+	padding-block: var(--sg-space-paragraph);
+}
+.sg-game-records .sg-game-event-title,
+.sg-game-event-title {
+	margin: 0;
+	font: 550 var(--sg-type-body) / var(--sg-leading-body) var(--sg-font-ui);
+}
+.sg-game-records .sg-game-event-detail,
+.sg-game-event-detail {
+	margin: 0;
+	color: var(--secondary);
+	font: 400 var(--sg-type-body) / var(--sg-leading-body) var(--sg-font-ui);
+}

@@ -1,0 +1,202 @@
+/* Quiet result / waiting composition; no authority over outcomes or ranking. */
+.sg-summary-page.sg-task-layout {
+	flex: 1;
+	inline-size: 100%;
+	min-block-size: min-content;
+	padding-block: var(--sg-space-task) max(var(--sg-space-section), env(safe-area-inset-bottom));
+}
+.sg-summary-page .intro {
+	display: grid;
+	gap: var(--sg-space-paragraph);
+}
+.sg-summary-page .intro > h1 {
+	margin: 0;
+	font: 600 var(--sg-task-title) / var(--sg-task-title-leading) var(--sg-font-ui);
+	overflow-wrap: anywhere;
+}
+.sg-summary-page .intro > .description {
+	margin: 0;
+	color: var(--secondary);
+	font: 400 var(--sg-text-help) / var(--sg-leading-body) var(--sg-font-ui);
+}
+.sg-summary-page .content {
+	display: grid;
+	gap: var(--sg-space-section);
+}
+.sg-summary-metric {
+	display: grid;
+	gap: var(--sg-space-related);
+}
+.sg-summary-metric > span {
+	font: 400 var(--sg-text-help) / var(--sg-leading-interface) var(--sg-font-ui);
+	color: var(--secondary);
+}
+.sg-summary-metric > strong {
+	font: 600 var(--sg-type-metric) / 1.1 var(--sg-font-number);
+	font-variant-numeric: tabular-nums;
+	color: var(--label);
+}
+.sg-summary-meta {
+	margin: 0;
+	color: var(--secondary);
+	font: 400 var(--sg-type-meta) / var(--sg-leading-interface) var(--sg-font-ui);
+}
+@media (max-height: 600px) {
+	.sg-summary-page.sg-task-layout {
+		padding-block: var(--sg-space-sibling) var(--sg-space-section);
+	}
+}
+
+/* A summary's navigation and content share one focus guide; the parent owns both. */
+.sg-inset-pane:has(> .sg-summary-page) {
+	--sg-pane-content-width: var(--sg-focus);
+}
+.sg-summary-score {
+	display: grid;
+	gap: var(--sg-space-related);
+	align-content: start;
+}
+
+/* Result content owns one quiet numeric family and bounded supporting facts. */
+.sg-result-content {
+	display: grid;
+	gap: var(--sg-space-section);
+	min-inline-size: 0;
+	container-type: inline-size;
+}
+.sg-result-content .sg-summary-metric .ui-number {
+	font: inherit;
+	line-height: inherit;
+	letter-spacing: inherit;
+	color: inherit;
+}
+.sg-result-content .sg-summary-metric > strong {
+	display: block;
+	font: 600 var(--sg-type-metric) / 1.1 var(--sg-font-number);
+	color: var(--label);
+	font-variant-numeric: tabular-nums;
+}
+.sg-result-content .sg-summary-metric .numeric-unit {
+	font: 400 var(--sg-text-help) / var(--sg-leading-interface) var(--sg-font-ui);
+	color: var(--secondary);
+}
+.sg-result-facts {
+	margin: 0;
+	display: grid;
+	align-items: baseline;
+	grid-template-columns: minmax(0, max-content) minmax(0, 1fr);
+	column-gap: var(--sg-space-section);
+	row-gap: var(--sg-space-related);
+	min-inline-size: 0;
+	max-inline-size: 24rem;
+}
+.sg-result-fact {
+	display: contents;
+}
+.sg-result-fact dt {
+	color: var(--secondary);
+	font: 400 var(--sg-text-help) / var(--sg-leading-body) var(--sg-font-ui);
+	overflow-wrap: anywhere;
+}
+.sg-result-fact dd {
+	margin: 0;
+	text-align: start;
+	font: var(--sg-weight-value) var(--sg-type-value) / var(--sg-leading-interface) var(--sg-font-ui);
+	overflow-wrap: anywhere;
+	font-variant-numeric: tabular-nums;
+	min-inline-size: 0;
+	max-inline-size: 14rem;
+}
+.sg-result-artifact {
+	display: grid;
+	gap: var(--sg-space-related);
+	min-inline-size: 0;
+}
+.sg-result-artifact-title {
+	margin: 0;
+	font: 400 var(--sg-text-help) / var(--sg-leading-interface) var(--sg-font-ui);
+	color: var(--secondary);
+}
+.sg-result-document {
+	background: var(--surface);
+	padding: var(--sg-space-surface);
+	border-radius: var(--sg-radius-surface);
+	display: grid;
+	gap: var(--sg-space-paragraph);
+	min-inline-size: 0;
+}
+.sg-result-document p {
+	margin: 0;
+	white-space: pre-wrap;
+	overflow-wrap: anywhere;
+	font: 400 var(--sg-type-body) / var(--sg-leading-body) var(--sg-font-ui);
+}
+.sg-result-secondary-metric .ui-number {
+	font:
+		var(--sg-weight-value) var(--sg-type-value) / var(--sg-leading-interface) var(--sg-font-number);
+	color: var(--label);
+}
+.sg-result-secondary-metric .numeric-unit {
+	font: inherit;
+	color: inherit;
+}
+@container (max-width: 12rem) {
+	.sg-result-facts {
+		grid-template-columns: minmax(0, 1fr);
+	}
+	.sg-result-fact dd {
+		max-inline-size: none;
+		margin-block-end: var(--sg-space-related);
+	}
+}
+/* A task's authorized supporting facts remain a distinct reading group before its controls. */
+.sg-context-task > .content > .sg-result-facts + .sg-field {
+	margin-block-start: var(--sg-space-section);
+}
+
+/* Comparable task observations are body rows, not result metrics. */
+.sg-comparison {
+	inline-size: 100%;
+	table-layout: fixed;
+	border-collapse: collapse;
+	margin-block: var(--sg-space-section);
+	color: var(--label);
+	font: 400 var(--sg-type-body) / var(--sg-leading-body) var(--sg-font-ui);
+}
+.sg-comparison caption {
+	text-align: start;
+	font-weight: 550;
+	padding-block-end: var(--sg-space-related);
+}
+.sg-comparison :is(th, td) {
+	text-align: start;
+	vertical-align: top;
+	overflow-wrap: anywhere;
+	padding: var(--sg-space-related) var(--sg-space-related) var(--sg-space-related) 0;
+	font-weight: 400;
+}
+.sg-comparison th {
+	color: var(--secondary);
+}
+.sg-comparison [data-numeric] {
+	text-align: end;
+	inline-size: 20%;
+	font-variant-numeric: lining-nums tabular-nums;
+}
+.sg-comparison :is(th, td):last-child {
+	padding-inline-end: 0;
+}
+.sg-comparison .sg-task-value {
+	font-weight: 400;
+}
+.sg-comparison tbody tr:nth-child(even) {
+	background: var(--surface);
+}
+.sg-comparison .sg-person-inline {
+	max-inline-size: 100%;
+}
+
+/* Keep account facts separated from the current chooser or input. */
+.sg-context-task > .content > .sg-result-facts:not(:first-child) {
+	margin-block-start: var(--sg-space-section);
+}

@@ -1,0 +1,402 @@
+@import url("./foundation.css");
+/* SocialGameGym button language v1. Theme roles are supplied by the game UI package. */
+:root {
+	--sg-button-ink:var(--ink);--sg-button-secondary:var(--secondary);--sg-button-surface:var(--surface,#fff);--sg-button-wash:var(--wash,color-mix(in srgb,var(--sg-button-ink) 12%,white));--sg-button-height:48px;--sg-button-compact:44px;--sg-button-radius:999px;--sg-button-ease:var(--sg-ease);--sg-button-press:var(--sg-motion-press);--sg-button-release:var(--sg-motion-release);--sg-button-state:var(--sg-motion-state);--sg-button-selection:180ms;--sg-button-selection-radius:var(--sg-radius-action)
+}
+button.sg-button[data-sg-button],
+a.sg-button[data-sg-button] {
+	position: relative;
+	box-sizing: border-box;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	gap: 8px;
+	min-width: 44px;
+	min-height: var(--sg-button-height);
+	margin-block: 0;
+	padding: 12px 24px;
+	border: 0;
+	border-radius: var(--sg-button-radius);
+	background: transparent;
+	box-shadow: none;
+	color: var(--sg-button-ink);
+	font-family: inherit;
+	font-size: var(--sg-type-body);
+	font-weight: 500;
+	line-height: 1.5;
+	letter-spacing: 0;
+	text-decoration: none;
+	text-align: center;
+	vertical-align: middle;
+	white-space: nowrap;
+	cursor: pointer;
+	touch-action: manipulation;
+	-webkit-tap-highlight-color: transparent;
+	-webkit-user-select: none;
+	user-select: none;
+	transform: scale(1);
+	transition:
+		transform var(--sg-button-release) var(--sg-button-ease),
+		background-color var(--sg-button-state) ease,
+		color var(--sg-button-state) ease;
+}
+button.sg-button[data-sg-button]:active {
+	transform: scale(1);
+}
+button.sg-button[data-sg-button].sg-pressed {
+	transform: scale(var(--sg-press-scale, 0.97));
+	transition-duration: var(--sg-button-press), var(--sg-button-state), var(--sg-button-state);
+}
+.sg-button[data-sg-button][data-sg-role="primary"] {
+	background: var(--sg-button-ink);
+	color: var(--sg-button-surface);
+	font-weight: 550;
+}
+.sg-button[data-sg-button][data-sg-role="soft"] {
+	background: color-mix(in srgb, var(--sg-button-wash) 58%, var(--sg-button-surface));
+	color: var(--sg-button-ink);
+}
+.sg-button[data-sg-button][data-sg-role="quiet"] {
+	background: transparent;
+	color: var(--sg-button-ink);
+}
+.sg-button[data-sg-button][data-sg-size="compact"] {
+	min-height: var(--sg-button-compact);
+	padding: 10px 20px;
+	font-size: var(--sg-type-compact);
+}
+.sg-button[data-sg-button][data-sg-role="icon"],
+.sg-button[data-sg-button][data-sg-role="icon-primary"] {
+	width: 44px;
+	height: 44px;
+	min-width: 44px;
+	min-height: 44px;
+	padding: 0;
+	border-radius: 50%;
+	background: transparent;
+	color: var(--sg-button-ink);
+	flex: 0 0 auto;
+}
+.sg-button[data-sg-button][data-sg-role="icon-primary"] {
+	background: var(--sg-button-ink);
+	color: var(--sg-button-surface);
+}
+.sg-button[data-sg-button] svg {
+	display: block;
+	width: var(--sg-icon-action);
+	height: var(--sg-icon-action);
+	flex: none;
+	stroke: currentColor;
+	stroke-width: var(--sg-icon-stroke);
+	stroke-linecap: round;
+	stroke-linejoin: round;
+	fill: none;
+}
+.sg-button[data-sg-button]:focus-visible {
+	outline: 2px solid var(--sg-button-ink);
+	outline-offset: 3px;
+}
+.sg-button[data-sg-button]:disabled,
+.sg-button[data-sg-button][aria-disabled="true"] {
+	cursor: default;
+	transform: none;
+	opacity: 1;
+	color: var(--sg-button-secondary);
+	background: transparent;
+	filter: none;
+}
+.sg-button[data-sg-button][data-sg-role="primary"]:disabled,
+.sg-button[data-sg-button][data-sg-role="primary"][aria-disabled="true"],
+.sg-button[data-sg-button][data-sg-role="icon-primary"]:disabled,
+.sg-button[data-sg-button][data-sg-role="soft"]:disabled {
+	background: var(--sg-button-wash);
+	color: var(--sg-button-secondary);
+}
+.sg-button[data-sg-button][aria-busy="true"] {
+	background: transparent;
+	color: var(--sg-button-ink);
+	cursor: progress;
+}
+.sg-button[data-sg-button][data-sg-role="primary"][aria-busy="true"],
+.sg-button[data-sg-button][data-sg-role="icon-primary"][aria-busy="true"] {
+	background: var(--sg-button-ink);
+	color: var(--sg-button-surface);
+}
+.sg-button[data-sg-button][data-sg-role="soft"][aria-busy="true"] {
+	background: var(--sg-button-wash);
+}
+.sg-button[data-sg-button][aria-busy="true"] > .sg-button-label {
+	opacity: 1;
+}
+.sg-button-label {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	gap: 8px;
+	pointer-events: none;
+}
+.sg-button-spinner {
+	position: absolute;
+	right: 6px;
+	top: 50%;
+	display: grid;
+	place-items: center;
+	transform: translateY(-50%);
+	pointer-events: none;
+}
+.sg-button-spinner svg {
+	width: 12px;
+	height: 12px;
+	animation: sg-button-spin 700ms linear infinite;
+}
+.sg-button[data-sg-button][hidden],
+.sg-button-spinner[hidden] {
+	display: none !important;
+}
+.sg-button[data-sg-role="quiet"] .sg-button-spinner {
+	right: 2px;
+}
+.sg-button[data-sg-role="quiet"] .sg-button-spinner svg {
+	width: 8px;
+	height: 8px;
+}
+.sg-button[data-sg-role="soft"] .sg-button-spinner {
+	right: 2px;
+}
+.sg-button[data-sg-role="icon"][aria-busy="true"] > .sg-button-label,
+.sg-button[data-sg-role="icon-primary"][aria-busy="true"] > .sg-button-label {
+	opacity: 0;
+}
+.sg-button[data-sg-role="icon"] .sg-button-spinner,
+.sg-button[data-sg-role="icon-primary"] .sg-button-spinner {
+	inset: 0;
+	transform: none;
+}
+.sg-button[data-sg-role="icon"] .sg-button-spinner svg,
+.sg-button[data-sg-role="icon-primary"] .sg-button-spinner svg {
+	width: 18px;
+	height: 18px;
+}
+@keyframes sg-button-spin {
+	to {
+		transform: rotate(360deg);
+	}
+}
+@media (hover: hover) and (pointer: fine) {
+	.sg-button[data-sg-button]:not(:disabled):not([aria-disabled="true"]):hover {
+		background: color-mix(in srgb, var(--sg-button-wash) 44%, var(--sg-button-surface));
+		filter: none;
+	}
+	.sg-button[data-sg-button][data-sg-role="primary"]:not(:disabled):not(
+		[aria-disabled="true"]
+	):hover,
+	.sg-button[data-sg-button][data-sg-role="icon-primary"]:not(:disabled):not(
+		[aria-disabled="true"]
+	):hover {
+		background: color-mix(in srgb, var(--sg-button-ink) 93%, #000);
+	}
+	.sg-button[data-sg-button][data-sg-role="soft"]:not(:disabled):not([aria-disabled="true"]):hover {
+		background: var(--sg-button-wash);
+	}
+}
+/* Native radio choice retains its input and keyboard behavior. */
+.sg-choice .option-label {
+	min-height: 48px;
+	border: 0;
+	background: var(--sg-control-fill, color-mix(in srgb, var(--ink) 6%, var(--surface)));
+	border-radius: var(--sg-control-radius, var(--sg-radius-control));
+	box-shadow: none;
+	font-weight: 400;
+	transition:
+		background-color var(--sg-button-state) ease,
+		border-color var(--sg-button-state) ease;
+}
+.sg-choice input:checked + .option-label {
+	background: var(--sg-button-wash);
+	border-color: color-mix(in srgb, var(--sg-button-ink) 35%, var(--line));
+	box-shadow: none;
+	font-weight: 550;
+	color: var(--sg-button-ink);
+}
+.sg-choice input:focus-visible + .option-label {
+	outline: 2px solid var(--sg-button-ink);
+	outline-offset: 3px;
+}
+.sg-segmented {
+	position: relative;
+	isolation: isolate;
+	display: flex;
+	gap: 4px;
+}
+.sg-segmented > .sg-selection {
+	position: absolute;
+	inset: 0;
+	height: 100%;
+	z-index: -1;
+	border-radius: var(--sg-button-selection-radius);
+	background: color-mix(in srgb, var(--sg-button-wash) 58%, var(--sg-button-surface));
+	pointer-events: none;
+	transition: clip-path var(--sg-button-selection) var(--sg-button-ease);
+	width: 100%;
+}
+.sg-segmented .sg-button[data-sg-button] {
+	min-height: 44px;
+	padding: 9px 12px;
+	border-radius: var(--sg-button-selection-radius);
+	font-size: var(--sg-text-help);
+	flex: 1;
+	color: var(--sg-button-secondary);
+	background: transparent;
+}
+.sg-segmented .sg-button[data-sg-button][aria-pressed="true"] {
+	color: var(--sg-button-ink);
+	font-weight: 550;
+	background: transparent;
+}
+.sg-segmented .sg-button[data-sg-button]:hover {
+	background: transparent;
+}
+.sg-segmented[data-sg-instant] > .sg-selection,
+[data-sg-motion-input="keyboard"] .sg-segmented > .sg-selection {
+	transition: none;
+}
+@media (prefers-reduced-motion: reduce) {
+	button.sg-button[data-sg-button],
+	a.sg-button[data-sg-button],
+	.sg-selection {
+		transition: none !important;
+	}
+	button.sg-button[data-sg-button].sg-pressed {
+		transform: none;
+	}
+	.sg-button-spinner svg {
+		animation: none;
+	}
+}
+.sg-icon-label {
+	position: absolute !important;
+	width: 1px !important;
+	height: 1px !important;
+	padding: 0 !important;
+	margin: -1px !important;
+	overflow: hidden;
+	clip: rect(0, 0, 0, 0);
+	white-space: nowrap;
+	border: 0;
+}
+.sg-button[data-sg-button][data-sg-motion="disclosure"] > svg {
+	transition: transform var(--sg-button-release) var(--sg-button-ease);
+}
+.sg-button[data-sg-button][data-sg-motion="disclosure"][aria-expanded="true"] > svg {
+	transform: rotate(180deg);
+}
+.sg-button[data-sg-button][data-sg-input="keyboard"],
+.sg-button[data-sg-button][data-sg-input="keyboard"] > svg {
+	transition: none;
+}
+.sg-button[data-sg-button][data-sg-feedback="confirmed"] .sg-checkmark {
+	stroke-dasharray: 1;
+	animation: sg-check-draw var(--sg-button-release) var(--sg-button-ease) both;
+}
+@keyframes sg-check-draw {
+	from {
+		stroke-dashoffset: 1;
+	}
+	to {
+		stroke-dashoffset: 0;
+	}
+}
+.sg-tooltip {
+	position: fixed;
+	inset: auto;
+	margin: 0;
+	border: 0;
+	max-width: min(240px, calc(100vw - 16px));
+	padding: 7px 10px;
+	border-radius: 8px;
+	background: var(--ink, #1d6940);
+	color: var(--sg-button-surface);
+	font:
+		var(--sg-type-meta) / 1.5 -apple-system,
+		BlinkMacSystemFont,
+		"PingFang SC",
+		sans-serif;
+	pointer-events: none;
+	box-shadow: none;
+	white-space: normal;
+	text-align: center;
+	z-index: 9999;
+}
+.sg-tooltip[hidden] {
+	display: none !important;
+}
+@media (prefers-reduced-motion: reduce) {
+	.sg-button[data-sg-button][data-sg-motion="disclosure"] > svg {
+		transition: none;
+	}
+	.sg-button[data-sg-button][data-sg-feedback="confirmed"] .sg-checkmark {
+		animation: none;
+	}
+}
+
+.sg-button[data-sg-button] .sg-button-spinner svg {
+	width: 12px;
+	height: 12px;
+}
+.sg-button[data-sg-button][data-sg-role="quiet"] .sg-button-spinner svg {
+	width: 8px;
+	height: 8px;
+}
+.sg-button[data-sg-button][data-sg-role="icon"] .sg-button-spinner svg,
+.sg-button[data-sg-button][data-sg-role="icon-primary"] .sg-button-spinner svg {
+	width: 18px;
+	height: 18px;
+}
+
+html:not([data-sg-mounted]) .sg-button,
+html:not([data-sg-mounted]) .sg-button > svg {
+	transition: none !important;
+}
+
+.sg-button[data-sg-button][data-sg-motion="add"][aria-expanded="true"] {
+	background: color-mix(in srgb, var(--sg-button-wash) 58%, var(--sg-button-surface));
+}
+/* Menu items are compound rows, not centered standalone text buttons. */
+button.sg-button[data-sg-button][role="menuitem"] {
+	display: flex;
+	justify-content: flex-start;
+	align-items: center;
+	gap: 10px;
+	width: 100%;
+	min-height: 60px;
+	padding: 9px 12px;
+	border-radius: var(--sg-button-selection-radius);
+	font-size: var(--sg-text-help);
+	text-align: left;
+	white-space: normal;
+	color: var(--label);
+}
+button.sg-button[data-sg-button][role="menuitem"] .type-copy {
+	flex: 1;
+	min-width: 0;
+}
+button.sg-button[data-sg-button][role="menuitem"] .type-mark {
+	color: var(--sg-button-ink);
+}
+
+.sg-button[data-sg-button][data-sg-role="danger"] {
+	background: var(--sg-danger, #a73731);
+	color: #fff;
+	font-weight: 550;
+}
+@media (hover: hover) and (pointer: fine) {
+	.sg-button[data-sg-button][data-sg-role="danger"]:not(:disabled):not(
+		[aria-disabled="true"]
+	):hover {
+		background: color-mix(in srgb, var(--sg-danger, #a73731) 93%, #000);
+	}
+}
+.sg-button[data-sg-button][data-sg-role="danger"]:disabled {
+	background: var(--sg-button-wash);
+	color: var(--sg-button-secondary);
+}

@@ -1,0 +1,335 @@
+/* One important context per task: primary + supporting line; operations retain their own hierarchy. */
+.sg-context-task {
+	--sg-task-stacked: 0;
+}
+.sg-context-task > .intro {
+	min-inline-size: 0;
+}
+.sg-task-primary {
+	margin: 0;
+	font: 600 var(--sg-task-title) / var(--sg-task-title-leading) var(--sg-font-ui);
+	overflow-wrap: anywhere;
+	text-wrap: pretty;
+}
+.sg-task-support,
+.sg-context-task .sg-task-support {
+	margin: var(--sg-space-paragraph) 0 0;
+	color: var(--secondary);
+	font: 400 var(--sg-text-task-support) / var(--sg-leading-body) var(--sg-font-ui);
+	overflow-wrap: anywhere;
+	text-wrap: pretty;
+}
+/* Content is a two-part canvas at wide widths; only the operations pane scrolls. */
+.sg-context-task.sg-task-layout {
+	flex: 1;
+	min-block-size: 0;
+	max-inline-size: var(--sg-task-reading-width);
+	inline-size: 100%;
+	margin-inline: auto;
+	padding-block: var(--sg-space-task) max(var(--sg-space-section), env(safe-area-inset-bottom));
+	grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+	grid-template-rows: minmax(0, 1fr) auto;
+	grid-template-areas: "context interaction" "context actions";
+	row-gap: var(--sg-space-section);
+	overflow: hidden;
+}
+.sg-context-task > .intro {
+	grid-area: context;
+	align-self: stretch;
+	display: flex;
+	flex-direction: column;
+	justify-content: safe center;
+	align-items: flex-start;
+	text-align: start;
+	gap: 0;
+}
+.sg-context-task > .content {
+	grid-area: interaction;
+	align-self: stretch;
+	min-block-size: 0;
+	min-inline-size: 0;
+	overflow: auto;
+	max-inline-size: 34rem;
+	overscroll-behavior: contain;
+	scroll-padding-block: var(--sg-space-sibling);
+}
+.sg-context-task > .sg-scene-actions {
+	grid-area: actions;
+	align-self: end;
+}
+.sg-context-task[data-scene="decision"] > .content {
+	display: flex;
+	flex-direction: column;
+	justify-content: safe center;
+}
+.sg-context-task .sg-field {
+	scroll-margin-block: var(--sg-space-sibling);
+}
+.sg-toolbar.sg-task-toolbar,
+.sg-pane-toolbar.sg-task-toolbar {
+	position: sticky;
+	inset-block-start: 0;
+	z-index: 4;
+	isolation: isolate;
+	background: var(--canvas);
+	block-size: auto;
+	min-block-size: var(--sg-toolbar-height);
+	flex: none;
+}
+.sg-task-toolbar-label {
+	min-inline-size: 0;
+	max-inline-size: 100%;
+}
+.sg-task-toolbar-label > :is(h1, h2) {
+	margin: 0;
+	line-height: var(--sg-leading-interface);
+}
+/* Context owns its own reading rail beneath navigation; App identity never shrinks or shares it. */
+.sg-task-context-rail {
+	position: sticky;
+	inset-block-start: var(--sg-task-nav-height, var(--sg-toolbar-height));
+	z-index: 3;
+	flex: none;
+	block-size: var(--sg-target);
+	margin-block-end: calc(-1 * var(--sg-target));
+	display: flex;
+	align-items: center;
+	background: var(--canvas);
+	visibility: hidden;
+}
+.sg-task-context-rail[data-sg-context="compact"] {
+	visibility: visible;
+}
+.sg-task-context-slot {
+	display: block;
+	min-inline-size: 0;
+	inline-size: 100%;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	text-align: start;
+	font: 550 var(--sg-text-name) / var(--sg-leading-interface) var(--sg-font-ui);
+	color: var(--label);
+}
+.sg-task-context-slot > * {
+	font: inherit;
+	line-height: inherit;
+	margin: 0;
+	display: block;
+	white-space: inherit;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+@container (max-width: 46rem) {
+	.sg-context-task.sg-task-layout {
+		--sg-task-stacked: 1;
+		flex: none;
+		min-block-size: min-content;
+		display: block;
+		overflow: visible;
+		padding-block-start: var(--sg-space-sibling);
+	}
+	.sg-context-task > .intro {
+		display: block;
+		text-align: start;
+		margin-block-end: var(--sg-space-task);
+	}
+	.sg-context-task > .content {
+		overflow: visible;
+		display: block;
+		overscroll-behavior: auto;
+	}
+	.sg-context-task[data-scene="decision"] > .content {
+		display: block;
+	}
+	.sg-context-task > .sg-scene-actions {
+		margin-block-start: var(--sg-space-task);
+	}
+	.sg-context-task .sg-field,
+	.sg-context-task .sg-status-message {
+		scroll-margin-block-start: calc(
+			var(--sg-task-nav-height, var(--sg-toolbar-height)) +
+			var(--sg-target) +
+			var(--sg-space-sibling)
+		);
+	}
+	/* Short decisions keep the existing reading band and low action rail. */
+	.sg-context-task.sg-task-layout[data-scene="decision"] {
+		flex: 1;
+		display: grid;
+		grid-template-columns: minmax(0, 1fr);
+		grid-template-rows: minmax(1rem, 0.6fr) auto auto minmax(2rem, 1fr) auto;
+		grid-template-areas: "." "context" "interaction" "." "actions";
+		row-gap: var(--sg-space-section);
+	}
+	.sg-context-task[data-scene="decision"] > .intro {
+		margin: 0;
+		align-self: end;
+	}
+	.sg-context-task[data-scene="decision"] > .content {
+		align-self: start;
+	}
+	.sg-context-task[data-scene="decision"] > .sg-scene-actions {
+		margin: 0;
+	}
+}
+@media (max-height: 600px) {
+	.sg-context-task.sg-task-layout {
+		padding-block-start: var(--sg-space-sibling);
+	}
+}
+@media (max-height: 600px) {
+	@container (max-width: 46rem) {
+		.sg-context-task.sg-task-layout[data-scene="decision"] {
+			grid-template-rows: auto auto auto;
+			grid-template-areas: "context" "interaction" "actions";
+			align-content: start;
+		}
+	}
+}
+/* Message owns its typography; generic paragraph and panel-heading adapters cannot override it. */
+.sg-task-message > .sg-task-copy {
+	min-inline-size: 0;
+	max-inline-size: 22rem;
+}
+.sg-task-message .sg-task-primary {
+	margin: 0;
+	font: 600 var(--sg-task-title) / var(--sg-task-title-leading) var(--sg-font-ui);
+	overflow-wrap: anywhere;
+	text-wrap: pretty;
+}
+.sg-task-message .sg-task-support {
+	margin: var(--sg-space-paragraph) 0 0;
+	color: var(--secondary);
+	font: 400 var(--sg-text-task-support) / var(--sg-leading-body) var(--sg-font-ui);
+	overflow-wrap: anywhere;
+	text-wrap: pretty;
+}
+
+/* Generic assembled/standalone task panes consume the same scrolling contract as the native binding. */
+.sg-task-page {
+	flex: 1;
+	min-block-size: 0;
+	display: flex;
+	flex-direction: column;
+	container-type: inline-size;
+	overflow: hidden;
+	margin-block-start: 0;
+}
+.sg-task-page[data-sg-task-stacked="true"] {
+	overflow: auto;
+}
+.sg-task-page > .sg-toolbar {
+	flex: none;
+	margin-block-end: 0;
+}
+
+/* Compact labels may elide a long name; keep its trailing identity artwork visible. */
+.sg-task-context-slot [data-task-primary] {
+	display: flex;
+	align-items: baseline;
+	justify-content: flex-start;
+}
+.sg-task-context-slot [data-task-primary] > :is(span, button) {
+	min-inline-size: 0;
+}
+.sg-task-context-slot .sg-person-inline[data-person-order="at-name-avatar"] {
+	display: inline-flex;
+	align-items: baseline;
+	max-inline-size: 100%;
+	vertical-align: baseline;
+}
+.sg-task-context-slot .sg-person-inline .sg-person-text {
+	min-inline-size: 0;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+.sg-task-context-slot .sg-person-inline .sg-avatar {
+	flex: none;
+	align-self: center;
+}
+
+/* Result is the same context + task canvas; supporting facts do not become a second hero. */
+.sg-context-task[data-scene="result"] > .content {
+	display: flex;
+	flex-direction: column;
+	justify-content: safe center;
+}
+@container (max-width: 46rem) {
+	.sg-context-task[data-scene="result"] > .content {
+		display: block;
+	}
+}
+/* The shared task owns vertical rhythm; the standalone pane must not add a second inset. */
+body[data-task-scene] > .sg-task-page.sg-page {
+	padding-block: 0;
+}
+
+/* Explicit key values keep the sentence baseline and body size, with one quiet weight step. */
+.sg-task-value {
+	font: 600 1em / 1.5 var(--sg-font-number);
+	font-variant-numeric: lining-nums tabular-nums;
+	color: var(--label);
+	white-space: normal;
+}
+.sg-task-value .ui-number {
+	font: inherit;
+	line-height: inherit;
+	color: inherit;
+}
+.sg-task-value .numeric-unit {
+	font: inherit;
+	color: inherit;
+}
+
+/* A single primary task action shares the reachable portrait rail in native and assembled pages. */
+@container (max-width: 46rem) {
+	.sg-context-task > .sg-scene-actions > .sg-button[data-sg-role="primary"] {
+		inline-size: 100%;
+	}
+}
+
+/* Task templates share a fixed shell, reading grid and heading hierarchy.
+   Content length changes overflow, never navigation or column placement. */
+.sg-task-page.sg-page {
+	margin-block: 0;
+	padding-block: 0;
+}
+@media (min-height: 601px) {
+	@container (min-width: 46.01rem) {
+		.sg-context-task {
+			--sg-task-title: var(--sg-task-title-wide);
+		}
+	}
+}
+.sg-context-task:has(> .content:empty) {
+	grid-template-columns: minmax(0, 1fr);
+	grid-template-areas: "context" "actions";
+}
+
+/* A short canvas gives the whole task to its existing pane scroll owner.
+   Stacking also enables the unchanged navigation's separate context rail. */
+@media (max-height: 600px) {
+	.sg-context-task.sg-task-layout {
+		--sg-task-stacked: 1;
+		flex: none;
+		min-block-size: min-content;
+		display: block;
+		overflow: visible;
+	}
+	.sg-context-task > .intro {
+		display: block;
+		margin-block-end: var(--sg-space-section);
+	}
+	.sg-context-task > .content,
+	.sg-context-task[data-scene="decision"] > .content,
+	.sg-context-task[data-scene="result"] > .content {
+		display: block;
+		overflow: visible;
+		overscroll-behavior: auto;
+	}
+	.sg-context-task > .sg-scene-actions {
+		margin-block-start: var(--sg-space-section);
+	}
+}

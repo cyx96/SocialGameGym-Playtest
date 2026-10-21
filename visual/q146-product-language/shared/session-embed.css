@@ -1,0 +1,185 @@
+html[data-session-app] body {
+	min-height: 100dvh;
+	height: 100dvh;
+	overflow: hidden;
+	background: var(--canvas, #f9fbfa);
+}
+html[data-session-app] body > .app-header,
+html[data-session-app] body > .product-header,
+html[data-session-app] body > .site,
+html[data-session-app] .sg-product-bar,
+html[data-session-app] body > .phase,
+html[data-session-app] .sg-progress,
+html[data-session-app] .phase-line {
+	display: none !important;
+}
+html[data-session-app] .sg-page {
+	padding-top: 0 !important;
+	margin: 0 auto !important;
+	min-height: 0 !important;
+}
+html[data-session-app="profile"] #tool-home {
+	display: none !important;
+}
+html[data-session-app="profile"] #app-stage {
+	display: block !important;
+}
+
+html[data-session-app] .readonly-indicator {
+	font-size: var(--sg-type-meta);
+	font-weight: 400;
+	color: var(--secondary, #535a55);
+	margin-left: var(--sg-space-related);
+	white-space: nowrap;
+}
+html[data-session-app] .local-status {
+	font-size: var(--sg-type-meta);
+	line-height: var(--sg-leading-interface);
+	color: var(--secondary, #535a55);
+	margin: var(--sg-space-paragraph) 0;
+	min-height: 1.5em;
+}
+html[data-readonly="true"] .compose-hit,
+html[data-readonly="true"] .compose-surface,
+html[data-readonly="true"] .compose-copy,
+html[data-readonly="true"] .compose-icon,
+html[data-readonly="true"] .entry-spacer,
+html[data-readonly="true"] #composer,
+html[data-readonly="true"] .reply-root,
+html[data-readonly="true"] .inline-editor,
+html[data-readonly="true"] .new-conversation,
+html[data-readonly="true"] .message-compose,
+html[data-readonly="true"] .dm-input,
+html[data-readonly="true"] .save,
+html[data-readonly="true"] .change {
+	display: none !important;
+}
+html[data-readonly="true"] .forum-app .feed {
+	padding-top: 16px !important;
+}
+html[data-session-app="game"] body {
+	height: auto;
+	min-height: 100dvh;
+	overflow: auto;
+}
+html[data-session-app="game"] #app {
+	flex: 1;
+}
+
+html[data-session-app="game"] .sg-game-toolbar .toolbar-end {
+	width: 44px;
+	display: flex;
+	justify-content: flex-end;
+}
+html[data-session-app="game"][data-readonly="true"] .action-footer {
+	visibility: hidden;
+	pointer-events: none;
+}
+html[data-session-app="profile"] .profile-heading:empty {
+	display: none;
+}
+html[data-session-app] .preview-empty {
+	padding: var(--sg-space-section) var(--sg-space-surface);
+	color: var(--secondary, #535a55);
+	font-size: var(--sg-type-compact);
+}
+
+.avatar-picker {
+	width: 360px;
+	max-width: calc(100vw - 32px);
+	padding: 20px;
+	border: 0;
+	border-radius: var(--sg-radius-reading);
+	color: var(--label);
+	background: var(--surface);
+	box-shadow: var(--sg-shadow-dialog);
+}
+.avatar-picker::backdrop {
+	background: var(--sg-backdrop);
+}
+.avatar-picker h2 {
+	font-size: 17px;
+	margin: 0 0 20px;
+}
+.avatar-picker > button {
+	position: absolute;
+	right: 12px;
+	top: 8px;
+}
+.avatar-preset-grid {
+	display: grid;
+	grid-template-columns: repeat(4, 1fr);
+	gap: 12px;
+}
+.avatar-option {
+	display: grid;
+	place-items: center;
+	min-height: 56px;
+	border: 0;
+	border-radius: 12px;
+	background: none;
+	cursor: pointer;
+}
+.avatar-option:hover {
+	background: var(--wash);
+}
+
+html[data-session-app] .dm-composer,
+html[data-session-app] .message-composer {
+	min-height: 0;
+}
+
+html[data-session-app="game"] .sg-game-toolbar {
+	margin-inline: auto;
+}
+html[data-session-app="game"] .sg-game-toolbar h2 {
+	font-size: var(--sg-type-title);
+}
+
+html[data-session-app="rating"] .app-toolbar #back-list {
+	visibility: visible !important;
+	font-size: 0;
+}
+html[data-session-app="rating"] .app-toolbar #back-list span {
+	display: none;
+}
+html[data-session-app="forum"] .newpost-footer .quota {
+	font-size: var(--sg-type-meta);
+	color: var(--secondary);
+	margin: 0 auto 0 0;
+}
+
+html[data-session-app]:not([data-session-ready="true"]) body {
+	visibility: hidden;
+}
+
+/* The host owns desktop navigation; local arrows only navigate within an app. */
+
+html[data-session-app="rating"] .rating-app:not(.mobile-detail) .app-toolbar #back-list {
+	visibility: hidden !important;
+	pointer-events: none;
+}
+html[data-session-app="dm"] .dm-back[aria-label="返回桌面"] {
+	visibility: hidden !important;
+	pointer-events: none;
+}
+
+.readonly-indicator {
+	display: inline-grid !important;
+	place-items: center;
+	vertical-align: middle;
+	line-height: 1;
+}
+.readonly-indicator svg {
+	width: 17px;
+	height: 17px;
+	fill: none;
+	stroke: currentColor;
+	stroke-width: 1.65;
+	stroke-linecap: round;
+	stroke-linejoin: round;
+}
+
+.readonly-indicator {
+	display: none !important;
+}

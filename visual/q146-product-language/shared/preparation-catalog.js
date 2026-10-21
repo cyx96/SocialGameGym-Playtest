@@ -1,0 +1,66 @@
+/* Read-only presentation metadata for three existing visual fixtures. Not a public protocol. */
+window.PreparationCatalog = {
+	trust: {
+		gameId: "trust",
+		gameName: "信任游戏",
+		rounds: 5,
+		minPlayers: 2,
+		brief:
+			"每笔转出者获得 4 点，可转出 0–4 点；转出部分变为 3 倍，返还者再决定返还多少（0 至全部，整数）。 转出者得到未转出部分加返还，返还者保留未返还部分；转出 0 点时，返还者仍须明确提交返还 0 点。 双人角色固定；多人按顺序互动，每人各转出、返还一次才算一轮。完成 {rounds} 轮后，累计得分最高者获胜，可以并列。",
+		themeId: "trust",
+		colors: {
+			ink: "#1d6940",
+			mid: "#69b183",
+			wash: "#e2efe6",
+			paper: "#f8fbf9",
+			canvas: "#f9fbfa",
+			surface: "#ffffff",
+			label: "#1f2320",
+			secondary: "#535a55",
+			line: "#cbcfcc",
+		},
+		ruleSource: "docs/gameplay/games/066-trust.md",
+	},
+	"network-pd": {
+		gameId: "network-pd",
+		gameName: "网络囚徒困境",
+		rounds: 5,
+		minPlayers: 2,
+		brief:
+			"每轮分别向每位固定邻居选择合作或背叛，一次提交全部选择，所有人完成后统一结算。 双方合作各得 3 点；你背叛、对方合作时你得 5 点，反之你得 0 点；双方背叛各得 1 点。每轮取你与各位邻居得分的平均值，计入累计分。 每位玩家向固定邻居作选择。完成 {rounds} 轮后，累计得分最高者获胜，可以并列。",
+		themeId: "cooperation",
+		colors: {
+			ink: "#585f0c",
+			mid: "#9ca65b",
+			wash: "#eaeddf",
+			paper: "#f9faf7",
+			canvas: "#fbfbf9",
+			surface: "#ffffff",
+			label: "#21221e",
+			secondary: "#585951",
+			line: "#cdceca",
+		},
+		ruleSource: "docs/gameplay/games/042-network-pd.md",
+	},
+	ultimatum: {
+		gameId: "ultimatum",
+		gameName: "最后通牒游戏",
+		rounds: 3,
+		minPlayers: 2,
+		brief:
+			"每笔共有 6 点，提议者决定给对方 0–6 点中的整数，接收者选择接受或拒绝。 接受则按方案分配，提议者保留剩余部分；拒绝则本笔双方均得 0 点，游戏继续。 双人角色固定；多人按顺序互动，每人各提议、回应一次才算一轮。完成 {rounds} 轮后，累计得分最高者获胜，可以并列。",
+		themeId: "allocation",
+		colors: {
+			ink: "#864525",
+			mid: "#d28a69",
+			wash: "#f6e8e1",
+			paper: "#fcf9f8",
+			canvas: "#fcfaf9",
+			surface: "#ffffff",
+			label: "#25201e",
+			secondary: "#5e5653",
+			line: "#d1cdca",
+		},
+		ruleSource: "docs/gameplay/games/076-ultimatum.md",
+	},
+};

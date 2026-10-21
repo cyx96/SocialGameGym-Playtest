@@ -1,0 +1,226 @@
+:root {
+	color-scheme: light;
+	--canvas: #f9fbfa;
+	--ink: #585f0c;
+}
+* {
+	box-sizing: border-box;
+}
+body {
+	margin: 0;
+	background: var(--canvas);
+	color: #29362d;
+	font:
+		15px / 1.6 -apple-system,
+		BlinkMacSystemFont,
+		"PingFang SC",
+		sans-serif;
+	-webkit-font-smoothing: antialiased;
+}
+::selection {
+	background: #dfe5cc;
+	color: #39451f;
+}
+.cover {
+	width: min(300px, 100%);
+	aspect-ratio: 2 / 3;
+	position: relative;
+	container-type: inline-size;
+	margin: 0;
+	overflow: hidden;
+	border-radius: 14px;
+	background: var(--paper);
+	isolation: isolate;
+	box-shadow:
+		0 2px 3px #28392514,
+		0 15px 26px -16px #2839252b;
+}
+.cover-art {
+	position: absolute;
+	inset: 0;
+	background-image: var(--art);
+	background-size: var(--art-size);
+	background-position: var(--art-position);
+}
+.paper-front {
+	position: absolute;
+	inset: 0;
+	clip-path: polygon(0 72%, 100% 59%, 100% 100%, 0 100%);
+	z-index: 1;
+}
+.cover.higher .paper-front {
+	clip-path: polygon(0 63%, 100% 50%, 100% 100%, 0 100%);
+}
+.paper-color {
+	position: absolute;
+	inset: 0;
+	background: linear-gradient(
+		180deg,
+		rgba(var(--wash-rgb), 0.35) 49%,
+		rgba(var(--wash-rgb), 0.65) 72%,
+		rgba(var(--wash-rgb), 0.96) 80%,
+		rgba(var(--wash-rgb), 0.98) 100%
+	);
+}
+/* Temporary material source: an unprinted region of the existing paper concept, cropped in CSS. No illustration is baked into the cover. */
+.paper-grain {
+	position: absolute;
+	inset: 50% 0 0;
+	background-image: url("../q174-side-opening/side-opening-concepts.png");
+	background-size: 667.826cqw 445.217cqw;
+	background-position: -113.043cqw -39.13cqw;
+	filter: grayscale(1);
+	mix-blend-mode: multiply;
+	opacity: 0.05;
+	pointer-events: none;
+}
+.paper-edge {
+	position: absolute;
+	inset: 0;
+	width: 100%;
+	height: 100%;
+	fill: none;
+	stroke: #fff;
+	stroke-opacity: 0.7;
+	stroke-width: 0.8;
+	pointer-events: none;
+}
+.identity {
+	position: absolute;
+	left: 50%;
+	bottom: 7%;
+	transform: translateX(-50%);
+	z-index: 2;
+	display: flex;
+	align-items: center;
+	gap: 3.4cqw;
+	width: max-content;
+	max-width: 90%;
+	color: var(--ink);
+}
+.identity img {
+	display: block;
+	width: 15.5cqw;
+	height: 15.5cqw;
+	flex: none;
+	border-radius: 50%;
+}
+.identity-text {
+	display: flex;
+	align-items: baseline;
+	gap: 3cqw;
+}
+.theme {
+	font-family: "Songti SC", "STSong", serif;
+	font-size: 10.8cqw;
+	line-height: 1.25;
+	font-weight: 600;
+	letter-spacing: 0.01em;
+}
+.count {
+	font-size: max(16px, 5.33cqw);
+	font-variant-numeric: tabular-nums;
+	line-height: 1.3;
+	font-weight: 450;
+}
+.review {
+	max-width: 1100px;
+	margin: auto;
+	padding: 36px 28px 42px;
+}
+.review h1 {
+	font-size: 24px;
+	line-height: 1.35;
+	font-weight: 550;
+	margin: 0 0 32px;
+}
+.variants {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 64px;
+}
+.variant {
+	min-width: 0;
+}
+.variant h2 {
+	font-size: 18px;
+	font-weight: 550;
+	margin: 0 0 6px;
+}
+.variant p {
+	font-size: 14px;
+	color: #526151;
+	margin: 0;
+}
+.object-stage {
+	padding: 30px 0 24px;
+	display: flex;
+	justify-content: center;
+}
+.variant a {
+	display: inline-flex;
+	min-height: 44px;
+	align-items: center;
+	color: #3d583e;
+	text-underline-offset: 4px;
+}
+.variant a:focus-visible {
+	outline: 2px solid #585f0c;
+	outline-offset: 4px;
+}
+.topbar {
+	height: 76px;
+	display: flex;
+	align-items: center;
+	gap: 24px;
+	padding-inline: max(24px, calc((100vw - 1120px) / 2));
+	background: #fff;
+	border-bottom: 1px solid #e0e5df;
+}
+.brand {
+	font-size: 18px;
+	font-weight: 650;
+	letter-spacing: -0.45px;
+	color: var(--ink);
+}
+.page-name {
+	border-left: 1px solid #dce2d9;
+	padding-left: 24px;
+	font-size: 14px;
+	color: #536159;
+}
+.single {
+	height: calc(100dvh - 76px);
+	display: grid;
+	place-items: center;
+	padding: 24px 22px 48px;
+}
+.single .cover {
+	width: min(300px, 100%, calc((100dvh - 150px) / 1.5));
+}
+@media (max-width: 650px) {
+	.review {
+		padding: 28px 22px;
+	}
+	.review h1 {
+		font-size: 22px;
+	}
+	.variants {
+		grid-template-columns: 1fr;
+		gap: 32px;
+	}
+	.topbar {
+		height: 68px;
+		padding-inline: 20px;
+	}
+	.brand {
+		font-size: 17px;
+	}
+	.page-name {
+		display: none;
+	}
+	.single {
+		height: calc(100dvh - 68px);
+		padding-bottom: 56px;
+	}
+}

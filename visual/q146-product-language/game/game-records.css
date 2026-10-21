@@ -1,0 +1,347 @@
+/* Scoped records asset. Shared palette, identity and rules card stay unchanged. */
+dialog:focus {
+	outline: none;
+}
+dialog[data-content="records"][data-keyboard-open="true"] {
+	animation: none;
+}
+dialog[open][data-content="records"] {
+	display: flex;
+	flex-direction: column;
+}
+dialog[data-content="records"] > header {
+	margin-bottom: 12px;
+	flex-shrink: 0;
+}
+dialog[data-content="records"] #panel-body {
+	min-height: 0;
+}
+.game-record-list {
+	max-height: calc(100dvh - 124px);
+	overflow-y: auto;
+	overscroll-behavior: contain;
+	scrollbar-width: thin;
+	scrollbar-color: var(--line) transparent;
+	padding: 0 3px 3px;
+}
+.record-group {
+	border-bottom: 0;
+}
+.record-group:last-child {
+	border-bottom: 0;
+}
+.record-round {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	min-height: 76px;
+	padding: 17px 0;
+	list-style: none;
+	cursor: pointer;
+}
+.record-round::-webkit-details-marker,
+.record-snapshot-trigger::-webkit-details-marker {
+	display: none;
+}
+.record-round:focus-visible,
+.record-snapshot-trigger:focus-visible {
+	outline: 2px solid var(--ink);
+	outline-offset: -2px;
+	border-radius: 8px;
+}
+.record-round-heading {
+	display: block;
+	min-width: 0;
+	flex: 1;
+}
+.record-round-title {
+	display: block;
+	font-size: 15px;
+	font-weight: 550;
+	line-height: 1.6;
+}
+.record-recap {
+	display: block;
+	margin-top: 3px;
+	font-size: 13px;
+	line-height: 1.65;
+	color: var(--secondary);
+	text-wrap: pretty;
+	overflow-wrap: anywhere;
+}
+.record-group[open] > .record-round .record-recap {
+	display: none;
+}
+.record-group[open] > .record-round {
+	min-height: 60px;
+	padding: 15px 0;
+}
+.record-group[open] > .record-round .record-round-title {
+	color: var(--ink);
+}
+.record-round-metric {
+	display: flex;
+	align-items: baseline;
+	gap: 5px;
+	margin-left: auto;
+	font-variant-numeric: tabular-nums;
+	white-space: nowrap;
+	flex-shrink: 0;
+}
+.record-metric-label,
+.record-metric-unit {
+	font-size: 12px;
+	color: var(--secondary);
+}
+.record-metric-value {
+	font-size: 19px;
+	line-height: 1.4;
+	font-weight: 550;
+	letter-spacing: -0.25px;
+}
+.record-group[open] > .record-round .record-metric-value {
+	color: var(--ink);
+}
+.record-progress {
+	font-size: 13px;
+	color: var(--secondary);
+	white-space: nowrap;
+}
+.record-chevron {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	color: var(--secondary);
+	width: 16px;
+	height: 16px;
+	transition: transform var(--sg-motion-release) var(--sg-ease);
+	flex-shrink: 0;
+}
+.record-group[open] > .record-round > .record-chevron,
+.record-snapshot[open] > .record-snapshot-trigger > .record-chevron {
+	transform: rotate(180deg);
+}
+.record-body {
+	padding: 2px 0 24px;
+}
+.record-events {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+.record-event {
+	position: relative;
+	display: grid;
+	grid-template-columns: 28px minmax(0, 1fr) auto;
+	align-items: start;
+	gap: 12px;
+	padding: 10px 0;
+}
+.record-event + .record-event {
+	padding-top: 17px;
+}
+.record-event:not(:last-child)::after {
+	content: "";
+	position: absolute;
+	left: 13px;
+	top: 44px;
+	bottom: -7px;
+	width: 1px;
+	background: var(--line);
+}
+.record-avatar {
+	width: 28px;
+	height: 28px;
+	border-radius: 50%;
+	display: block;
+	background: var(--paper);
+	position: relative;
+	z-index: 1;
+}
+.record-marker {
+	display: block;
+	width: 7px;
+	height: 7px;
+	border: 0;
+	border-radius: 50%;
+	margin: 10px auto;
+	position: relative;
+	z-index: 1;
+	background: var(--ink);
+}
+.record-event:not(.record-Interaction) .record-event-copy {
+	grid-column: 2 / -1;
+}
+.record-event-copy {
+	min-width: 0;
+}
+.record-event-title {
+	font-size: 15px;
+	font-weight: 500;
+	line-height: 1.75;
+	margin: 0;
+	overflow-wrap: anywhere;
+}
+.record-event-detail {
+	font-size: 13px;
+	line-height: 1.75;
+	margin: 5px 0 0;
+	color: var(--secondary);
+	text-wrap: pretty;
+}
+.record-event-amount {
+	font-size: 20px;
+	font-weight: 550;
+	line-height: 1.4;
+	letter-spacing: -0.35px;
+	font-variant-numeric: tabular-nums;
+	margin: 0;
+	white-space: nowrap;
+}
+
+.record-facts {
+	margin: 9px 0 0;
+}
+.record-fact {
+	padding: 5px 0;
+	display: flex;
+	align-items: baseline;
+	justify-content: space-between;
+	gap: 16px;
+}
+.record-fact dt {
+	font-size: 13px;
+	color: var(--secondary);
+}
+.record-fact dd {
+	font-size: 14px;
+	margin: 0;
+	text-align: right;
+	font-variant-numeric: tabular-nums;
+}
+.record-empty {
+	font-size: 14px;
+	line-height: 1.8;
+	color: var(--secondary);
+	margin: 14px 0 4px;
+}
+.record-phase {
+	font-size: 12px;
+	line-height: 1.6;
+	color: var(--secondary);
+	margin: 0 0 3px;
+}
+.record-diff {
+	display: flex;
+	gap: 9px;
+	align-items: baseline;
+	flex-wrap: wrap;
+	font-size: 15px;
+	line-height: 1.8;
+	margin-top: 7px;
+	font-variant-numeric: tabular-nums;
+}
+.record-before {
+	color: var(--secondary);
+}
+.record-before s {
+	text-decoration-thickness: 1px;
+	text-decoration-color: var(--secondary);
+}
+.record-after {
+	color: var(--ink);
+	font-weight: 500;
+}
+.record-diff-arrow {
+	color: var(--secondary);
+	font-size: 13px;
+}
+.record-version {
+	font-size: 12px;
+	line-height: 1.6;
+	color: var(--secondary);
+	margin: 4px 0 0;
+}
+.record-snapshot {
+	margin: 12px 0 0 40px;
+}
+.record-snapshot-trigger {
+	list-style: none;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 12px;
+	min-height: 44px;
+	font-size: 13px;
+	color: var(--secondary);
+	cursor: pointer;
+}
+.record-document {
+	margin: 4px 0 0;
+	padding: 10px 14px 10px 38px;
+	border-radius: 10px;
+	background: var(--paper);
+	font-size: 15px;
+	line-height: 1.9;
+	font-variant-numeric: tabular-nums;
+}
+.record-document li {
+	padding-left: 5px;
+	overflow-wrap: anywhere;
+}
+.record-document li::marker {
+	font-size: 11px;
+	color: var(--secondary);
+}
+.record-jump {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 12px;
+	font-size: 13px;
+	color: var(--secondary);
+	padding: 4px 0 12px;
+}
+.record-jump select {
+	font: inherit;
+	color: var(--label);
+	background: var(--paper);
+	border: 0;
+	border-radius: 8px;
+	min-height: 44px;
+	padding: 8px 12px;
+}
+@media (max-width: 760px) {
+	dialog[data-content="records"] {
+		padding-bottom: max(24px, env(safe-area-inset-bottom));
+	}
+	.game-record-list {
+		max-height: calc(85dvh - 112px);
+	}
+	.record-body {
+		padding-bottom: 22px;
+	}
+	.record-event {
+		gap: 11px;
+	}
+	.record-snapshot {
+		margin-left: 39px;
+	}
+}
+@media (prefers-reduced-motion: reduce) {
+	.record-chevron {
+		transition: none;
+	}
+}
+
+.record-chevron > svg {
+	display: block;
+	width: var(--sg-icon-chevron);
+	height: var(--sg-icon-chevron);
+	stroke-width: var(--sg-icon-stroke);
+}
+
+.record-chevron {
+	width: 44px;
+	height: 44px;
+}

@@ -1,0 +1,26 @@
+/* Static source metadata: not buttons, filters or additional disclosure controls. */
+.sg-activity-meta {
+	display: flex;
+	align-items: center;
+	flex-wrap: wrap;
+	gap: var(--sg-space-related) var(--sg-space-related);
+	font: 400 var(--sg-type-meta) / var(--sg-leading-interface) var(--sg-font-ui);
+	color: var(--secondary);
+}
+.sg-activity-kind {
+	display: inline-flex;
+	align-items: center;
+	min-height: 24px;
+	padding: 2px 8px;
+	border: 0;
+	border-radius: var(--sg-radius-action);
+	background: color-mix(in srgb, var(--wash) 38%, var(--surface));
+	font-weight: 500;
+	color: var(--secondary);
+	white-space: nowrap;
+	cursor: inherit;
+}
+.sg-activity-detail {
+	font: inherit;
+	color: inherit;
+}

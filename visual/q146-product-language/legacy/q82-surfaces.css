@@ -1,0 +1,65 @@
+/* Legacy A6 outer identity frames are removed after the shared avatar takes over. */
+.avatar.identity-frame,
+.reply-avatar.identity-frame {
+	width: auto;
+	height: auto;
+	min-width: 0;
+	min-height: 0;
+	display: inline-flex;
+	flex: 0 0 auto;
+	border: 0;
+	box-shadow: none;
+	background: none;
+	color: inherit;
+	border-radius: 0;
+	font-size: inherit;
+	overflow: visible;
+}
+.person {
+	align-items: center;
+}
+.person-copy {
+	min-width: 0;
+	flex: 1;
+}
+.person h2,
+.author h2,
+.detail-head h2 {
+	overflow-wrap: anywhere;
+}
+.person .chevron {
+	margin-left: 0;
+}
+.detail-head > .identity-frame {
+	margin-bottom: 16px;
+}
+.reply-avatar.identity-frame .sg-avatar {
+	--avatar-size: 28px;
+}
+.author > .identity-frame {
+	align-self: flex-start;
+}
+.player .identity {
+	min-width: 0;
+}
+.identity strong {
+	overflow-wrap: anywhere;
+}
+.neighbor-identity {
+	gap: 10px;
+}
+.neighbor-identity .sg-name {
+	font-size: 15px;
+	font-weight: 500;
+}
+@media (max-width: 359px) {
+	.person .sg-avatar[data-size="profile"] {
+		--avatar-size: 44px;
+	}
+	.neighbor-identity {
+		gap: 8px;
+	}
+	.neighbor-identity .sg-avatar {
+		--avatar-size: 32px;
+	}
+}

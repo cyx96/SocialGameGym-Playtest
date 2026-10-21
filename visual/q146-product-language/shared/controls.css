@@ -1,0 +1,553 @@
+/* Form language v1: shared by configuration, decisions and feedback; no game policy. */
+:root {
+	--sg-control-height: 48px;
+	--sg-control-radius: var(--sg-radius-control);
+	--sg-control-gap: 8px;
+	--sg-control-line: var(--sg-line-control);
+	--sg-control-fill: color-mix(in srgb, var(--ink, #1d6940) 6%, var(--surface, #fff));
+	--sg-control-muted: var(--secondary, #535a55);
+	--sg-control-danger: #a73731;
+	--sg-control-ease: var(--sg-ease);
+}
+.sg-field {
+	border: 0;
+	padding: 0;
+	margin: 0 0 var(--sg-space-section, 24px);
+	min-width: 0;
+}
+.sg-field > :is(legend, label),
+.sg-field-label {
+	display: block;
+	margin: 0 0 10px;
+	padding: 0;
+	font-family: inherit;
+	font-size: var(--sg-type-body);
+	font-weight: 550;
+	line-height: 1.5;
+	color: var(--label, #1f2320);
+}
+.sg-field legend {
+	float: none;
+	width: 100%;
+}
+.sg-field .field-help {
+	font-size: var(--sg-text-help);
+	line-height: 1.65;
+	margin: 8px 0 0;
+	color: var(--sg-control-muted);
+}
+.sg-field legend + .field-help {
+	margin: -2px 0 12px;
+}
+.sg-field .choice-options {
+	gap: var(--sg-control-gap);
+}
+.sg-field .sg-choice .option {
+	min-width: 0;
+	flex: 1 1 140px;
+	position: relative;
+	display: flex;
+	cursor: pointer;
+}
+.sg-field .sg-choice.short-options .option {
+	flex: 1 1 44px;
+}
+.sg-field .sg-choice .option-label {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	min-height: var(--sg-control-height);
+	width: 100%;
+	padding: 10px 14px;
+	border: 0;
+	border-radius: var(--sg-control-radius);
+	background: var(--sg-control-fill);
+	color: var(--label, #1f2320);
+	font-size: var(--sg-type-body);
+	line-height: 1.5;
+	font-weight: 400;
+	box-shadow: none;
+	overflow-wrap: anywhere;
+	transition:
+		background-color var(--sg-motion-state) ease,
+		color var(--sg-motion-state) ease;
+}
+.sg-field .sg-choice input {
+	position: absolute;
+	inset: 0;
+	width: 100%;
+	height: 100%;
+	margin: 0;
+	opacity: 0;
+	pointer-events: auto;
+	z-index: 1;
+	cursor: inherit;
+}
+.sg-field .sg-choice input:checked + .option-label {
+	background: var(--wash);
+	color: var(--ink);
+	font-weight: 550;
+}
+.sg-field .sg-choice input:focus-visible + .option-label {
+	outline: 2px solid var(--ink);
+	outline-offset: 3px;
+}
+.sg-field .sg-choice input:disabled + .option-label {
+	color: var(--sg-control-muted);
+	background: var(--sg-control-fill);
+	cursor: default;
+}
+.sg-number {
+	display: grid !important;
+	grid-template-columns: 44px minmax(40px, 1fr) 44px !important;
+	align-items: center;
+	gap: 0 !important;
+	min-height: var(--sg-control-height);
+	padding: 0 !important;
+	border: 0 !important;
+	border-radius: var(--sg-control-radius) !important;
+	background: var(--sg-control-fill) !important;
+	box-sizing: border-box;
+}
+.sg-number > input {
+	grid-column: 2;
+	grid-row: 1;
+	width: 100% !important;
+	min-width: 0 !important;
+	height: auto !important;
+	min-height: max(46px, 1.5em) !important;
+	padding: 0 4px !important;
+	border: 0 !important;
+	background: transparent !important;
+	border-radius: 8px !important;
+	color: var(--label, #1f2320);
+	font: 400 var(--sg-type-number-input) / 1.5 var(--sg-font-number) !important;
+	text-align: center;
+	font-variant-numeric: tabular-nums;
+	appearance: textfield;
+	-moz-appearance: textfield;
+	caret-color: var(--ink);
+}
+.sg-number input::-webkit-inner-spin-button,
+.sg-number input::-webkit-outer-spin-button {
+	appearance: none;
+	margin: 0;
+}
+.sg-number > button:first-of-type {
+	grid-column: 1;
+	grid-row: 1;
+}
+.sg-number > button:last-of-type {
+	grid-column: 3;
+	grid-row: 1;
+}
+.sg-number > button.sg-button[data-sg-button],
+.sg-number > button {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 44px !important;
+	min-width: 44px !important;
+	height: 44px !important;
+	min-height: 44px !important;
+	padding: 0 !important;
+	border: 0;
+	border-radius: 10px;
+	background: transparent !important;
+	color: var(--ink);
+	font-size: var(--sg-type-amount);
+	touch-action: manipulation;
+}
+.sg-number > button svg {
+	width: var(--sg-icon-control);
+	height: var(--sg-icon-control);
+	stroke: currentColor;
+	fill: none;
+	stroke-width: 1.65;
+	stroke-linecap: round;
+}
+.sg-number > button:disabled,
+.sg-number > input:disabled {
+	color: var(--sg-control-muted) !important;
+	opacity: 0.55;
+}
+.sg-number > input::placeholder {
+	font-size: var(--sg-type-body);
+	color: var(--sg-control-muted);
+	opacity: 1;
+}
+.sg-number:has(input[aria-invalid="true"]) {
+	border-color: var(--sg-control-danger) !important;
+}
+.sg-number:has(> input:focus-visible) {
+	outline: 2px solid var(--ink);
+	outline-offset: -2px;
+}
+.sg-number input:focus-visible {
+	outline: 0;
+}
+/* Compound controls touch scrollport edges: each keyboard target keeps its ring inside. */
+.sg-number > button.sg-button[data-sg-button]:focus-visible {
+	outline-offset: -2px;
+}
+html[data-sg-motion-input="pointer"] .sg-number:has(> input:focus-visible) {
+	outline: 0;
+}
+.sg-field :is(input.sg-input, select.sg-input, textarea.sg-input) {
+	box-sizing: border-box;
+	width: 100%;
+	min-width: 0;
+	min-height: var(--sg-control-height);
+	padding: 11px 14px;
+	border: 0;
+	border-radius: var(--sg-control-radius);
+	background-color: var(--sg-control-fill);
+	color: var(--label, #1f2320);
+	font-family: inherit;
+	font-size: var(--sg-type-body);
+	line-height: 1.5;
+	caret-color: var(--ink);
+}
+.sg-field select.sg-input {
+	padding-right: 40px;
+}
+.sg-field textarea.sg-input {
+	min-height: 128px;
+	line-height: 1.7;
+	resize: vertical;
+}
+.sg-input::placeholder {
+	color: var(--sg-control-muted);
+	opacity: 1;
+}
+.sg-input:focus-visible {
+	outline: 2px solid var(--ink);
+	outline-offset: 3px;
+}
+.sg-input[aria-invalid="true"] {
+	border-color: var(--sg-control-danger) !important;
+}
+.sg-error {
+	margin: 8px 0 0;
+	color: var(--sg-control-danger);
+	font-size: var(--sg-text-help);
+	line-height: 1.6;
+}
+.sg-error:empty,
+.sg-error[hidden] {
+	display: none;
+}
+.sg-field[aria-invalid="true"] .sg-choice .option-label {
+	border-color: var(--sg-control-danger);
+}
+.sg-field.sg-document-commands .option-label {
+	border: 0;
+	background: transparent;
+	font-size: var(--sg-type-compact);
+	min-height: 44px;
+}
+.sg-field.sg-document-commands input:checked + .option-label {
+	background: var(--sg-control-fill);
+	border: 0;
+}
+.sg-field.sg-document-commands .option-label {
+	padding-inline: 10px;
+}
+[data-sg-controls-input="keyboard"]
+	:is(.option-label, .toggle-track, .toggle-track::after, .config-scroll summary > svg) {
+	transition: none !important;
+}
+@media (hover: hover) and (pointer: fine) {
+	.sg-field .sg-choice .option:has(input:not(:disabled)):hover .option-label {
+		background: color-mix(in srgb, var(--ink) 10%, var(--surface));
+	}
+	.sg-field .sg-choice .option:has(input:checked):hover .option-label {
+		background: var(--wash);
+	}
+	.sg-number > button:not(:disabled):hover {
+		background: color-mix(in srgb, var(--ink) 8%, transparent) !important;
+	}
+}
+@media (prefers-reduced-motion: reduce) {
+	.sg-field .option-label,
+	.toggle-track,
+	.toggle-track::after,
+	.config-scroll summary > svg {
+		transition: none !important;
+	}
+}
+
+/* Text fields share type and focus; compound composers keep their own outer surface. */
+.sg-text-control {
+	font-family: inherit !important;
+	font-size: var(--sg-type-body) !important;
+	line-height: 1.65 !important;
+	caret-color: var(--ink);
+	accent-color: var(--ink);
+}
+.sg-text-control::placeholder {
+	color: var(--sg-control-muted);
+	opacity: 1;
+}
+.sg-text-control[data-sg-field-appearance="standalone"] {
+	min-height: 48px;
+	padding: 11px 14px;
+	border: 0;
+	border-radius: var(--sg-control-radius);
+	background: var(--sg-control-fill);
+	color: var(--label, #1f2320);
+}
+textarea.sg-text-control[data-sg-field-appearance="standalone"] {
+	min-height: 128px;
+}
+.sg-text-control:focus-visible {
+	outline: 2px solid var(--ink);
+	outline-offset: 3px;
+}
+.sg-text-control[data-sg-field-appearance="embedded"]:focus-visible {
+	outline: 2px solid var(--ink);
+	outline-offset: -2px;
+	border-radius: 8px;
+}
+:is(.input-frame, .profile-fields .field-row):has(.sg-text-control:focus-visible) {
+	outline: 2px solid var(--ink);
+	outline-offset: 3px;
+	border-radius: 12px;
+}
+.sg-select-control:not([multiple]) {
+	min-height: 48px;
+	border-radius: var(--sg-control-radius);
+	padding: 11px 40px 11px 14px;
+	font-size: var(--sg-type-body);
+	line-height: 1.5;
+	background-color: var(--sg-control-fill);
+	color: var(--label, #1f2320);
+}
+.dialog-content label {
+	font-size: var(--sg-type-body);
+	line-height: 1.5;
+}
+.config-scroll .number-field {
+	grid-template-columns: minmax(0, 1fr) 140px;
+	gap: 0 10px;
+}
+.config-scroll :is(.quota-column-head, .social-quota-row) {
+	grid-template-columns: minmax(0, 1fr) 132px 44px;
+	gap: 8px;
+}
+.config-scroll .tool-toggle .toggle-track {
+	transition: background-color var(--sg-motion-state) ease;
+}
+.config-scroll .tool-toggle .toggle-track:after {
+	transition: transform var(--sg-motion-release) var(--sg-control-ease);
+}
+
+.sg-field .sg-choice .option:has(input:disabled) {
+	cursor: default;
+}
+
+:is(.input-frame, .profile-fields .field-row)
+	.sg-text-control[data-sg-field-appearance="embedded"]:focus-visible {
+	outline: 0;
+}
+
+html[data-sg-motion-input="keyboard"]
+	:is(
+		.option-label,
+		.toggle-track,
+		.toggle-track::after,
+		.score-option span,
+		.member-check,
+		.member-check svg,
+		.record-chevron,
+		summary::after,
+		summary > svg
+	) {
+	transition: none !important;
+}
+details[data-sg-disclosure-input="instant"] :is(.record-chevron, summary::after, summary > svg) {
+	transition: none;
+}
+
+/* Native selector: one visual owner; the OS retains its accessible option popup. */
+select:not([multiple]) {
+	appearance: none;
+	min-height: 44px;
+	padding: 9px 44px 9px 14px;
+	border: 0;
+	border-radius: var(--sg-control-radius);
+	background-color: var(--sg-control-fill);
+	background-image: none;
+	font-family: inherit;
+	font-size: var(--sg-type-body);
+	line-height: 1.5;
+	color: var(--label);
+}
+select:not([multiple]):focus-visible {
+	outline: 2px solid var(--ink);
+	outline-offset: 3px;
+}
+
+/* Borderless controls: one material, one shape family. Focus is transient, not a frame. */
+.sg-field .sg-choice input:checked:disabled + .option-label {
+	background: color-mix(in srgb, var(--wash) 72%, var(--surface));
+}
+.sg-select-control:not([multiple]),
+.sg-text-control[data-sg-field-appearance="standalone"] {
+	background-color: var(--sg-control-fill);
+	border-radius: var(--sg-control-radius);
+}
+:is(.input-frame, .first-message, .profile-fields input, .profile-fields textarea) {
+	background: var(--sg-control-fill);
+	border-radius: var(--sg-control-radius);
+}
+html[data-sg-motion-input="pointer"] :is(input, textarea, select):focus-visible {
+	outline: 0;
+}
+html[data-sg-motion-input="pointer"]
+	:is(.input-frame, .profile-fields .field-row):has(.sg-text-control:focus-visible) {
+	outline: 0;
+}
+
+.sg-disclosure {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 12px;
+	min-height: 44px;
+	list-style: none;
+	cursor: pointer;
+}
+.sg-disclosure::-webkit-details-marker {
+	display: none;
+}
+.sg-disclosure::marker {
+	content: "";
+}
+.sg-disclosure::after {
+	content: none;
+}
+.sg-disclosure:focus-visible {
+	outline: 2px solid var(--ink);
+	outline-offset: 3px;
+	border-radius: var(--sg-radius-control);
+}
+.sg-disclosure-chevron {
+	flex: none;
+	margin-inline: 14px;
+	width: var(--sg-icon-chevron);
+	height: var(--sg-icon-chevron);
+	stroke: currentColor;
+	stroke-width: var(--sg-icon-stroke);
+	fill: none;
+	pointer-events: none;
+	transform: rotate(0deg);
+	transition: transform var(--sg-motion-release) var(--sg-ease);
+}
+details[open] > summary > .sg-disclosure-chevron {
+	transform: rotate(180deg);
+}
+html[data-sg-motion-input="keyboard"] .sg-disclosure-chevron {
+	transition: none;
+}
+@media (prefers-reduced-motion: reduce) {
+	.sg-disclosure-chevron {
+		transition: none;
+	}
+}
+
+/* The native control and its shared SVG use one optical center, not a CSS triangle. */
+.sg-select {
+	display: block;
+	position: relative;
+	min-width: 0;
+}
+.sg-field > .sg-select,
+.dialog-content .sg-select {
+	width: 100%;
+}
+.sg-select > select {
+	display: block;
+	box-sizing: border-box;
+	width: 100%;
+	padding-inline-end: 44px;
+}
+.sg-select > .sg-select-chevron {
+	position: absolute;
+	inset-inline-end: 14px;
+	top: 50%;
+	width: var(--sg-icon-chevron);
+	height: var(--sg-icon-chevron);
+	transform: translateY(-50%);
+	stroke: currentColor;
+	stroke-width: var(--sg-icon-stroke);
+	stroke-linecap: round;
+	stroke-linejoin: round;
+	fill: none;
+	pointer-events: none;
+	color: var(--secondary);
+}
+.sg-select:has(select:disabled) > .sg-select-chevron {
+	opacity: 0.55;
+}
+
+.config-scroll summary > svg {
+	width: var(--sg-icon-chevron);
+	height: var(--sg-icon-chevron);
+	margin-inline: 14px;
+	stroke-width: var(--sg-icon-stroke);
+}
+
+.sg-disclosure-chevron,
+.config-scroll summary > svg {
+	color: var(--secondary);
+	stroke: currentColor;
+}
+
+textarea.sg-text-control[data-sg-auto-size] {
+	field-sizing: content;
+	height: auto;
+	min-height: 2lh;
+	max-height: 35dvh;
+	overflow-y: auto;
+	resize: none;
+}
+
+.sg-control-error {
+	margin: 8px 0 0;
+	color: var(--label);
+	font-size: var(--sg-type-meta);
+	line-height: 1.6;
+	overflow-wrap: anywhere;
+}
+
+/* A fixed/read-only selection is a value, not a disabled dropdown with a false affordance. */
+.sg-field > .sg-field-value {
+	margin: 0;
+	min-block-size: var(--sg-control-height);
+	display: flex;
+	align-items: center;
+	overflow-wrap: anywhere;
+	color: var(--secondary);
+	font: 400 var(--sg-type-body) / var(--sg-leading-body) var(--sg-font-ui);
+}
+/* React utility selectors own their select node and an icon-only tail. */
+.sg-select-chevron > svg {
+	display: block;
+	inline-size: 100%;
+	block-size: 100%;
+	stroke: inherit;
+	stroke-width: inherit;
+	fill: none;
+}
+/* A single decision may borrow its visible prompt from the task; retain its programmatic field label. */
+[data-field-labels="task"] .sg-field > :is(legend, label) {
+	position: absolute;
+	inline-size: 1px;
+	block-size: 1px;
+	padding: 0 !important;
+	margin: -1px !important;
+	overflow: hidden;
+	clip-path: inset(50%);
+	white-space: nowrap;
+}

@@ -1,0 +1,202 @@
+/* Product text roles: same meaning -> same role, not every string the same size. */
+
+body {
+	font-family: var(--sg-font-ui);
+	-webkit-font-smoothing: antialiased;
+}
+button,
+input,
+select,
+textarea {
+	font-family: var(--sg-font-ui);
+}
+.sg-person-name {
+	font: inherit;
+	color: inherit;
+	min-width: 0;
+	overflow-wrap: anywhere;
+}
+.sg-person-you,
+.sg-self,
+.self-label,
+.you,
+.profile-self {
+	font: 400 0.75rem / 1.5 var(--sg-font-ui);
+	color: var(--secondary);
+	margin-inline-start: 0.5rem;
+	white-space: nowrap;
+}
+.sg-person-mention {
+	display: inline;
+	font-family: var(--sg-font-ui);
+	font-size: inherit;
+	line-height: inherit;
+	font-weight: 500;
+	color: var(--ink);
+	overflow-wrap: anywhere;
+	cursor: text;
+	text-decoration: none;
+}
+.sg-person-at {
+	font-weight: 400;
+}
+.sg-person-self,
+.sg-person-unknown {
+	font: inherit;
+	color: inherit;
+}
+:is(
+	.profile-copy strong,
+	.identity > strong,
+	.player-name,
+	.conversation-copy > strong,
+	.member-name
+) {
+	font-size: var(--sg-text-name);
+	font-weight: var(--sg-weight-name);
+	line-height: 1.5;
+	overflow-wrap: anywhere;
+}
+:is(
+	.author h2,
+	.reply-heading strong,
+	.message-name,
+	.review-name,
+	.composer-byline,
+	.newpost-byline
+) {
+	font-family: var(--sg-font-ui);
+	font-size: var(--sg-text-author);
+	font-weight: var(--sg-weight-name);
+	line-height: 1.5;
+	overflow-wrap: anywhere;
+}
+:is(
+	.author small,
+	.reply-heading small,
+	.review-time,
+	.step-label,
+	.compose-meta,
+	.create-budget,
+	.quota,
+	.local-status,
+	.identity-meta,
+	.identity p,
+	.player-meta,
+	.count,
+	.person-sub
+) {
+	font-size: var(--sg-text-meta);
+	line-height: 1.5;
+	color: var(--secondary);
+	font-variant-numeric: tabular-nums;
+}
+:is(.thread > p, .bubble, .review-text) {
+	font-size: var(--sg-text-body);
+	line-height: var(--sg-leading-copy);
+	overflow-wrap: anywhere;
+}
+.profile-copy small {
+	font-size: var(--sg-text-help);
+	line-height: var(--sg-leading-copy);
+}
+.reply-content > p {
+	font-size: var(--sg-text-body);
+	line-height: var(--sg-leading-copy);
+	overflow-wrap: anywhere;
+}
+:is(.description, .intro > .description) {
+	font-size: var(--sg-type-description, 1rem);
+	line-height: var(--sg-leading-description, 1.75);
+}
+:is(.profile-fields label, .first-message-label, .inline-editor > label) {
+	font-size: var(--sg-text-help);
+	line-height: 1.5;
+	font-weight: 500;
+}
+:is(
+	.profile-fields textarea,
+	.profile-fields input,
+	.first-message,
+	.inline-editor textarea,
+	#review-text,
+	#message-input
+) {
+	font-size: var(--sg-type-body);
+	line-height: var(--sg-leading-copy);
+	caret-color: var(--ink);
+}
+::selection {
+	background: var(--wash);
+	color: var(--label);
+}
+
+/* Inline identity candidates: text keeps its natural line box, artwork follows its optical baseline. */
+.sg-person-mention.sg-person-inline {
+	display: inline;
+	line-height: inherit;
+	overflow-wrap: anywhere;
+}
+.sg-person-inline .sg-avatar {
+	--avatar-size: var(--sg-inline-avatar-size);
+	display: inline-grid;
+	inline-size: var(--avatar-size);
+	block-size: var(--avatar-size);
+	font-size: inherit;
+	margin-inline: var(--sg-person-inline-gap);
+	vertical-align: var(--sg-inline-avatar-baseline);
+}
+.sg-person-inline .sg-person-visible-name,
+.sg-person-inline .sg-person-text {
+	font: inherit;
+	line-height: inherit;
+	overflow-wrap: anywhere;
+}
+.sg-person-inline .sg-person-at {
+	font-weight: 400;
+}
+
+/* Inline navigation is text, not a command pill; its line box keeps the reading rhythm. */
+button.sg-person-link {
+	appearance: none;
+	display: inline;
+	background: none;
+	border: 0;
+	border-radius: 2px;
+	padding: 0;
+	margin: 0;
+	font: inherit;
+	line-height: inherit;
+	color: var(--ink);
+	text-align: inherit;
+	vertical-align: baseline;
+	white-space: inherit;
+	cursor: pointer;
+	touch-action: manipulation;
+	-webkit-tap-highlight-color: transparent;
+}
+button.sg-person-link:focus-visible {
+	outline: 2px solid var(--ink);
+	outline-offset: 2px;
+}
+@media (hover: hover) and (pointer: fine) {
+	button.sg-person-link:hover .sg-person-text {
+		text-decoration: underline;
+		text-underline-offset: 0.18em;
+	}
+}
+
+/* Workspace detail identities share the panel-title role, independently of list names. */
+:is(.person-heading h2, .dm-chat-head h2, .create-head h2) {
+	font-size: var(--sg-type-title);
+	line-height: var(--sg-leading-interface);
+	font-weight: 600;
+	overflow-wrap: anywhere;
+}
+
+/* Reply source metadata grows with text; its reading column owns the available measure. */
+.reply-heading small {
+	max-inline-size: 100%;
+	white-space: normal;
+	overflow-wrap: anywhere;
+}

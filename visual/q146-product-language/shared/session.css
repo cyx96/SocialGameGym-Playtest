@@ -1,0 +1,27 @@
+*{box-sizing:border-box}html{height:100%}body{--secondary:var(--sub,#535a55);min-height:100dvh;height:100dvh;margin:0;display:flex;flex-direction:column;background:var(--canvas,#f9fbfa);color:var(--label,#1f2320);font:15px/1.6 -apple-system,BlinkMacSystemFont,'PingFang SC',sans-serif}button{font:inherit}button,a{-webkit-tap-highlight-color:transparent}a.brand{text-decoration:none}.review-strip{flex:none;position:relative;min-height:44px;background:#edf2ef;color:#53665a;padding:0 20px;display:flex;align-items:center;justify-content:space-between;font-size:11px;gap:12px}.review-strip button{border:0;background:none;color:inherit;padding:3px 5px;font:inherit;cursor:pointer}#review-controls{position:absolute;right:12px;top:100%;z-index:5;background:white;padding:12px;border:0;border-radius:12px;box-shadow:0 8px 30px #15251b16;display:grid;gap:8px}#review-controls[hidden]{display:none}#session-content{flex:1;min-height:0;display:flex;flex-direction:column}#desktop{display:flex;flex:1;min-height:0;flex-direction:column;width:calc(100% - var(--sg-safe-start) - var(--sg-safe-end));max-width:35rem;margin:0 auto;padding:var(--sg-space-section) 0 max(var(--sg-space-section),env(safe-area-inset-bottom))}#desktop[hidden],#active-app[hidden]{display:none!important}.tool-grid{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--sg-space-task) var(--sg-space-section);align-self:center;width:100%;max-width:30rem;margin:auto 0;flex:none;padding:var(--sg-space-task) 0}.launch-tool{display:flex;flex-direction:column;align-items:center;gap:8px;min-height:124px;border:0;background:none;color:var(--label);padding:0;cursor:pointer;touch-action:manipulation}.launch-tool .tool-caption{display:flex;flex-direction:column;align-items:center;line-height:1.5;font-size:14px}.tool-mode{font-size:11px;color:var(--secondary,#535a55);min-height:17px}.desktop-actions{margin-top:auto;padding-top:var(--sg-space-section);display:grid;gap:var(--sg-space-paragraph);width:100%}.desktop-actions p{font-size:13px;color:var(--secondary,#535a55);margin:0;min-height:21px}#finish-social{width:100%}#active-app{flex:1;min-height:0;display:flex;flex-direction:column;width:100%;max-width:none;margin:auto}#active-app iframe{border:0;display:block;width:100%;height:100%;min-height:0;flex:1;background:var(--canvas,#f9fbfa)}.launch-tool:disabled{opacity:.5;cursor:default}
+@media(min-width:761px){.desktop-actions{grid-template-columns:1fr 14rem;align-items:center}.desktop-actions p{grid-column:1}.desktop-actions>.sg-button{grid-column:2}.review-strip{padding-inline:max(40px,calc((100vw - 1120px)/2))}}
+@media(max-height:600px){.tool-grid{row-gap:12px;padding-block:12px}.launch-tool{min-height:100px}#desktop{overflow:auto}}
+/* Hidden app frames retain their state, but never participate in layout or focus. */
+#active-app iframe[hidden]{display:none!important}
+#session-end[hidden]{display:none}
+#session-end{flex:1;min-height:0;display:flex;flex-direction:column;overflow:auto}
+.end-page{flex:1;display:flex;flex-direction:column;margin-top:0;padding-top:var(--sg-space-task)}
+.end-page h1{font-size:var(--sg-task-title);line-height:var(--sg-task-title-leading);font-weight:600;letter-spacing:-.02em;margin:0 0 var(--sg-space-paragraph)}
+.end-page .description{margin:0;color:var(--secondary);font-size:16px;line-height:1.8}
+.end-actions{display:flex;flex-direction:column;gap:var(--sg-space-related)}
+.end-actions>.sg-button{width:100%}
+@media(min-width:761px){.end-actions{align-items:flex-end}.end-actions>.sg-button{width:auto;min-width:180px}}
+::selection{background:var(--wash);color:var(--label)}
+/* Reviewer controls sit above the product bar; never part of the player UI. */
+.review-strip{z-index:20}
+
+.sg-product-bar .sg-progress[hidden]{display:none}
+#session-end-title:focus{outline:none}
+
+/* Compact launcher keeps the same six-app order while preserving the action rail. */
+@media(max-height:480px){
+ #desktop{padding-block:8px max(8px,env(safe-area-inset-bottom))}
+ .tool-grid{--sg-launch-size:56px;--sg-launch-glyph:42px;--sg-launch-radius:18px;row-gap:12px;max-width:24rem;padding-block:0}
+ .launch-tool{min-height:83px;gap:6px}
+ .desktop-actions{padding-top:8px;gap:8px}
+}

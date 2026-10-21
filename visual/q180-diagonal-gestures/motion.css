@@ -1,0 +1,330 @@
+:root {
+	--ink: #555c57;
+	--wash: #eee;
+	--surface: #fff;
+	--secondary: #657064;
+	--label: #283029;
+	--canvas: #fafbf9;
+	--ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+}
+body {
+	overflow: hidden;
+	background: var(--canvas);
+	overscroll-behavior: none;
+}
+.catalog-header {
+	height: 76px;
+	padding-inline: max(24px, calc((100vw - 1120px) / 2));
+	display: flex;
+	align-items: center;
+	gap: 24px;
+	background: #fff;
+	border-bottom: 1px solid #dce2da;
+	position: relative;
+	z-index: 200;
+}
+.catalog-header .brand {
+	color: var(--ink);
+	transition: color 220ms ease;
+}
+.catalog-header nav {
+	display: flex;
+	gap: 4px;
+	margin-left: auto;
+}
+#stage {
+	height: calc(100dvh - 76px);
+	position: relative;
+	overflow: hidden;
+	touch-action: none;
+	user-select: none;
+	-webkit-user-select: none;
+	overscroll-behavior: contain;
+	cursor: grab;
+	outline-offset: -4px;
+	background: var(--canvas);
+	transition: background-color 220ms ease;
+}
+#stage.dragging {
+	cursor: grabbing;
+}
+#stage:focus-visible {
+	outline: 2px solid var(--ink);
+}
+.assembly {
+	position: absolute;
+	left: 50%;
+	top: 50%;
+	width: 300px;
+	height: 450px;
+	container-type: inline-size;
+	transform-origin: center;
+	pointer-events: auto;
+}
+.board-layer,
+.front-layer {
+	position: absolute;
+	inset: 0;
+	pointer-events: none;
+}
+.board-layer {
+	z-index: 5;
+}
+.front-layer {
+	z-index: 80;
+}
+.front-layer .identity {
+	bottom: 7%;
+}
+.front-layer .paper-front {
+	z-index: 2;
+}
+.front-layer .identity {
+	z-index: 4;
+}
+.front-layer .fold-edge {
+	z-index: 3;
+}
+.front-layer .entry-shadow {
+	z-index: 2;
+}
+.front-layer .paper-grain {
+	opacity: 0.05;
+}
+.card-wrap {
+	position: absolute;
+	left: 50%;
+	top: 50%;
+	width: 300px;
+	height: 450px;
+	transform-origin: center;
+	perspective: 1300px;
+	pointer-events: auto;
+}
+.card-turn {
+	position: absolute;
+	inset: 0;
+	transform-style: preserve-3d;
+}
+.card-face {
+	position: absolute;
+	inset: 0;
+	border-radius: 14px;
+	backface-visibility: hidden;
+	-webkit-backface-visibility: hidden;
+	overflow: hidden;
+	box-shadow:
+		0 2px 4px #28392516,
+		0 15px 24px -20px #28392566;
+	background: var(--paper);
+	color: var(--ink);
+}
+.card-front .art {
+	position: absolute;
+	inset: 0;
+	background-image: var(--art);
+	background-size: var(--art-size);
+	background-position: var(--art-position);
+}
+.card-front .wash {
+	position: absolute;
+	inset: 0;
+	background: linear-gradient(transparent 57%, var(--paper) 85%, var(--paper));
+}
+.card-copy {
+	position: absolute;
+	bottom: 26px;
+	left: 24px;
+	right: 24px;
+}
+.card-copy h1 {
+	font:
+		600 29px / 1.3 "Songti SC",
+		serif;
+	margin: 0 0 10px;
+	letter-spacing: 0.01em;
+}
+.card-copy p {
+	font-size: 16px;
+	line-height: 1.65;
+	margin: 0;
+	color: var(--ink);
+}
+.flip-button {
+	position: absolute !important;
+	right: 8px;
+	top: 8px;
+	background: #ffffffdc !important;
+	color: var(--ink) !important;
+}
+.card-back {
+	transform: rotateY(180deg);
+	padding: 24px;
+	overflow: auto;
+	overscroll-behavior: contain;
+	touch-action: pan-y;
+	user-select: text;
+	-webkit-user-select: text;
+}
+.card-back h2 {
+	margin: 5px 0 25px;
+	font-size: 20px;
+	font-weight: 550;
+}
+.card-back .game-name {
+	font-size: 14px;
+	color: var(--secondary);
+	margin: 0 0 12px;
+	padding-right: 34px;
+}
+.card-back details {
+	border-top: 1px solid #dce2d9;
+	padding: 14px 0;
+}
+.card-back summary {
+	font-size: 16px;
+	font-weight: 550;
+	cursor: pointer;
+	list-style: none;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+.card-back summary:after {
+	content: "⌄";
+	font-weight: 400;
+	color: var(--secondary);
+}
+.config-row {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 8px;
+	font-size: 15px;
+	margin-top: 18px;
+}
+.config-row .sg-number {
+	width: 128px;
+	flex: none;
+	transform: scale(0.9);
+	transform-origin: right center;
+	margin-left: -12px;
+}
+.config-row input {
+	font-size: 16px;
+}
+.config-row input[type="checkbox"] {
+	width: 18px;
+	height: 18px;
+	accent-color: var(--ink);
+}
+.config-row label {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+}
+.card-wrap[data-current="false"] .flip-button {
+	display: none !important;
+}
+#stage:after {
+	content: "";
+	position: absolute;
+	inset: 0;
+	z-index: 150;
+	pointer-events: none;
+	background: linear-gradient(var(--canvas), transparent 4%, transparent 96%, var(--canvas));
+	opacity: 0.22;
+}
+.sr-only {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	overflow: hidden;
+	clip-path: inset(50%);
+	white-space: nowrap;
+}
+#search-dialog {
+	border: 0;
+	border-radius: 16px;
+	padding: 0;
+	width: min(560px, calc(100vw - 32px));
+	max-height: 70dvh;
+	box-shadow: 0 20px 80px #23352a33;
+	color: var(--label);
+	background: #fff;
+}
+#search-dialog::backdrop {
+	background: #23302626;
+}
+.search-head {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	padding: 12px 16px;
+	border-bottom: 1px solid #e3e7e1;
+}
+.search-head input {
+	width: 100%;
+	border: 0;
+	outline: 0;
+	font: 16px / 1.5 inherit;
+	background: transparent;
+	color: var(--label);
+	padding: 10px 0;
+}
+#results {
+	padding: 8px;
+	overflow: auto;
+	max-height: 50dvh;
+}
+.result {
+	display: block;
+	width: 100%;
+	padding: 14px 16px;
+	text-align: left;
+	border: 0;
+	border-radius: 9px;
+	background: #fff;
+	color: var(--label);
+	font:
+		15px / 1.5 -apple-system,
+		BlinkMacSystemFont,
+		"PingFang SC",
+		sans-serif;
+	cursor: pointer;
+}
+.result:focus-visible {
+	outline: 2px solid var(--ink);
+}
+.result small {
+	display: block;
+	color: var(--secondary);
+	font-size: 13px;
+	margin-top: 3px;
+}
+.result:hover {
+	background: #f2f5ef;
+}
+#results p {
+	margin: 16px;
+	color: var(--secondary);
+}
+@media (max-width: 699px) {
+	.catalog-header {
+		height: 76px;
+		padding-inline: 20px;
+		gap: 12px;
+	}
+	.catalog-header .brand {
+		font-size: 17px;
+	}
+	.catalog-header .page-name {
+		display: none;
+	}
+}
+@media (prefers-reduced-motion: reduce) {
+	#stage,
+	.catalog-header .brand {
+		transition: none;
+	}
+}

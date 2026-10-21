@@ -1,0 +1,260 @@
+/* Profile geometry; typography consumes foundation/product-language roles, not descendant paragraph overrides. */
+body {
+	height: 100dvh;
+	min-height: 0;
+	background: var(--canvas);
+	font-size: var(--sg-type-body);
+}
+body > .sg-page {
+	margin-top: 0;
+	min-height: 0;
+	overflow: auto;
+	padding-bottom: max(var(--sg-space-section), env(safe-area-inset-bottom));
+}
+[hidden] {
+	display: none !important;
+}
+#profile-toolbar {
+	position: sticky;
+	top: 0;
+	z-index: 2;
+	background: var(--canvas);
+}
+#profile-list {
+	background: var(--surface);
+	border-radius: var(--sg-radius-surface);
+	padding-inline: var(--sg-space-surface);
+}
+.profile-row {
+	display: flex;
+	align-items: center;
+	gap: var(--sg-space-paragraph);
+	width: 100%;
+	min-height: 88px;
+	padding: var(--sg-space-sibling) 0;
+	border: 0;
+	background: none;
+	text-align: left;
+	color: var(--label);
+	font: inherit;
+	cursor: pointer;
+}
+.profile-copy {
+	flex: 1;
+	min-width: 0;
+}
+.profile-copy strong {
+	font-size: var(--sg-text-name);
+	font-weight: var(--sg-weight-name);
+	overflow-wrap: anywhere;
+}
+.profile-copy small {
+	display: block;
+	font-size: var(--sg-text-help);
+	line-height: var(--sg-leading-copy);
+	color: var(--secondary);
+	margin-top: var(--sg-space-related);
+	white-space: pre-line;
+	overflow-wrap: anywhere;
+}
+.profile-row > svg {
+	width: var(--sg-icon-chevron);
+	height: var(--sg-icon-chevron);
+	color: var(--secondary);
+	flex: none;
+	fill: none;
+	stroke: currentColor;
+	stroke-width: var(--sg-icon-stroke);
+	stroke-linecap: round;
+	stroke-linejoin: round;
+}
+.profile-row:focus-visible {
+	outline: 2px solid var(--ink);
+	outline-offset: 3px;
+	border-radius: 8px;
+}
+#profile-edit {
+	display: grid;
+	gap: var(--sg-space-section);
+}
+.profile-avatar {
+	display: flex;
+	justify-content: center;
+	padding-top: var(--sg-space-section);
+}
+.profile-fields {
+	padding: var(--sg-space-surface);
+	border-radius: var(--sg-radius-surface);
+	background: var(--surface);
+	display: grid;
+	gap: var(--sg-space-section);
+}
+.profile-fields label {
+	display: grid;
+	gap: var(--sg-space-related);
+	font-size: var(--sg-text-help);
+}
+.profile-fields input,
+.profile-fields textarea {
+	font: inherit;
+	font-size: var(--sg-type-input);
+	line-height: var(--sg-leading-copy);
+	width: 100%;
+	padding: 10px 12px;
+	color: var(--label);
+	background: var(--sg-control-fill);
+	border: 0;
+	border-radius: var(--sg-control-radius);
+}
+.profile-fields textarea {
+	resize: vertical;
+	min-height: 120px;
+}
+.profile-fields :is(input, textarea):focus-visible {
+	outline: 2px solid var(--ink);
+	outline-offset: 2px;
+}
+#profile-status {
+	font-size: var(--sg-text-meta);
+	line-height: var(--sg-leading-interface);
+	color: var(--secondary);
+	margin: 0;
+	min-height: 21px;
+}
+#detail-body {
+	display: grid;
+	gap: var(--sg-space-section);
+	padding-bottom: var(--sg-space-section);
+	font: 400 var(--sg-type-body) / var(--sg-leading-body) var(--sg-font-ui);
+}
+#detail-body p {
+	margin: 0;
+	white-space: pre-wrap;
+	overflow-wrap: anywhere;
+}
+.profile-filter {
+	margin: 0 0 var(--sg-space-paragraph);
+	display: flex;
+	justify-content: flex-start;
+}
+.profile-empty {
+	margin: 0;
+	padding: var(--sg-space-section) 0;
+	color: var(--secondary);
+	font-size: var(--sg-text-help);
+}
+.profile-follow:empty {
+	display: none;
+}
+.profile-follow {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: var(--sg-space-related);
+}
+.profile-error {
+	width: 100%;
+	font: 400 var(--sg-text-meta) / var(--sg-leading-interface) var(--sg-font-ui);
+	color: var(--sg-control-danger);
+	margin: 0;
+}
+.profile-relation,
+.profile-activity-status,
+.profile-activity-meta {
+	font: 400 var(--sg-text-help) / var(--sg-leading-interface) var(--sg-font-ui);
+	color: var(--secondary);
+}
+.profile-activity,
+.profile-game-item,
+.profile-activity-item {
+	min-width: 0;
+}
+.profile-activity-heading {
+	margin: 0 0 var(--sg-space-paragraph);
+	font: 550 var(--sg-type-body) / var(--sg-leading-interface) var(--sg-font-ui);
+	color: var(--label);
+}
+.profile-activity-content {
+	display: block;
+	padding-top: 0;
+	min-width: 0;
+}
+.profile-activity-list {
+	display: grid;
+	gap: var(--sg-space-section);
+}
+.profile-activity-item {
+	display: grid;
+	gap: var(--sg-space-related);
+	font: 400 var(--sg-type-body) / var(--sg-leading-body) var(--sg-font-ui);
+}
+.profile-activity-tag {
+	display: block;
+	font: 400 var(--sg-type-meta) / var(--sg-leading-interface) var(--sg-font-ui);
+	color: var(--secondary);
+	margin: 0;
+}
+.profile-activity .sg-game-round-copy {
+	gap: var(--sg-space-related);
+	padding-block: 0;
+}
+.profile-activity-status:empty {
+	display: none;
+}
+.profile-activity-actions {
+	display: flex;
+	align-items: center;
+	gap: var(--sg-space-related);
+	padding-top: var(--sg-space-related);
+}
+.profile-unread {
+	flex: none;
+	min-width: 20px;
+	text-align: center;
+	color: var(--ink);
+	font: 400 var(--sg-text-meta) / var(--sg-leading-interface) var(--sg-font-number);
+	font-variant-numeric: tabular-nums;
+}
+.profile-quota {
+	font: 400 var(--sg-text-meta) / var(--sg-leading-interface) var(--sg-font-ui);
+	color: var(--secondary);
+}
+
+/* Existing detail content inside the host Reading: one surface, header and scroll owner. */
+html[data-profile-peek],
+html[data-profile-peek] body[data-sg-shell][data-scroll="workspace"] {
+	height: auto;
+	block-size: auto;
+	min-block-size: 0;
+	margin: 0;
+	display: block;
+	overflow: hidden;
+	background: transparent;
+}
+html[data-profile-peek] main {
+	display: none !important;
+}
+html[data-profile-peek] #profile-detail[open] {
+	display: block;
+	position: static;
+	inset: auto;
+	inline-size: 100%;
+	max-inline-size: none;
+	block-size: auto;
+	max-block-size: none;
+	margin: 0;
+	padding: 0;
+	border: 0;
+	border-radius: 0;
+	box-shadow: none;
+	background: transparent;
+	overflow: visible;
+}
+html[data-profile-peek] #profile-detail > .sg-reading-head {
+	display: none;
+}
+html[data-profile-peek] #detail-body {
+	padding: 0;
+	max-block-size: none;
+	overflow: visible;
+}

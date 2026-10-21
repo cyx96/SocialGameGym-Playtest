@@ -1,0 +1,86 @@
+/* Existing social-app icon artwork, extracted as a shared asset. */
+.launch-art {
+	display: block;
+	position: relative;
+	width: var(--sg-launch-size, 88px);
+	height: var(--sg-launch-size, 88px);
+}
+.tool-tile {
+	width: var(--sg-launch-size, 88px);
+	height: var(--sg-launch-size, 88px);
+	display: grid;
+	place-items: center;
+	border-radius: var(--sg-launch-radius, 24px);
+	background: var(--surface, #fff);
+	color: var(--ink);
+	position: relative;
+}
+.tool-tile svg {
+	width: 66px;
+	height: 66px;
+	stroke: none;
+	fill: none;
+	overflow: visible;
+}
+.tool-tile .rear {
+	fill: color-mix(in srgb, var(--ink) 24%, var(--paper));
+}
+.tool-tile .face {
+	fill: var(--ink);
+}
+.tool-tile .paper {
+	fill: white;
+}
+.tool-tile .quiet-fill {
+	fill: var(--control);
+}
+.tool-tile .fine {
+	stroke: white;
+	stroke-width: 2;
+	stroke-linecap: round;
+	stroke-linejoin: round;
+	fill: none;
+}
+.tool-tile .ink-line {
+	stroke: var(--ink);
+	stroke-width: 2;
+	stroke-linecap: round;
+	stroke-linejoin: round;
+	fill: none;
+}
+.tool-tile svg {
+	width: var(--sg-launch-glyph, 62px);
+	height: var(--sg-launch-glyph, 62px);
+}
+.launch-tool .launch-art {
+	transition: transform var(--sg-button-release) var(--sg-button-ease);
+}
+@media (prefers-reduced-motion: no-preference) {
+	html:not([data-sg-motion-input="keyboard"]) .launch-tool:active:not(:disabled) .launch-art {
+		transform: scale(0.97);
+	}
+}
+.launch-tool:focus-visible {
+	outline: 2px solid var(--ink);
+	outline-offset: 6px;
+	border-radius: 18px;
+}
+@media (max-width: 760px) {
+	:root {
+		--sg-launch-size: 80px;
+		--sg-launch-radius: 22px;
+	}
+	.tool-tile svg {
+		width: var(--sg-launch-glyph, 62px);
+		height: var(--sg-launch-glyph, 62px);
+	}
+}
+@media (prefers-reduced-motion: reduce) {
+	.launch-tool .launch-art {
+		transition: none;
+	}
+}
+
+html[data-sg-motion-input="keyboard"] .launch-tool .launch-art {
+	transition: none;
+}

@@ -1,0 +1,54 @@
+/* Composition only; all type, colors, bounds and motion come from shared components. */
+.assembled-fields {
+	display: grid;
+	gap: var(--sg-space-section);
+}
+.assembled-fields > .sg-field {
+	margin: 0;
+}
+.assembled-section {
+	border: 0;
+	border-top: 0;
+	padding: var(--sg-space-sibling) 0;
+}
+.assembled-section > summary {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	min-height: var(--sg-target);
+	font-size: var(--sg-type-body);
+	font-weight: 550;
+	cursor: pointer;
+	list-style: none;
+}
+.assembled-section > .assembled-fields {
+	padding-top: var(--sg-space-sibling);
+}
+.assembled-section .assembled-number {
+	display: grid;
+	grid-template-columns: minmax(0, 1fr) 132px;
+	align-items: center;
+	gap: var(--sg-space-sibling);
+}
+.assembled-section .assembled-number > .control-label {
+	margin: 0;
+}
+.assembled-section .assembled-number > .field-help {
+	grid-column: 1 / -1;
+}
+[data-assembly="config"] > .content {
+	background: var(--surface);
+	padding: var(--sg-space-surface);
+	border-radius: var(--sg-radius-surface);
+}
+[data-assembly="config"] .assembled-section:first-child {
+	border-top: 0;
+	padding-top: 0;
+}
+.metric-value > .number-value {
+	font: inherit;
+}
+
+.assembled-fields:empty {
+	display: none;
+}

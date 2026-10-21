@@ -1,0 +1,239 @@
+:root {
+	--font-ui: var(--sg-font-number);
+	--number-primary: var(--sg-type-metric);
+	--number-input: var(--sg-type-number-input);
+	--number-amount: var(--sg-type-amount);
+	--number-data: var(--sg-type-body);
+	--number-meta: var(--sg-type-meta);
+}
+.ui-number {
+	font-family: var(--font-ui);
+	font-variant-numeric: lining-nums tabular-nums;
+	display: inline-flex;
+	align-items: baseline;
+	gap: 0.3em;
+	max-width: 100%;
+	min-width: 0;
+	line-height: 1.4;
+	letter-spacing: 0;
+	color: inherit;
+	flex-wrap: wrap;
+	text-align: inherit;
+	vertical-align: baseline;
+}
+.numeric-value {
+	min-width: 0;
+	max-width: 100%;
+	overflow-wrap: anywhere;
+}
+.numeric-unit {
+	font-size: 0.7em;
+	font-weight: 400;
+	letter-spacing: 0;
+	line-height: 1.6;
+	color: var(--secondary);
+	white-space: nowrap;
+}
+.num--primary {
+	font-size: var(--number-primary);
+	font-weight: 550;
+	letter-spacing: -0.025em;
+	line-height: 1.15;
+}
+.num--primary .numeric-unit {
+	font-size: var(--sg-type-compact);
+}
+.num--amount {
+	font-size: var(--number-amount);
+	font-weight: 550;
+	letter-spacing: -0.01em;
+}
+.num--amount .numeric-unit {
+	font-size: var(--sg-type-caption);
+}
+.num--data {
+	font-size: var(--number-data);
+}
+.num--meta {
+	font-size: var(--number-meta);
+}
+.num--data .numeric-unit,
+.num--meta .numeric-unit {
+	font-size: inherit;
+	color: inherit;
+}
+.number-approx {
+	border: 0;
+	background: transparent;
+	padding: 0;
+	cursor: pointer;
+	position: relative;
+	min-height: 44px;
+	text-decoration-line: underline;
+	text-decoration-style: dotted;
+	text-decoration-color: var(--line);
+	text-underline-offset: 0.18em;
+}
+.number-approx:focus-visible {
+	outline: 2px solid var(--ink);
+	outline-offset: 4px;
+	border-radius: 4px;
+}
+.number-approx:active {
+	transform: none !important;
+}
+.number-detail {
+	position: fixed;
+	inset: auto;
+	margin: 0;
+	border: 0;
+	border-radius: var(--sg-radius-reading);
+	padding: var(--sg-space-sibling) var(--sg-space-surface);
+	background: var(--surface);
+	color: var(--label);
+	box-shadow: var(--sg-shadow-popover);
+	max-width: calc(100vw - 32px);
+}
+.number-detail::backdrop {
+	background: transparent;
+}
+.number-detail p {
+	margin: 0;
+}
+.number-detail-label {
+	font: var(--sg-type-meta) / 1.6 var(--font-ui);
+	color: var(--secondary);
+}
+.number-detail-value {
+	display: flex;
+	align-items: baseline;
+	gap: 6px;
+	font: 550 var(--sg-type-value) / 1.6 var(--font-ui);
+	font-variant-numeric: tabular-nums;
+	margin-top: 6px !important;
+}
+.number-detail-digits {
+	min-width: 0;
+	overflow-wrap: anywhere;
+}
+.number-detail-value .numeric-unit {
+	font-size: var(--sg-type-meta);
+	flex-shrink: 0;
+	line-height: 1.6;
+}
+.number-detail-note {
+	font: var(--sg-type-meta) / 1.75 var(--font-ui);
+	color: var(--secondary);
+	margin-top: 9px !important;
+}
+#round,
+.phase-label,
+.phase-line,
+.line-number,
+.config-input,
+.number-input,
+.option-numeric,
+.player-meta,
+.count,
+.distribution-row,
+.tool-badge {
+	font-variant-numeric: lining-nums tabular-nums;
+}
+.number-input {
+	font-family: var(--font-ui);
+	font-size: var(--number-input);
+}
+.metric-value {
+	font-size: inherit;
+	letter-spacing: inherit;
+}
+.metric-value > .ui-number {
+	color: var(--ink);
+}
+.record-event-amount {
+	font-size: inherit;
+	font-weight: inherit;
+	letter-spacing: inherit;
+	white-space: normal;
+}
+.record-event-amount .numeric-value {
+	font-size: inherit;
+	margin: 0;
+	font-weight: inherit;
+	letter-spacing: inherit;
+	color: inherit;
+}
+.record-event-amount .numeric-unit {
+	margin: 0;
+}
+.record-round-metric {
+	white-space: normal;
+}
+.record-round-metric .numeric-value {
+	color: inherit;
+}
+.record-event-wide > .record-event-amount {
+	grid-column: 2 / -1;
+	justify-self: start;
+	margin-top: -4px;
+}
+.record-round-wide {
+	flex-wrap: wrap;
+}
+.record-round-wide > .record-round-heading {
+	flex-basis: calc(100% - 32px);
+}
+.record-round-wide > .record-round-metric {
+	order: 3;
+	margin: 0 0 0 0;
+	flex-basis: 100%;
+}
+.record-round-wide > .record-chevron {
+	order: 2;
+}
+.record-fact dd {
+	overflow-wrap: anywhere;
+	min-width: 0;
+}
+.record-fact dd .ui-number {
+	justify-content: flex-end;
+}
+.rating-summary .mean {
+	font-size: inherit;
+	letter-spacing: inherit;
+	font-weight: inherit;
+}
+.rating-summary .mean .ui-number {
+	color: var(--label);
+}
+.distribution-row > span:last-child {
+	text-align: right;
+}
+.player-meta .ui-number {
+	font-size: inherit;
+}
+@media (max-width: 760px) {
+	:root {
+		--number-primary: var(--sg-type-metric);
+	}
+}
+
+.record-group[open] > .record-round .ui-number {
+	color: var(--ink);
+}
+
+.number-pair {
+	display: flex;
+	align-items: baseline;
+	justify-content: flex-end;
+	flex-wrap: wrap;
+	gap: 6px;
+}
+.number-pair-separator {
+	color: var(--secondary);
+}
+.game-title > span,
+.review-time,
+.quota {
+	font-variant-numeric: lining-nums tabular-nums;
+}

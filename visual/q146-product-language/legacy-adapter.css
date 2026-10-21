@@ -1,0 +1,228 @@
+/* Screen geometry belongs to shared/layout.css. This adapter only normalizes legacy component roles. */
+.action-footer > .sg-button[data-sg-role="primary"],
+.document-footer > .sg-button[data-sg-role="primary"],
+.ready-footer > .sg-button[data-sg-role="primary"] {
+	min-width: 152px;
+}
+.sg-button[data-sg-role="icon"]::before {
+	display: none;
+}
+.reading .sg-button,
+.site nav .sg-button {
+	color: var(--secondary);
+}
+.row-action.sg-button {
+	padding-inline: 10px;
+	margin-right: -10px;
+}
+.add-more.sg-button {
+	margin-top: 10px;
+	padding-left: 0;
+}
+.phase .finish.sg-button {
+	margin-left: auto;
+}
+.stepper.sg-button[data-sg-button] {
+	width: 44px;
+	height: 44px;
+	padding: 0;
+	font-size: 24px;
+}
+button[data-step].sg-button,
+button[data-quota-step].sg-button {
+	padding: 0;
+	min-width: 44px;
+	min-height: 44px;
+}
+.sg-document-paper {
+	background: var(--surface);
+	border: 0;
+	border-radius: var(--sg-radius-paper);
+	padding: 27px 24px 30px;
+	box-shadow: var(--sg-shadow-paper);
+}
+.sg-document-heading {
+	display: flex;
+	align-items: baseline;
+	justify-content: space-between;
+	gap: 16px;
+	margin: 0 12px 23px;
+}
+.sg-document-heading h2 {
+	margin: 0;
+	font-size: 19px;
+	line-height: 1.5;
+	font-weight: 550;
+}
+.sg-document-heading > span {
+	font-size: 13px;
+	color: var(--secondary);
+	white-space: nowrap;
+}
+.sg-document-paper .document {
+	background: none;
+	border: 0;
+	padding: 0;
+}
+.sg-document-paper .document-row {
+	border: 0;
+	min-height: 58px;
+	margin: 0;
+	gap: 16px;
+	padding: 10px 12px;
+	align-items: baseline;
+}
+.sg-document-paper .line-text {
+	font-size: 23px;
+	font-weight: 400;
+	line-height: 1.55;
+}
+.sg-document-paper .sg-will-remove .line-text {
+	text-decoration: line-through;
+	text-decoration-thickness: 1px;
+	color: var(--secondary);
+}
+.sg-line-change {
+	font-size: 12px;
+	line-height: 1.8;
+	color: var(--ink);
+	margin-left: auto;
+	white-space: nowrap;
+}
+.sg-document-commands {
+	margin: 0 0 14px !important;
+	padding: 0 8px;
+}
+.sg-document-commands .choice-options {
+	gap: 6px;
+	flex-wrap: nowrap;
+}
+.sg-document-commands .option {
+	flex: 1 1 0;
+}
+.sg-document-commands .option-label {
+	min-height: 44px;
+	padding: 9px 5px;
+	background: transparent;
+	border: 0;
+	box-shadow: none;
+	font-size: 15px;
+	color: var(--secondary);
+}
+.sg-document-commands input:checked + .option-label {
+	background: color-mix(in srgb, var(--wash) 58%, var(--surface));
+	border: 0;
+	box-shadow: none;
+	color: var(--ink);
+	font-weight: 550;
+}
+.record-editor .sg-document-paper {
+	margin-bottom: 22px;
+}
+@media (max-width: 760px) {
+	.action-footer > .sg-button[data-sg-role="primary"],
+	.document-footer > .sg-button[data-sg-role="primary"],
+	.ready-footer > .sg-button[data-sg-role="primary"] {
+		width: 100%;
+	}
+	.sg-document-paper {
+		padding: 16px 12px;
+	}
+	.sg-document-heading {
+		margin: 0 10px 12px;
+	}
+	.sg-document-heading h2 {
+		font-size: 18px;
+	}
+	.sg-document-paper .document-row {
+		min-height: 48px;
+		padding: 6px 10px;
+		gap: 12px;
+	}
+	.sg-document-paper .line-text {
+		font-size: 22px;
+	}
+	.sg-document-commands {
+		padding: 0 2px;
+		margin-bottom: 12px !important;
+	}
+	.sg-document-commands .option-label {
+		font-size: 14px;
+	}
+}
+
+/* Respect incumbent hidden controls and keep all reading links text-only. */
+.player [data-action="ready"].sg-button {
+	display: none !important;
+}
+.reading .sg-button svg {
+	display: block;
+}
+.record-editor:has(.sg-will-remove) .edit-summary {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	padding: 0;
+	margin: -1px;
+	overflow: hidden;
+	clip: rect(0, 0, 0, 0);
+	white-space: nowrap;
+}
+
+/* Shared icons replace prior per-page small glyphs, preserving 44px hit targets. */
+.reading .sg-button[data-sg-role="icon"],
+.site nav .sg-button[data-sg-role="icon"] {
+	color: var(--secondary);
+	margin: 0;
+	padding: 0;
+}
+.row-action.sg-button[data-sg-role="icon"] {
+	margin: 0;
+	padding: 0;
+}
+
+.avatar-row {
+	position: relative;
+}
+.avatar-row .change.sg-button {
+	position: absolute;
+	left: calc(50% + 16px);
+	top: 48px;
+	isolation: isolate;
+	background: transparent;
+}
+.avatar-row .change.sg-button::after {
+	content: "";
+	position: absolute;
+	inset: 6px;
+	border-radius: 50%;
+	background: var(--surface);
+	z-index: -1;
+}
+
+/* Empty seat is a placeholder; only the trailing plus is an add action. */
+.player.vacant .avatar.vacant {
+	border-style: solid;
+	border-color: var(--separator);
+	background: var(--canvas);
+}
+
+/* Save is an icon action from the first rendered frame. */
+.app-toolbar > .save,
+.form-actions > .save {
+	background: transparent;
+	color: var(--ink);
+}
+
+/* Shared workspace role, matching the rating workspace. */
+.dm-workspace {
+	border: 0;
+	border-radius: var(--sg-radius-surface);
+}
+
+.member-check {
+	background: var(--sg-control-fill);
+}
+.member-option input:checked ~ .member-check {
+	background: var(--ink);
+}

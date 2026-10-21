@@ -1,0 +1,74 @@
+/* Shared status material. Facts, request identity and recovery actions belong to the host. */
+.sg-status {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	gap: var(--sg-space-related);
+	min-width: 0;
+	max-width: 100%;
+	color: var(--text, var(--label));
+	font: 400 var(--sg-text-help) / var(--sg-leading-interface) var(--sg-font-ui);
+	overflow-wrap: anywhere;
+}
+.sg-status .sg-status-message {
+	margin: 0;
+	max-width: 100%;
+	font: inherit;
+	line-height: var(--sg-leading-interface);
+}
+.sg-status[data-tone="error"] {
+	color: var(--sg-control-danger, var(--label));
+}
+.sg-status[data-placement="summary"] {
+	font-size: var(--sg-type-body);
+}
+.sg-status-actions {
+	display: flex;
+	flex-direction: column;
+	align-items: stretch;
+	gap: var(--sg-space-related);
+	min-width: 0;
+	max-width: 100%;
+}
+.sg-status-actions > .sg-status {
+	align-items: center;
+	text-align: center;
+}
+.sg-status[data-placement="action"] {
+	align-items: center;
+	text-align: center;
+}
+.sg-status > .sg-button {
+	flex: none;
+}
+
+/* Terminal reason is passive supporting copy, never a second warning surface. */
+.sg-terminal-page .intro {
+	display: grid;
+	gap: var(--sg-space-paragraph);
+}
+.sg-terminal-page .intro h1 {
+	margin: 0;
+	font: 600 var(--sg-task-title) / var(--sg-task-title-leading) var(--sg-font-ui);
+	text-wrap: balance;
+}
+.sg-terminal-page .intro .description {
+	margin: 0;
+	color: var(--secondary);
+	font: 400 var(--sg-text-help) / var(--sg-leading-body) var(--sg-font-ui);
+	overflow-wrap: anywhere;
+}
+.sg-terminal-page .sg-scene-actions {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	justify-content: flex-end;
+	gap: var(--sg-space-sibling);
+}
+
+/* Passive room entry has one message after the host's feedback threshold, never fake progress. */
+.sg-status[data-placement="entry"][data-status="loading"] .sg-status-message {
+	font: 600 var(--sg-task-title) / var(--sg-task-title-leading) var(--sg-font-ui);
+	color: var(--label);
+	text-wrap: balance;
+}

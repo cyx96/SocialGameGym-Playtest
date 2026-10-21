@@ -1,0 +1,36 @@
+/* The same circular identity image, disclosed only when the player chooses to edit it. */
+.profile-avatar .sg-avatar-trigger[data-sg-button] {
+	width: var(--avatar-detail);
+	height: var(--avatar-detail);
+	padding: 0;
+	background: transparent;
+}
+.sg-avatar-picker .sg-reading-body {
+	overflow: auto;
+}
+.sg-avatar-options {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(60px, 1fr));
+	gap: var(--sg-space-related);
+	border: 0;
+	padding: 0;
+	margin: 0;
+	min-width: 0;
+}
+.sg-avatar-picker .sg-avatar-choice[data-sg-button] {
+	width: 100%;
+	height: 60px;
+	min-width: 44px;
+	min-height: 44px;
+	padding: 8px;
+	background: transparent;
+	border-radius: var(--sg-control-radius);
+}
+.sg-avatar-picker .sg-avatar-choice .sg-avatar-badge {
+	color: var(--ink);
+}
+@media (min-width: 761px) {
+	.sg-avatar-picker {
+		width: min(400px, calc(100vw - 48px));
+	}
+}

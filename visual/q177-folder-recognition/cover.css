@@ -1,0 +1,84 @@
+@import url("../q176-diagonal-cover/cover.css");
+.cover {
+	overflow: visible;
+	background: transparent;
+	box-shadow: none;
+	border-radius: 0;
+	filter: drop-shadow(0 12px 12px #28392515);
+}
+.backboard {
+	position: absolute;
+	inset: 0;
+	width: 100%;
+	height: 100%;
+	z-index: 0;
+	overflow: visible;
+}
+.cover-art {
+	inset: 14px 24px auto;
+	aspect-ratio: 2 / 3;
+	border-radius: 7px;
+	box-shadow: 0 1px 2px #28392524;
+	z-index: 1;
+	background-color: var(--paper);
+}
+.cover.indexed .cover-art {
+	top: 32px;
+}
+.paper-front {
+	z-index: 2;
+	border-radius: 0 0 14px 14px;
+	clip-path: polygon(0 59%, 100% 72%, 100% 100%, 0 100%);
+}
+.paper-color {
+	background: linear-gradient(
+		180deg,
+		rgba(var(--wash-rgb), 0.35) 49%,
+		rgba(var(--wash-rgb), 0.65) 72%,
+		rgba(var(--wash-rgb), 0.96) 80%,
+		rgba(var(--wash-rgb), 0.98) 100%
+	);
+}
+.entry-shadow {
+	position: absolute;
+	inset: 0;
+	z-index: 2;
+	width: 100%;
+	height: 100%;
+	pointer-events: none;
+	fill: none;
+}
+.paper-edge {
+	stroke-width: 1;
+	stroke-opacity: 0.85;
+}
+.identity {
+	z-index: 4;
+}
+.fold-edge {
+	position: absolute;
+	inset: 0;
+	z-index: 3;
+	width: 100%;
+	height: 100%;
+	fill: none;
+	pointer-events: none;
+}
+.cover.indexed .paper-grain {
+	opacity: 0.05;
+}
+.paper-bend {
+	position: absolute;
+	inset: 0;
+	background: linear-gradient(
+		90deg,
+		#ffffff52,
+		transparent 4%,
+		transparent 96%,
+		rgba(var(--wash-rgb), 0.18)
+	);
+	pointer-events: none;
+}
+.variant h2 {
+	line-height: 1.4;
+}

@@ -1,0 +1,74 @@
+/* Notification counts have one top-right position. Read/write distinction uses tonal ink only. */
+.launch-tool[data-mode="read"] .tool-tile .face {
+	fill: color-mix(in srgb, var(--ink) 55%, var(--surface));
+}
+.launch-tool[data-mode="read"] .tool-tile .rear {
+	fill: color-mix(in srgb, var(--ink) 15%, var(--surface));
+}
+.launch-tool[data-mode="read"] .tool-tile .ink-line {
+	stroke: color-mix(in srgb, var(--ink) 55%, var(--surface));
+}
+.tool-unread {
+	position: absolute;
+	top: -5px;
+	right: -5px;
+	display: grid;
+	place-items: center;
+	min-inline-size: 22px;
+	block-size: 22px;
+	padding-inline: 5px;
+	border-radius: 99px;
+	background: var(--ink, #216b45);
+	color: white;
+	font:
+		600 12px / 1 -apple-system,
+		BlinkMacSystemFont,
+		"PingFang SC",
+		sans-serif;
+	font-variant-numeric: tabular-nums;
+}
+.tool-unread[hidden],
+.tool-access[hidden],
+.sg-product-bar .sg-button[hidden] {
+	display: none !important;
+}
+.launch-tool .tool-mode:empty {
+	display: none;
+}
+.sg-live-only {
+	position: absolute;
+	inline-size: 1px;
+	block-size: 1px;
+	overflow: hidden;
+	clip-path: inset(50%);
+	white-space: nowrap;
+}
+#finish-social[data-waiting="true"] {
+	background: var(--wash, #e6efea);
+	color: var(--secondary, #535a55);
+	opacity: 1;
+}
+.readonly-indicator {
+	display: inline-grid !important;
+	place-items: center;
+	vertical-align: middle;
+	line-height: 1;
+}
+.readonly-indicator svg {
+	width: 17px;
+	height: 17px;
+	fill: none;
+	stroke: currentColor;
+	stroke-width: 1.65;
+	stroke-linecap: round;
+	stroke-linejoin: round;
+}
+@media (prefers-reduced-motion: reduce) {
+	.tool-unread {
+		animation: none;
+		transition: none;
+	}
+}
+.readonly-indicator {
+	display: none !important;
+}
