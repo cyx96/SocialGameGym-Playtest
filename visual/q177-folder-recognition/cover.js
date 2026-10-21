@@ -75,6 +75,9 @@
 			'" stroke-opacity=".09" stroke-width=".7"/>';
 		const label = document.createElement("div");
 		label.className = "identity";
+		const img = document.createElement("img");
+		img.src = "../q164-sleeve-wave/assets/avatars/" + (theme.id === "all" ? "socialgamegym" : theme.id) + ".svg";
+		img.alt = "";
 		const text = document.createElement("span");
 		text.className = "identity-text";
 		const title = document.createElement("span");
@@ -84,7 +87,7 @@
 		count.className = "count";
 		count.textContent = total;
 		text.append(title, count);
-		label.append(text);
+		label.append(img, text);
 		root.append(clip, board, art, shadow, front, fold, label);
 		return root;
 	}
