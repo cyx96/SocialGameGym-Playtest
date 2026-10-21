@@ -95,7 +95,6 @@
 			total: games.length,
 			variant: "b",
 		});
-		source.querySelector(".identity img")?.remove();
 		const root = document.createElement("div");
 		root.className = "assembly";
 		root.dataset.theme = theme.id;
