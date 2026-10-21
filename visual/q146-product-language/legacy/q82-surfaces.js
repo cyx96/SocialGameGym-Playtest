@@ -53,7 +53,7 @@
 		new MutationObserver(() => migrate()).observe(target, { childList: true, subtree: true }),
 	);
 	// Selected profile-detail sample remains a visual sheet, with a real close action only.
-	const close = document.querySelector('.sheet-toolbar [aria-label="关闭玩家资料"]'),
+	const close = document.querySelector(".sheet-toolbar [data-profile-close]"),
 		sheet = document.querySelector("dialog.shade");
 	if (sheet) {
 		sheet.showModal();

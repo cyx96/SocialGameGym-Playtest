@@ -1,6 +1,8 @@
 /* UI adapters reuse the established app surfaces only in the labelled local host. */
 (() => {
 	"use strict";
+	const L = (key, values = {}) => ({ i18n: key, values });
+
 	if (!window.SessionApp) return;
 	const A = SessionApp,
 		c = A.context,
@@ -8,13 +10,14 @@
 		e = (tag, cls, text) => {
 			const n = document.createElement(tag);
 			if (cls) n.className = cls;
-			if (text !== undefined) n.textContent = text;
+			if (text?.i18n) SGGI18n.bind(n, text.i18n, { values: text.values });
+			else if (text !== undefined) n.textContent = text;
 			return n;
 		};
 	for (const [k, v] of Object.entries(c.colors || {}))
 		document.documentElement.style.setProperty("--" + k, v);
 	function back(button) {
-		button?.setAttribute("aria-label", "返回应用桌面");
+		if (button) SGGI18n.bind(button, "asset.backDesktop", { attr: "aria-label" });
 		button?.classList.add("sg-root-back");
 		button?.addEventListener(
 			"click",
@@ -35,8 +38,8 @@
 		if (title) {
 			const badge = e("span", "readonly-indicator");
 			badge.setAttribute("role", "img");
-			badge.setAttribute("aria-label", "只读，可查看");
-			badge.setAttribute("title", "只读，可查看");
+			if (badge) SGGI18n.bind(badge, "asset.readOnly", { attr: "aria-label" });
+			if (badge) SGGI18n.bind(badge, "asset.readOnly", { attr: "title" });
 			badge.append(SGGIcons.create("eye"));
 			title.append(badge);
 		}
@@ -76,7 +79,7 @@
 				);
 				return true;
 			} catch {
-				note.textContent = "草稿未能保留，请先保存后再离开。";
+				SGGControls.showError(note, "草稿未能保留，请先保存后再离开。", "draft");
 				return false;
 			}
 		};
@@ -89,17 +92,17 @@
 				localStorage.removeItem(draftKey);
 				A.close();
 			} catch (error) {
-				note.textContent = error.message;
+				SGGControls.showError(note, error.message);
 			} finally {
 				save.disabled = false;
 			}
 		};
 		const picker = e("dialog", "avatar-picker"),
-			title = e("h2", "", "头像"),
+			title = e("h2", "", L("asset.avatar")),
 			grid = e("div", "avatar-preset-grid"),
 			close = SGGButtons.create({
 				role: "icon",
-				ariaLabel: "关闭头像选择",
+				ariaLabelKey: "asset.closeAvatar",
 				icon: SGGIcons.create("close"),
 			});
 		picker.append(title, close, grid);
@@ -108,7 +111,9 @@
 			if (!preset.selectable) continue;
 			const button = e("button", "avatar-option");
 			button.type = "button";
-			button.setAttribute("aria-label", preset.label);
+			const refresh = () => button.setAttribute("aria-label", SGGI18n.systemCopy(preset.label));
+			refresh();
+			SGGI18n.observe(button, refresh);
 			button.innerHTML = SGGAvatar.html({ preset: id, size: "row" });
 			button.onclick = () => {
 				avatar = id;
@@ -134,14 +139,20 @@
 				Object.fromEntries(c.people.map((p) => [p.id, { name: p.name }])),
 				{ viewerId: c.viewer, selfMarker: true },
 			);
-		const note = e("p", "quota", SGGProductLanguage.quota(c.remaining));
+		const note = e("p", "quota");
+		SGGI18n.bind(note, "asset.quota", { values: { count: c.remaining } });
 		document.querySelector(".newpost-footer").prepend(note);
 	}
 	if (app === "dm") {
 		const count = document.querySelector(".compose-meta b");
-		if (count) count.textContent = c.remaining;
+		if (count) {
+			const host = count.parentElement;
+			const refreshQuota = () => (host.textContent = SGGProductLanguage.quota(A.context.remaining));
+			refreshQuota();
+			SGGI18n.observe(host, refreshQuota);
+		}
 		const createBudget = document.querySelector(".create-budget");
-		if (createBudget) createBudget.textContent = SGGProductLanguage.quota(c.remaining);
+		if (createBudget) SGGI18n.bind(createBudget, "asset.quota", { values: { count: c.remaining } });
 		if (A.readonly) {
 			const composer = document.querySelector(".dm-compose");
 			if (composer) composer.hidden = true;
@@ -164,22 +175,23 @@
 	}
 	if (app === "game") {
 		const toolbar = e("nav", "sg-game-toolbar");
-		toolbar.setAttribute("aria-label", "游戏应用");
+		if (toolbar) SGGI18n.bind(toolbar, "asset.gameApps", { attr: "aria-label" });
 		const backButton = SGGButtons.create({
 				role: "icon",
-				ariaLabel: "返回应用桌面",
+				ariaLabelKey: "asset.backDesktop",
 				icon: SGGIcons.create("back"),
 			}),
-			title = e("h2", "", "游戏"),
+			title = e("h2", "", L("asset.game")),
 			end = e("span", "toolbar-end"),
 			records = SGGButtons.create({
 				role: "icon",
-				ariaLabel: "游戏记录",
+				ariaLabelKey: "asset.records",
 				icon: SGGIcons.create("records"),
 			});
 		backButton.classList.add("sg-game-back");
-		if (c.returnTo === "questionnaire") backButton.setAttribute("aria-label", "返回问卷");
-		else backButton.classList.add("sg-root-back");
+		if (c.returnTo === "questionnaire")
+			if (backButton) SGGI18n.bind(backButton, "asset.backQuestionnaire", { attr: "aria-label" });
+			else backButton.classList.add("sg-root-back");
 		backButton.onclick = () => A.close();
 		records.onclick = () => A.request("ui.records").catch(() => {});
 		end.append(records);
@@ -203,7 +215,7 @@
 				} catch (error) {
 					let note = document.querySelector(".action-footer .inline-note");
 					if (note) {
-						note.textContent = error.message;
+						SGGControls.showError(note, error.message);
 						note.classList.add("visible");
 					}
 					b.disabled = false;
@@ -215,8 +227,8 @@
 	if (app === "game" && c.waiting) {
 		const heading = document.querySelector(".intro h1"),
 			description = document.querySelector(".intro>p");
-		if (heading) heading.textContent = "已提交";
-		if (description) description.textContent = "正在等待其他玩家。";
+		if (heading) SGGI18n.bind(heading, "asset.submitted");
+		if (description) SGGI18n.bind(description, "asset.waitingOthers");
 	}
 	if (app === "game" && window.GameUiPreview?.screen === "result")
 		document.querySelector(".action-footer")?.remove();

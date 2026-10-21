@@ -1,10 +1,12 @@
 /* Reads authorized profile/activity projections; writes use only offered actions. */
 (() => {
 	"use strict";
+	const L = (key, values = {}) => ({ i18n: key, values });
+
 	const A = window.SessionApp;
 	if (!A) {
 		const note = document.createElement("p");
-		note.textContent = "请从本场桌面打开资料。";
+		SGGI18n.bind(note, "asset.profileEntry");
 		note.setAttribute("role", "status");
 		document.querySelector("main").replaceChildren(note);
 		document.documentElement.dataset.sessionReady = "true";
@@ -46,7 +48,8 @@
 	const node = (tag, cls, text) => {
 		const n = document.createElement(tag);
 		if (cls) n.className = cls;
-		if (text !== undefined) n.textContent = text;
+		if (text?.i18n) SGGI18n.bind(n, text.i18n, { values: text.values });
+		else if (text !== undefined) n.textContent = text;
 		return n;
 	};
 	const own = () =>
@@ -66,7 +69,7 @@
 			localStorage.setItem(draftKey, JSON.stringify(memoryDraft));
 		} catch {
 			status.dataset.errorSource = "draft";
-			status.textContent = "未能保留草稿，请保持当前页面打开。";
+			SGGControls.showError(status, "未能保留草稿，请保持当前页面打开。", "draft");
 		}
 	}
 	function avatar(person, size = "row") {
@@ -81,19 +84,20 @@
 		toolbar.replaceChildren();
 		const back = B.create({
 				role: "icon",
-				ariaLabel: editing && !initial ? "返回资料" : "返回应用桌面",
+				ariaLabelKey: editing && !initial ? "asset.backProfile" : "asset.backDesktop",
 				icon: I.create("back"),
 			}),
-			title = node("h1", "", "资料");
+			title = node("h1", "", L("asset.profile"));
 		if (!editing || initial) back.classList.add("sg-root-back");
 		back.onclick = (event) => (editing && !initial ? showList(event) : A.close());
 		toolbar.append(back, title);
 		if (canEdit()) {
 			const action = B.create({
 				role: "icon",
-				ariaLabel: editing ? "保存资料" : "编辑资料",
+				ariaLabelKey: editing ? "asset.saveProfile" : "asset.editProfile",
 				icon: I.create(editing ? "check" : "edit"),
 			});
+			action.dataset.profileAction = editing ? "save" : "edit";
 			action.onclick = (event) => (editing ? save(action, event) : edit(event));
 			toolbar.append(action);
 		}
@@ -112,12 +116,12 @@
 		const group = node("div");
 		group.dataset.sgSegmented = "";
 		group.setAttribute("role", "group");
-		group.setAttribute("aria-label", "选手筛选");
+		if (group) SGGI18n.bind(group, "asset.profileFilter", { attr: "aria-label" });
 		for (const [value, label] of [
-			[false, "全部"],
-			[true, "已关注"],
+			[false, "asset.all"],
+			[true, "asset.following"],
 		]) {
-			const button = B.create({ label });
+			const button = B.create({ labelKey: label });
 			button.dataset.followedOnly = String(value);
 			button.setAttribute("aria-pressed", String(followedOnly === value));
 			button.onclick = () => {
@@ -159,14 +163,17 @@
 			).length;
 			if (unread) {
 				const count = node("span", "profile-unread", String(unread));
-				count.setAttribute("aria-label", unread + " 条未读动态");
+				SGGI18n.bind(count, "asset.unreadActivity", {
+					attr: "aria-label",
+					values: { count: unread },
+				});
 				row.append(count);
 			}
 			row.append(chevron);
 			row.onclick = (event) => detail(person, event);
 			list.append(row);
 		}
-		if (!list.children.length) list.append(node("p", "profile-empty", "还没有关注的玩家。"));
+		if (!list.children.length) list.append(node("p", "profile-empty", L("asset.noFollowing")));
 		requestAnimationFrame(() => (main.scrollTop = savedScroll));
 	}
 	function editorMode(value) {
@@ -187,7 +194,7 @@
 		drawList();
 		if (event) {
 			SGGMotion.scene(list, { direction: "back", event });
-			toolbar.querySelector('[aria-label="编辑资料"]')?.focus({ preventScroll: true });
+			toolbar.querySelector('[data-profile-action="edit"]')?.focus({ preventScroll: true });
 		}
 	}
 	function drawFollow(host, person) {
@@ -196,7 +203,7 @@
 		const following = A.context.following?.includes(person.id) || false,
 			values = A.context.profileActions?.follow?.[person.id] || [];
 		if (!A.readonly && values.includes(!following)) {
-			const button = B.create({ label: following ? "取消关注" : "关注" }),
+			const button = B.create({ labelKey: following ? "asset.unfollow" : "asset.follow" }),
 				error = node("p", "profile-error");
 			error.hidden = true;
 			error.setAttribute("role", "alert");
@@ -218,7 +225,7 @@
 				node("span", "profile-quota", SGGProductLanguage.quota(A.context.remaining)),
 				error,
 			);
-		} else if (following) host.append(node("p", "profile-relation", "已关注"));
+		} else if (following) host.append(node("p", "profile-relation", L("asset.following")));
 	}
 	function activityMeta(source, detail) {
 		const meta = node("span", "profile-activity-tag sg-activity-meta");
@@ -239,27 +246,41 @@
 		if (!labels[record.recordKind]) return null;
 		entry.append(
 			activityMeta(
-				"社交",
-				record.activityTag ||
+				L("asset.social"),
+				SGGI18n.systemCopy(record.activityTag) ||
 					SGGActivityDefinition.kinds[record.recordKind].tag ||
 					labels[record.recordKind],
 			),
 		);
 		if (record.recordKind === "social.profile.update.v2") {
 			if (d.displayName !== undefined) entry.append(node("p", "", d.displayName));
-			if (d.bio !== undefined) entry.append(node("p", "", d.bio || "清空了简介"));
-			if (d.avatar !== undefined) entry.append(node("p", "profile-activity-meta", "更新了头像"));
+			if (d.bio !== undefined) entry.append(node("p", "", d.bio || L("asset.bioCleared")));
+			if (d.avatar !== undefined)
+				entry.append(node("p", "profile-activity-meta", L("asset.avatarUpdated")));
 		} else if (record.recordKind === "social.rating.set.v1") {
 			const line = node("p");
 			SGGInlinePerson.render(
 				line,
-				[{ personId: d.targetSeatId }, " · " + String(d.score) + " 星"],
+				[{ personId: d.targetSeatId }, SGGI18n.t("asset.stars", { count: d.score })],
 				{ identities: SGGProductLanguage.identities(A.context), viewerId: c.viewer },
 			);
 			entry.append(line);
 			if (d.note) entry.append(node("p", "", d.note));
 		} else entry.append(node("p", "", d.body || ""));
 		return entry;
+	}
+	function localizedGameTokens(copy, fallback = []) {
+		if (!copy?.key) return fallback;
+		return SGGI18n.t(copy.key, copy.count === undefined ? {} : { count: copy.count })
+			.split(/(\{[A-Za-z][A-Za-z0-9_]*\})/g)
+			.filter(Boolean)
+			.flatMap((part) => {
+				const token = part.startsWith("{") ? copy.values?.[part.slice(1, -1)] : null;
+				if (!token) return [{ type: "text", value: part }];
+				return token.type === "text" && token.copy
+					? localizedGameTokens(token.copy, [token])
+					: [token];
+			});
 	}
 	function gameLine(host, tokens) {
 		for (const token of tokens || []) {
@@ -278,20 +299,30 @@
 		if (item.itemKind !== "game-round") return null;
 		const article = node("article", "profile-game-item"),
 			copy = node("span", "sg-game-round-copy"),
-			tag = activityMeta("游戏"),
+			tag = activityMeta(L("asset.game")),
 			roundLabel = node("span", "sg-activity-detail"),
 			events = node("div", "sg-game-round-events");
 		article.dataset.activityId = item.recordId;
-		gameLine(roundLabel, item.title);
+		gameLine(roundLabel, localizedGameTokens(item.copy?.title, item.title));
 		tag.append(roundLabel);
 		copy.append(tag);
 		for (const event of item.events || []) {
 			const entry = node("article", "sg-game-event");
 			entry.dataset.activityId = item.recordId;
 			entry.dataset.activityRead = "";
-			entry.append(gameLine(node("p", "sg-game-event-title"), event.title));
-			for (const line of event.details || [])
-				entry.append(gameLine(node("p", "sg-game-event-detail"), line));
+			entry.append(
+				gameLine(
+					node("p", "sg-game-event-title"),
+					localizedGameTokens(event.copy?.title, event.title),
+				),
+			);
+			for (const [index, line] of (event.details || []).entries())
+				entry.append(
+					gameLine(
+						node("p", "sg-game-event-detail"),
+						localizedGameTokens(event.copy?.details?.[index], line),
+					),
+				);
 			events.append(entry);
 		}
 		copy.append(events);
@@ -301,7 +332,7 @@
 	function mountActivity(body, person) {
 		activityCleanup();
 		const section = node("section", "profile-activity"),
-			heading = node("h3", "profile-activity-heading", "动态"),
+			heading = node("h3", "profile-activity-heading", L("asset.activity")),
 			content = node("div", "profile-activity-content"),
 			records = node("div", "profile-activity-list sg-game-records"),
 			status = node("p", "profile-activity-status"),
@@ -349,6 +380,7 @@
 			removeEventListener("sgg:notice-update", observe);
 			removeEventListener("sgg:app-visible", observe);
 			document.removeEventListener("visibilitychange", resume);
+			unlocale();
 		};
 		addEventListener("sgg:notice-update", observe);
 		addEventListener("sgg:app-visible", observe);
@@ -373,14 +405,18 @@
 			);
 			observe();
 			actions.replaceChildren();
-			status.textContent = busy ? "正在读取" : loaded && !items.length ? "暂无动态。" : "";
+			status.textContent = busy
+				? SGGI18n.t("asset.loading")
+				: loaded && !items.length
+					? SGGI18n.t("asset.noActivity")
+					: "";
 			if (error.hidden && cursor) {
-				const more = B.create({ label: "查看更早", disabled: busy });
+				const more = B.create({ labelKey: "asset.older", disabled: busy });
 				more.onclick = () => load(cursor);
 				actions.append(more);
 			}
 			if (!error.hidden && binding) {
-				const retry = B.create({ label: "重试", disabled: busy });
+				const retry = B.create({ labelKey: "asset.retry", disabled: busy });
 				retry.onclick = () => load(retryCursor);
 				actions.append(retry);
 			}
@@ -388,7 +424,7 @@
 		async function load(older) {
 			if (busy || generation !== activityGeneration) return;
 			if (!binding) {
-				showError(error, "暂时无法确认该玩家的本场身份，请重新打开资料。");
+				showError(error, SGGI18n.t("asset.profileIdentity"));
 				return;
 			}
 			busy = true;
@@ -403,7 +439,7 @@
 				});
 				if (generation !== activityGeneration || !dialog.open) return;
 				if (page?.participant?.seatId !== person.id || page.participant.participationId !== binding)
-					throw Error("资料读取身份已变化，请重新打开。");
+					throw Error(SGGI18n.t("asset.profileChanged"));
 				items = older
 					? [...new Map([...items, ...page.items].map((r) => [r.recordId, r])).values()]
 					: page.items;
@@ -420,6 +456,7 @@
 				}
 			}
 		}
+		const unlocale = SGGI18n.observe(section, draw);
 		void load();
 	}
 	function detail(person, event) {
@@ -428,7 +465,11 @@
 		document.querySelector("#detail-name").textContent = p?.name || person.name;
 		const head = dialog.querySelector("header");
 		head.querySelector("button")?.remove();
-		const close = B.create({ role: "icon", ariaLabel: "关闭资料", icon: I.create("close") });
+		const close = B.create({
+			role: "icon",
+			ariaLabelKey: "asset.closeProfile",
+			icon: I.create("close"),
+		});
 		close.onclick = (e) => SGGReading.close(dialog, { instant: e.detail === 0 });
 		if (!peek) head.append(close);
 		const body = document.querySelector("#detail-body");
@@ -483,11 +524,11 @@
 	});
 	function validateFields(report = false) {
 		const nameError = !name.value.trim()
-				? "请输入称呼。"
+				? SGGI18n.t("asset.nameRequired")
 				: [...name.value].length > 80
-					? "称呼最多80个字符。"
+					? SGGI18n.t("asset.nameLength")
 					: "",
-			bioError = [...bio.value].length > 500 ? "简介最多500个字符。" : "";
+			bioError = [...bio.value].length > 500 ? SGGI18n.t("asset.bioLength") : "";
 		name.setCustomValidity(nameError);
 		bio.setCustomValidity(bioError);
 		for (const input of [name, bio])
@@ -497,6 +538,8 @@
 			status.textContent = message;
 			status.dataset.errorSource = "validation";
 		} else if (!message && status.dataset.errorSource === "validation") {
+			SGGControls.clearError(status, "draft");
+			SGGControls.clearError(status, "submit");
 			status.textContent = "";
 			delete status.dataset.errorSource;
 		}
@@ -512,6 +555,8 @@
 		try {
 			await A.submit(button, "profile.save", { name: name.value, bio: bio.value, avatar: preset });
 			memoryDraft = null;
+			SGGControls.clearError(status, "draft");
+			SGGControls.clearError(status, "submit");
 			status.textContent = "";
 			delete status.dataset.errorSource;
 			try {
@@ -521,7 +566,7 @@
 			else showList(event);
 		} catch (e) {
 			status.dataset.errorSource = "submit";
-			status.textContent = e.message;
+			SGGControls.showError(status, e.message, "submit");
 			rememberDraft();
 		}
 	}
@@ -586,7 +631,7 @@
 			dialog.setAttribute("open", "");
 			document
 				.querySelector("#detail-body")
-				.append(node("p", "profile-error", "暂时无法读取该玩家资料。"));
+				.append(node("p", "profile-error", L("asset.profileUnavailable")));
 		}
 		const measure = () =>
 			parent.postMessage(
@@ -606,5 +651,23 @@
 		if ((initial || restoreEditor) && canEdit()) edit();
 		else showList();
 	}
+	SGGI18n.bind(list, "asset.playerProfiles", { attr: "aria-label" });
+	for (const [input, key] of [
+		[name, "asset.name"],
+		[bio, "asset.bio"],
+	]) {
+		const parent = input.closest("label"),
+			text = document.createElement("span");
+		for (const child of [...parent.childNodes])
+			if (child.nodeType === Node.TEXT_NODE) child.remove();
+		parent.prepend(text);
+		SGGI18n.bind(text, key);
+	}
+	SGGI18n.bind(bio, "asset.bioPlaceholder", { attr: "placeholder" });
+	SGGI18n.bind(document.querySelector("#avatar-picker-title"), "asset.avatar");
+	SGGI18n.bind(document.querySelector("#avatar-options"), "asset.avatar", { attr: "aria-label" });
+	SGGI18n.subscribe(() => {
+		if (editing) validateFields(status.dataset.errorSource === "validation");
+	});
 	document.documentElement.dataset.sessionReady = "true";
 })();

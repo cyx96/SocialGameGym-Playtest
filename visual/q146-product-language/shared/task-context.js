@@ -10,7 +10,7 @@
 		if (rail && slot) {
 			rail.className = "sg-task-context-rail";
 			rail.setAttribute("role", "region");
-			rail.setAttribute("aria-label", "当前任务");
+			SGGI18n.bind(rail, "asset.currentTask", { attr: "aria-label" });
 			rail.inert = true;
 			slot.className = "sg-task-context-slot";
 			rail.append(slot);

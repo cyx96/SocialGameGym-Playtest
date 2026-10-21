@@ -57,7 +57,7 @@
 			[".new-conversation", "compose"],
 			[".close,.icon-button,#panel-close,#support-close,.flip-return", "close"],
 			[".close-newpost,.close-inline,#close-editor", "chevron-down"],
-			['.sheet-toolbar [aria-label="关闭玩家资料"]', "close"],
+			[".sheet-toolbar [data-profile-close]", "close"],
 			["#search-toggle", document.body.classList.contains("search-open") ? "close" : "search"],
 			[".edit,.change", "edit"],
 			[".save", "check"],
@@ -95,9 +95,9 @@
 		for (const [b, name] of selectedIcons) {
 			const label =
 				name === "rules"
-					? "游戏规则"
+					? SGGI18n.t("asset.rules")
 					: name === "records"
-						? "游戏记录"
+						? SGGI18n.t("asset.records")
 						: b.matches(".save")
 							? "保存资料"
 							: b.matches("#config-submit")
@@ -107,7 +107,14 @@
 								: b.matches("[data-action=menu]")
 									? "选择玩家类型"
 									: b.getAttribute("aria-label") || b.textContent.trim();
-			if (label) B.iconize(b, { name, label });
+			if (label)
+				B.iconize(b, {
+					name,
+					label,
+					labelKey: b.matches(".reply-root")
+						? "asset.reply"
+						: b.getAttribute("data-sg-copy-aria-label") || undefined,
+				});
 		}
 		for (const b of document.querySelectorAll("[data-action=copy]")) {
 			const copied = b.textContent.trim() === "已复制";

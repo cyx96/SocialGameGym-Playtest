@@ -123,7 +123,7 @@
 		pair.append(node("span", "", gameName));
 		if (round) pair.append(node("span", "round", round));
 		context.append(pair);
-		nav.setAttribute("aria-label", "本场查阅");
+		SGGI18n.bind(nav, "asset.reading", { attr: "aria-label" });
 		nav.append(...actions);
 		bar.append(logo, context, nav);
 		const main = node("main", "sg-page");

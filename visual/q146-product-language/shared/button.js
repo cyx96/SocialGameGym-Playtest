@@ -153,6 +153,10 @@
 	}
 	function create({
 		label,
+		labelKey,
+		labelValues = {},
+		ariaLabelKey,
+		ariaLabelValues = {},
 		role = "quiet",
 		size = "regular",
 		icon,
@@ -160,11 +164,12 @@
 		type = "button",
 		disabled = false,
 	}) {
-		if (!label && !ariaLabel) throw Error("Button needs an accessible name");
+		if (!label && !ariaLabel && !labelKey && !ariaLabelKey)
+			throw Error("Button needs an accessible name");
 		if (!["primary", "soft", "quiet", "icon", "icon-primary", "danger"].includes(role))
 			throw Error("Unknown button role");
 		if (!["regular", "compact"].includes(size)) throw Error("Unknown button size");
-		if ((role === "icon" || role === "icon-primary") && !ariaLabel)
+		if ((role === "icon" || role === "icon-primary") && !ariaLabel && !ariaLabelKey)
 			throw Error("Icon button needs an accessible name");
 		const b = document.createElement("button");
 		b.type = type;
@@ -176,15 +181,22 @@
 			icon.setAttribute("aria-hidden", "true");
 			b.append(icon);
 		}
-		if (label) b.append(document.createTextNode(label));
-		if (ariaLabel) b.setAttribute("aria-label", ariaLabel);
+		if (labelKey) {
+			const text = document.createElement("span");
+			SGGI18n.bind(text, labelKey, { values: labelValues });
+			b.append(text);
+		} else if (label) b.append(document.createTextNode(label));
+		if (ariaLabelKey)
+			SGGI18n.bind(b, ariaLabelKey, { attr: "aria-label", values: ariaLabelValues });
+		else if (ariaLabel) b.setAttribute("aria-label", ariaLabel);
 		const holder = document.createElement("span");
 		holder.append(b);
 		enhance(holder);
 		return b;
 	}
 
-	function iconize(button, { name, label, motion }) {
+	function iconize(button, { name, label, labelKey, labelValues = {}, motion }) {
+		if (labelKey) label = SGGI18n.t(labelKey, labelValues);
 		if (!label) throw Error("Icon action needs a label");
 		button.dataset.sgButton = "";
 		button.dataset.sgRole = button.dataset.sgRole === "icon-primary" ? "icon-primary" : "icon";
@@ -204,6 +216,11 @@
 		text.className = "sg-icon-label";
 		text.textContent = label;
 		button.replaceChildren(window.SGGIcons.create(name), text);
+		if (labelKey) {
+			SGGI18n.bind(button, labelKey, { attr: "aria-label", values: labelValues });
+			SGGI18n.bind(button, labelKey, { attr: "data-sg-tooltip", values: labelValues });
+			SGGI18n.bind(text, labelKey, { values: labelValues });
+		}
 	}
 	function feedback(button, state) {
 		if (!["idle", "confirmed", "error"].includes(state)) throw Error("Unknown feedback state");

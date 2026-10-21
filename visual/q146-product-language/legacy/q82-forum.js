@@ -125,7 +125,7 @@ function persist() {
 		SGGControls.clearError(error, "draft");
 		return true;
 	} catch {
-		SGGControls.showError(error, "草稿暂时无法保存，请保留当前页面。", "draft");
+		SGGControls.showError(error, SGGI18n.t("asset.saveDraft"), "draft");
 		return false;
 	}
 }
@@ -320,7 +320,9 @@ const ThreadData = window.SessionApp
 			.filter((p) => !p.parent)
 			.map((p) => ({
 				id: p.id,
-				name: SessionApp.context.people.find((w) => w.id === p.author)?.name || "玩家",
+				name:
+					SessionApp.context.people.find((w) => w.id === p.author)?.name ||
+					SGGI18n.t("asset.unknownPerson"),
 				initial: "",
 				author: p.author,
 				round: p.round,
@@ -330,7 +332,9 @@ const ThreadData = window.SessionApp
 					.filter((r) => r.parent === p.id)
 					.map((r) => ({
 						id: r.id,
-						name: SessionApp.context.people.find((w) => w.id === r.author)?.name || "玩家",
+						name:
+							SessionApp.context.people.find((w) => w.id === r.author)?.name ||
+							SGGI18n.t("asset.unknownPerson"),
 						initial: "",
 						author: r.author,
 						round: r.round,
@@ -434,7 +438,11 @@ if (window.SessionApp) {
 		article.querySelector(".inline-editor label").htmlFor = area.id;
 		SGGInlinePerson.render(
 			article.querySelector(".inline-editor label"),
-			["回复 ", { personId: post.author }],
+			[
+				...SGGI18n.t("asset.replyTo")
+					.split("{name}")
+					.flatMap((text, i) => (i ? [{ personId: post.author }, text] : [text])),
+			],
 			{
 				identities: SGGProductLanguage.identities(SessionApp.context),
 				viewerId: SessionApp.context.viewer,
@@ -442,14 +450,17 @@ if (window.SessionApp) {
 		);
 		article.querySelector(".reply-root").setAttribute("aria-controls", "editor-" + post.id);
 		article.querySelector(".reply-region").id = "replies-" + post.id;
-		article.querySelector(".reply-region").setAttribute("aria-label", post.name + "的帖子回复");
+		SGGI18n.bind(article.querySelector(".reply-region"), "asset.replyThread", {
+			attr: "aria-label",
+			values: { name: post.name },
+		});
 		article.querySelector(".reply-count").setAttribute("aria-controls", "replies-" + post.id);
 		feed.append(article);
 	}
 	if (!ThreadData.length) {
 		const empty = document.createElement("p");
 		empty.className = "preview-empty";
-		empty.textContent = "还没有帖子。";
+		SGGI18n.bind(empty, "asset.noPosts");
 		feed.append(empty);
 	}
 }
@@ -479,9 +490,11 @@ for (const post of ThreadData) {
 		if (toggle) {
 			toggle.hidden = post.replies.length <= 2;
 			toggle.setAttribute("aria-expanded", String(expanded));
-			toggle.querySelector("span").textContent = expanded
-				? "收起讨论"
-				: `${post.replies.length} 条回复`;
+			SGGI18n.bind(
+				toggle.querySelector("span"),
+				expanded ? "asset.collapseDiscussion" : "asset.replyCount",
+				{ values: { count: post.replies.length } },
+			);
 		}
 		bottom.hidden = !expanded || post.replies.length <= 2;
 		[...list.children].forEach((item, i) => {
@@ -493,6 +506,7 @@ for (const post of ThreadData) {
 				SGGMotion.reveal(item, { role: "state" });
 		});
 		article.dataset.expanded = String(expanded);
+		SGGI18n.bindAllAnnotated(article);
 	}
 	toggle?.addEventListener("click", (e) => {
 		toggle.style.setProperty("--reply-turn", e.detail === 0 ? "0ms" : "160ms");
@@ -506,6 +520,35 @@ for (const post of ThreadData) {
 		toggle.scrollIntoView({ block: "nearest", behavior: "instant" });
 	};
 	draw();
+	SGGI18n.observe(article, () => {
+		SGGI18n.bindAllAnnotated(article);
+		if (window.SessionApp) {
+			article.querySelector(".author small").textContent = SGGProductLanguage.stamp({
+				round: post.round,
+				step: post.step,
+				steps: SessionApp.context.socialSteps,
+			});
+			SGGInlinePerson.render(
+				editor.querySelector("label"),
+				SGGI18n.t("asset.replyTo")
+					.split("{name}")
+					.flatMap((text, i) => (i ? [{ personId: post.author }, text] : [text])),
+				{
+					identities: SGGProductLanguage.identities(SessionApp.context),
+					viewerId: SessionApp.context.viewer,
+				},
+			);
+			for (const [i, row] of [...list.children].entries()) {
+				const reply = post.replies[i];
+				if (reply)
+					row.querySelector("small").textContent = SGGProductLanguage.stamp({
+						round: reply.round,
+						step: reply.step,
+						steps: SessionApp.context.socialSteps,
+					});
+			}
+		}
+	});
 	ThreadControllers.set(post.id, {
 		article,
 		isExpanded: () => expanded,
@@ -516,7 +559,10 @@ for (const post of ThreadData) {
 	});
 	article.dataset.expandable = String(post.replies.length > 2);
 	if (toggle)
-		toggle.setAttribute("aria-label", `展开或收起${post.name}的${post.replies.length}条回复`);
+		SGGI18n.bind(toggle, "asset.toggleReplies", {
+			attr: "aria-label",
+			values: { name: post.name, count: post.replies.length },
+		});
 	area.value = threadDrafts[post.id] || "";
 	function saveDraft() {
 		if (window.__SGG_RETIRED__) return true;
@@ -527,7 +573,7 @@ for (const post of ThreadData) {
 			SGGControls.clearError(localError, "draft");
 			return true;
 		} catch {
-			SGGControls.showError(localError, "草稿暂时无法保存，请保留当前页面。", "draft");
+			SGGControls.showError(localError, SGGI18n.t("asset.saveDraft"), "draft");
 			return false;
 		}
 	}

@@ -9,7 +9,7 @@
 			throw Error("Outcome is not declared by this result binding");
 		return {
 			kind: outcome.kind,
-			primary: state.title,
+			primary: SGGI18n.systemCopy(state.title),
 			rankAllowed: binding.rankMeaningful === true,
 		};
 	}
@@ -35,7 +35,9 @@
 		message.rankAllowed = binding?.rankMeaningful === true;
 		if (result?.score !== undefined)
 			message.support = definition.support.selfScore.map((part) =>
-				typeof part === "string" ? part : { number: result[part.field], unit: part.unit },
+				typeof part === "string"
+					? SGGI18n.systemCopy(part)
+					: { number: result[part.field], unit: SGGI18n.systemCopy(part.unit) },
 			);
 		return message;
 	}

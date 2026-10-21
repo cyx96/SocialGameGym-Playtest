@@ -8,13 +8,17 @@
 			R = window.SGGReading;
 		let selected = A.resolve(value),
 			visible = true;
-		const trigger = B.create({ role: "icon", ariaLabel: "编辑头像" });
+		const trigger = B.create({ role: "icon", ariaLabelKey: "asset.editAvatar" });
 		trigger.classList.add("sg-avatar-trigger");
 		trigger.setAttribute("aria-haspopup", "dialog");
 		trigger.setAttribute("aria-controls", dialog.id);
 		trigger.setAttribute("aria-expanded", "false");
 		host.replaceChildren(trigger);
-		const close = B.create({ role: "icon", ariaLabel: "关闭头像选择", icon: I.create("close") });
+		const close = B.create({
+			role: "icon",
+			ariaLabelKey: "asset.closeAvatar",
+			icon: I.create("close"),
+		});
 		dialog.querySelector("header").append(close);
 		dialog.classList.add("sg-avatar-picker");
 		options.classList.add("sg-avatar-options");
@@ -24,7 +28,16 @@
 			const allowed = typeof allowedPresets === "function" ? allowedPresets() : allowedPresets;
 			for (const [key, item] of Object.entries(A.registry)) {
 				if (!item.selectable || (Array.isArray(allowed) && !allowed.includes(key))) continue;
-				const button = B.create({ role: "icon", ariaLabel: item.label + "头像" });
+				const button = B.create({
+					role: "icon",
+					ariaLabel: SGGI18n.t("asset.avatarPreset", { label: SGGI18n.systemCopy(item.label) }),
+				});
+				SGGI18n.observe(button, () => {
+					button.setAttribute(
+						"aria-label",
+						SGGI18n.t("asset.avatarPreset", { label: SGGI18n.systemCopy(item.label) }),
+					);
+				});
 				button.classList.add("sg-avatar-choice");
 				button.dataset.preset = key;
 				button.setAttribute("aria-pressed", String(key === selected));

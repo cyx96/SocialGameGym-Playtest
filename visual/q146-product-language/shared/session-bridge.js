@@ -82,7 +82,7 @@
 		},
 		submit(button, type, data) {
 			if (button.getAttribute("aria-busy") === "true")
-				return Promise.reject(Error("正在保存，请稍候。"));
+				return Promise.reject(Error(SGGI18n.t("asset.waitingSave")));
 			const disabled = button.disabled;
 			button.disabled = true;
 			window.SGGButtons?.busy(button, true);

@@ -1,5 +1,6 @@
-/* Generated from source/configuration-source.json; existing preview metadata, not backend policy. */
-window.SGGConfigurationDefinition = {
+/* Generated from source/configuration-source.json; display labels never alter configuration values. */
+(() => {
+	const source = {
   "version": "sgg.configuration/1",
   "provenance": "Existing q64 ExperienceBundle config; no new gameplay settings. Player count is owned by preparation seats.",
   "tools": [
@@ -145,3 +146,25 @@ window.SGGConfigurationDefinition = {
     }
   }
 };
+	const label = (value) =>
+		Object.defineProperty({ ...value }, "label", {
+			enumerable: true,
+			get: () => SGGI18n.systemCopy(value.label),
+		});
+	window.SGGConfigurationDefinition = {
+		...source,
+		tools: source.tools.map(label),
+		games: Object.fromEntries(
+			Object.entries(source.games).map(([id, game]) => [
+				id,
+				{
+					...game,
+					extraFields: game.extraFields.map((field) =>
+						label({ ...field, options: field.options.map(label) }),
+					),
+					...(game.rationalFields ? { rationalFields: game.rationalFields.map(label) } : {}),
+				},
+			]),
+		),
+	};
+})();

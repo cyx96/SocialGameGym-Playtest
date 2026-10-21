@@ -129,7 +129,7 @@ function conversationTitle(c) {
 		const ctx = SessionApp.context;
 		return c.memberIds
 			.filter((id) => id !== ctx.viewer)
-			.map((id) => ctx.people.find((p) => p.id === id)?.name || "该玩家")
+			.map((id) => ctx.people.find((p) => p.id === id)?.name || SGGI18n.t("asset.unknownPerson"))
 			.join("、");
 	}
 	return c.members.map(memberLabel).join("、");
@@ -146,13 +146,16 @@ function snapshot() {
 	return { selected, drafts, positions, read: [...read], listTop, creating, createDraft };
 }
 function showError(node, text, source) {
-	node.dataset.errorSource = source;
-	node.textContent = text;
-	node.hidden = false;
-	node.scrollIntoView({ block: "nearest", behavior: "instant" });
+	// Only service errors and authored storage failures enter this shared system-copy owner.
+	SGGControls.showError(node, text, source);
 }
 function clearDraftError(node) {
-	if (node.dataset.errorSource === "draft") node.hidden = true;
+	SGGControls.clearError(node, "draft");
+}
+function clearErrors(node) {
+	SGGControls.clearError(node, "draft");
+	SGGControls.clearError(node, "submit");
+	node.hidden = true;
 }
 function write() {
 	if (window.__SGG_RETIRED__) return true;
@@ -217,7 +220,11 @@ function markRows(instant = false) {
 		row.classList.toggle("unread", unread);
 		row.setAttribute(
 			"aria-label",
-			conversationTitle(c) + "，" + c.summary + (unread ? "，有未读消息" : ""),
+			SGGI18n.t("asset.conversationAnnouncement", {
+				title: conversationTitle(c),
+				summary: c.summary,
+				unread: unread ? SGGI18n.t("asset.unreadSuffix") : "",
+			}),
 		);
 		row.querySelector(".unread-dot").hidden = !unread;
 	}
@@ -266,7 +273,9 @@ function renderConversation(c) {
 				previous = groups[index - 1],
 				showStamp = !previous || previous.round !== g.round || previous.step !== g.step;
 			return (
-				(showStamp && stamp ? `<p class="step-label">${escapeText(stamp)}</p>` : "") +
+				(showStamp && stamp
+					? `<p class="step-label" data-stamp-round="${g.round || 3}" data-stamp-step="${g.step || 1}">${escapeText(stamp)}</p>`
+					: "") +
 				`<div class="message ${self ? "self" : ""}" data-author="${escapeText(g.by)}">${self ? "" : SGGIdentity.avatar(ctx ? g.authorId : g.by, "message")}<div class="message-content">${self ? "" : `<span class="message-name">${ctx ? SGGInlinePerson.html(g.authorId, SGGProductLanguage.identities(ctx)) : escapeText(g.by)}</span>`}${g.items.map((m) => `<div class="bubble" data-notice-record="${escapeText(m.noticeRecordId || m.id || "")}">${escapeText(m.text)}</div>`).join("")}</div></div>`
 			);
 		})
@@ -282,16 +291,24 @@ function syncView() {
 	chat.hidden = creating || !opened;
 	empty.hidden = creating || opened;
 	creator.hidden = !creating;
-	back.setAttribute(
-		"aria-label",
-		creating ? "返回私信" : mobile.matches && opened ? "返回会话列表" : "返回应用桌面",
+	SGGI18n.bind(
+		back,
+		creating
+			? "asset.backMessages"
+			: mobile.matches && opened
+				? "asset.backConversations"
+				: "asset.backDesktop",
+		{ attr: "aria-label" },
 	);
 	const readonly = Boolean(window.SessionApp && SessionApp.readonly);
 	// A narrow empty list needs its creation action in the App toolbar; the wide
 	// workspace offers the same action beside its empty-state message instead.
 	newButton.hidden = creating || readonly || (!mobile.matches && conversations.length === 0);
 	workspace.classList.toggle("empty-workspace", conversations.length === 0);
-	empty.querySelector("p").textContent = conversations.length ? "选择一个会话" : "还没有会话";
+	SGGI18n.bind(
+		empty.querySelector("p"),
+		conversations.length ? "asset.chooseConversation" : "asset.noConversation",
+	);
 	empty.querySelector("button").hidden = conversations.length > 0 || readonly || mobile.matches;
 }
 function selectConversation(id, instant = false, initial = false) {
@@ -312,7 +329,7 @@ function selectConversation(id, instant = false, initial = false) {
 	selected = id;
 	lastSelected = id;
 	read.add(id);
-	error.hidden = true;
+	clearErrors(error);
 	syncView();
 	renderConversation(c);
 	markRows(instant || initial);
@@ -329,6 +346,11 @@ function returnToList(instant = false) {
 	const previous = selected;
 	selected = null;
 	syncView();
+	if (window.SGGButtons)
+		SGGButtons.iconize(creator.querySelector(".edit-members"), {
+			name: "chevron-down",
+			labelKey: membersOpen ? "asset.closeMembers" : "asset.chooseMembers",
+		});
 	markRows(true);
 	list.scrollTop = listTop;
 	write();
@@ -349,9 +371,10 @@ for (const c of conversations) {
 	button.setAttribute("aria-current", "false");
 	button.innerHTML =
 		avatar(c) +
-		`<span class="conversation-copy"><strong>${escapeText(conversationTitle(c))}</strong><p>${escapeText(c.summary)}</p></span><span class="unread-dot" aria-label="有未读消息" hidden></span>`;
+		`<span class="conversation-copy"><strong>${escapeText(conversationTitle(c))}</strong><p>${escapeText(c.summary)}</p></span><span class="unread-dot" aria-label="有未读消息" data-sg-copy-aria-label="asset.unreadMessages" hidden></span>`;
 	button.onclick = (e) => selectConversation(c.id, e.detail === 0);
 	rows.append(button);
+	SGGI18n.bindAllAnnotated(button);
 }
 input.addEventListener("input", () => {
 	resizeInput();
@@ -383,6 +406,7 @@ send.onclick = () => {
 	if (window.SessionApp) {
 		SessionApp.submit(send, "dm.send", { conversation: selected, text: input.value })
 			.then(() => {
+				clearErrors(error);
 				input.value = "";
 				cache();
 				write();
@@ -457,11 +481,11 @@ function renderRoster() {
 				? SessionApp.context.people.find((p) => p.id === SessionApp.context.viewer).name
 				: "玩家 01",
 		) +
-		'</span><span class="sg-self">你</span></span>' +
+		'</span><span class="sg-self" data-sg-copy="asset.you">你</span></span>' +
 		Players.filter((p) => ids.has(p.id))
 			.map(
 				(p) =>
-					`<span class="recipient-chip" data-id="${p.id}">${SGGIdentity.avatar(p.id, "reply")}<span>${escapeText(p.name)}</span><button type="button" data-remove="${p.id}" aria-label="移除${escapeText(p.name)}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m7 7 10 10M17 7 7 17"/></svg></button></span>`,
+					`<span class="recipient-chip" data-id="${p.id}">${SGGIdentity.avatar(p.id, "reply")}<span>${escapeText(p.name)}</span><button type="button" data-remove="${p.id}" aria-label="${escapeText(SGGI18n.t("asset.removeMember", { name: p.name }))}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m7 7 10 10M17 7 7 17"/></svg></button></span>`,
 			)
 			.join("");
 	for (const box of creator.querySelectorAll("[data-player]"))
@@ -470,7 +494,8 @@ function renderRoster() {
 		!ids.size ||
 		!firstMessage.value.trim() ||
 		(window.SessionApp && (SessionApp.readonly || SessionApp.context.remaining <= 0));
-	creator.querySelector(".create-note").textContent = "创建后成员固定；消息在本步结束后送达。";
+	SGGI18n.bind(creator.querySelector(".create-note"), "asset.createNote");
+	SGGI18n.bindAllAnnotated(creator);
 }
 function setMembersOpen(value, instant = false) {
 	membersOpen = value;
@@ -483,11 +508,21 @@ function setMembersOpen(value, instant = false) {
 				"ms " +
 				SGGMotion.options().easing;
 	memberWrap.style.height = value ? memberChoices.scrollHeight + "px" : "0px";
-	creator.querySelector(".edit-members").textContent = value ? "收起" : "编辑";
+	if (window.SGGButtons)
+		SGGButtons.iconize(creator.querySelector(".edit-members"), {
+			name: "chevron-down",
+			labelKey: value ? "asset.closeMembers" : "asset.chooseMembers",
+		});
+	else
+		creator.querySelector(".edit-members").textContent = SGGI18n.t(
+			value ? "asset.collapse" : "asset.edit",
+		);
 	creator.querySelector(".edit-members").setAttribute("aria-expanded", String(value));
-	creator
-		.querySelector(".edit-members")
-		.setAttribute("aria-label", value ? "收起成员" : "选择成员");
+	SGGI18n.bind(
+		creator.querySelector(".edit-members"),
+		value ? "asset.closeMembers" : "asset.chooseMembers",
+		{ attr: "aria-label" },
+	);
 	if (instant || reduce.matches) memberWrap.offsetHeight;
 }
 function saveCreateDraft() {
@@ -500,12 +535,17 @@ function openCreate(instant = false) {
 	if (selected && !saveCurrent()) return false;
 	creating = true;
 	syncView();
+	if (window.SGGButtons)
+		SGGButtons.iconize(creator.querySelector(".edit-members"), {
+			name: "chevron-down",
+			labelKey: membersOpen ? "asset.closeMembers" : "asset.chooseMembers",
+		});
 	markRows(true);
 	firstMessage.value = createDraft.text;
 	renderRoster();
 	setMembersOpen(!createDraft.members.length, true);
 	creator.querySelector(".create-body").scrollTop = createDraft.scroll || 0;
-	creator.querySelector(".create-error").hidden = true;
+	clearErrors(creator.querySelector(".create-error"));
 	write();
 	animateView(creator, instant);
 	return true;
@@ -514,6 +554,11 @@ function closeCreate(instant = false) {
 	if (!saveCreateDraft()) return false;
 	creating = false;
 	syncView();
+	if (window.SGGButtons)
+		SGGButtons.iconize(creator.querySelector(".edit-members"), {
+			name: "chevron-down",
+			labelKey: membersOpen ? "asset.closeMembers" : "asset.chooseMembers",
+		});
 	markRows(true);
 	write();
 	newButton.focus({ preventScroll: true });
@@ -571,6 +616,7 @@ createSubmit.onclick = () => {
 			text: firstMessage.value,
 		})
 			.then((ctx) => {
+				clearErrors(creator.querySelector(".create-error"));
 				selected =
 					ctx.conversations.find(
 						(c) =>
@@ -596,3 +642,27 @@ if (state === "new-ready" && !saved.createDraft) {
 	createDraft.text = "我们先把各自的考虑说清楚，再决定下一步。";
 }
 if (["new", "new-ready"].includes(state) || saved.creating) openCreate(true);
+
+// Locale changes update presentation only; compose drafts and pending submissions keep their DOM.
+SGGI18n.bindAllAnnotated(document);
+SGGI18n.subscribe(() => {
+	if (window.SGGButtons)
+		SGGButtons.iconize(creator.querySelector(".edit-members"), {
+			name: "chevron-down",
+			labelKey: membersOpen ? "asset.closeMembers" : "asset.chooseMembers",
+		});
+	markRows(true);
+	syncView();
+	for (const label of flow.querySelectorAll(".step-label[data-stamp-round]"))
+		label.textContent = SGGProductLanguage.stamp({
+			round: Number(label.dataset.stampRound),
+			step: Number(label.dataset.stampStep),
+			steps: window.SessionApp?.context.socialSteps || 1,
+		});
+	for (const button of creator.querySelectorAll("[data-remove]")) {
+		const person = Players.find((p) => p.id === button.dataset.remove);
+		if (person)
+			button.setAttribute("aria-label", SGGI18n.t("asset.removeMember", { name: person.name }));
+	}
+	SGGI18n.bindAllAnnotated(document);
+});

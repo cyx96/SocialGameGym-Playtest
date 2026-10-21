@@ -2,25 +2,30 @@
 (() => {
 	"use strict";
 	const positive = (n) => Number.isSafeInteger(Number(n)) && Number(n) > 0;
-	const apps = Object.freeze({
-		profile: "资料",
-		forum: "论坛",
-		dm: "私信",
-		rating: "评分",
-		game: "游戏",
-		questionnaire: "问卷",
-	});
+	const apps = Object.freeze(
+		Object.defineProperties(
+			{},
+			Object.fromEntries(
+				["profile", "forum", "dm", "rating", "game", "questionnaire"].map((id) => [
+					id,
+					{ enumerable: true, get: () => SGGI18n.t("asset." + id) },
+				]),
+			),
+		),
+	);
 	function quota(count) {
-		return Number.isSafeInteger(count) && count >= 0 ? "本步剩余 " + count + " 次" : "次数暂不可用";
+		return Number.isSafeInteger(count) && count >= 0
+			? SGGI18n.t("asset.quota", { count })
+			: SGGI18n.t("asset.quotaUnavailable");
 	}
 	function stamp({ round, step, steps } = {}) {
 		const parts = [];
-		if (positive(round)) parts.push("第 " + round + " 轮");
+		if (positive(round)) parts.push(SGGI18n.t("asset.roundStamp", { round }));
 		if (positive(step))
 			parts.push(
 				positive(steps) && Number(step) <= Number(steps)
-					? "社交 " + step + "/" + steps + " 步"
-					: "社交第 " + step + " 步",
+					? SGGI18n.t("asset.socialStamp", { step, steps })
+					: SGGI18n.t("asset.socialStep", { step }),
 			);
 		return parts.join(" · ");
 	}

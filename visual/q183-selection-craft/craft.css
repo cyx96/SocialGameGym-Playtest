@@ -290,3 +290,8 @@ body {
 #search-dialog .search-head {
 	border: 0;
 }
+
+/* Programmatic pointer entry must not draw a keyboard ring around the whole stage. */
+html[data-sg-motion-input="pointer"] #stage:focus {
+	outline: none;
+}

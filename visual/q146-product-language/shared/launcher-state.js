@@ -28,14 +28,23 @@
 				],
 				{ role: "state" },
 			);
-		button.setAttribute(
-			"aria-label",
-			"打开" +
-				label +
-				(mode === "read" ? "，只读，可查看" : mode === "off" ? "，未开启" : "，可操作") +
-				(required ? "，有待完成操作" : "") +
-				(count ? "，" + count + "条未读通知" : ""),
-		);
+		const paint = () =>
+			button.setAttribute(
+				"aria-label",
+				SGGI18n.t("asset.openApp", { label: SGGI18n.systemCopy(label) }) +
+					SGGI18n.t(
+						mode === "read"
+							? "asset.launchRead"
+							: mode === "off"
+								? "asset.launchOff"
+								: "asset.launchWrite",
+					) +
+					(required ? SGGI18n.t("asset.launchRequired") : "") +
+					(count ? SGGI18n.t("asset.launchUnread", { count }) : ""),
+			);
+		paint();
+		button.__sgLocaleState?.();
+		button.__sgLocaleState = SGGI18n.observe(button, paint);
 	}
 	window.SGGLauncherState = Object.freeze({ update, version: "launcher-state@1" });
 })();

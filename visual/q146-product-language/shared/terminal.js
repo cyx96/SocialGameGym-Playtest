@@ -6,7 +6,12 @@
 		describe: (reason) => {
 			if (!Object.hasOwn(definition.states, reason))
 				throw Error("Unknown authorized terminal state");
-			return { reason, title: definition.title, ...definition.states[reason] };
+			return {
+				reason,
+				title: SGGI18n.systemCopy(definition.title),
+				...definition.states[reason],
+				description: SGGI18n.systemCopy(definition.states[reason].description),
+			};
 		},
 	});
 })();

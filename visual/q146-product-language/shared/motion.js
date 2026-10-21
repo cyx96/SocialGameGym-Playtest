@@ -117,6 +117,30 @@
 		pane.finished.catch(() => {}).finally(release);
 		return animations;
 	}
+	function gateway(source, destination) {
+		// Carry the invitation's silhouette into the actual destination. Text stays at its
+		// final reading size: only this one viewport mask changes, never its layout.
+		const anchor = source.getBoundingClientRect(),
+			bounds = destination.getBoundingClientRect(),
+			x = Math.max(0, anchor.left - bounds.left),
+			y = Math.max(0, anchor.top - bounds.top),
+			right = Math.max(0, bounds.right - anchor.right),
+			bottom = Math.max(0, bounds.bottom - anchor.bottom),
+			radius = Math.min(anchor.width, anchor.height) / 2;
+		if (!(anchor.width > 0 && anchor.height > 0 && bounds.width > 0 && bounds.height > 0))
+			return [];
+		return [
+			run(source, [{ opacity: 1 }, { opacity: 0 }], { role: "exit", fill: "both" }),
+			run(
+				destination,
+				[
+					{ clipPath: `inset(${y}px ${right}px ${bottom}px ${x}px round ${radius}px)`, opacity: 0 },
+					{ clipPath: "inset(0px 0px 0px 0px round 0px)", opacity: 1 },
+				],
+				{ role: "app-open" },
+			),
+		].filter(Boolean);
+	}
 	function reveal(node, config = {}) {
 		return run(
 			node,
@@ -190,6 +214,7 @@
 		reveal,
 		scene,
 		app,
+		gateway,
 		onSettle(fn) {
 			listeners.add(fn);
 			return () => listeners.delete(fn);

@@ -1,7 +1,27 @@
 /* Presentational DOM assets. Callers own validation, permissions, storage and acceptance. */
 (() => {
 	"use strict";
-	const numberStates = new WeakMap();
+	const numberStates = new WeakMap(),
+		localeStates = new WeakMap();
+	function localize(root, field) {
+		localeStates.get(root)?.(field);
+	}
+	function watch(root, field, paint) {
+		let current = field;
+		const refresh = (next) => {
+			if (next) current = next;
+			paint(current);
+		};
+		localeStates.set(root, refresh);
+		SGGI18n.observe(root, () => refresh());
+		refresh();
+	}
+	const labelText = (field) =>
+		field.labelKey
+			? SGGI18n.t(field.labelKey, field.labelValues || {})
+			: typeof field.labelText === "function"
+				? field.labelText()
+				: field.label;
 	const el = (tag, cls, text) => {
 		const n = document.createElement(tag);
 		if (cls) n.className = cls;
@@ -10,7 +30,8 @@
 	};
 	function choice(field, selected, onChange) {
 		const box = el("fieldset", "field sg-field");
-		box.append(el("legend", "", field.label));
+		const legend = el("legend", "", field.label);
+		box.append(legend);
 		const options = el("div", "choice-options sg-choice");
 		if (field.help) {
 			const help = el("p", "field-help", field.help);
@@ -40,6 +61,13 @@
 			options.append(label);
 		}
 		box.append(options);
+		watch(box, field, (current) => {
+			legend.textContent = labelText(current);
+			const labels = options.querySelectorAll(".option-label");
+			current.options.forEach((option, i) => {
+				if (labels[i]) labels[i].textContent = labelText(option);
+			});
+		});
 		return box;
 	}
 	function number(field, selected, onChange) {
@@ -61,12 +89,15 @@
 		input.step = field.raw ? (field.step ?? 1) : 1;
 		input.inputMode = field.raw && !Number.isInteger(field.step ?? 1) ? "decimal" : "numeric";
 		input.value = selected ?? "";
-		input.placeholder = field.raw ? "输入数值" : "请选择";
+		SGGI18n.bind(input, field.raw ? "asset.enterNumber" : "asset.select", { attr: "placeholder" });
 		input.disabled = Boolean(field.disabled);
 		const stepButton = (delta, name) => {
 			const b = el("button", "stepper");
 			b.type = "button";
-			b.setAttribute("aria-label", name + field.label);
+			b.setAttribute(
+				"aria-label",
+				SGGI18n.t(delta < 0 ? "asset.decrease" : "asset.increase", { label: labelText(field) }),
+			);
 			b.dataset.sgButton = "";
 			b.dataset.sgRole = "quiet";
 			b.append(SGGIcons.create(delta > 0 ? "plus" : "minus"));
@@ -154,6 +185,12 @@
 			box.append(help);
 		}
 		sync();
+		watch(box, field, (current) => {
+			label.textContent = labelText(current);
+			minus.setAttribute("aria-label", SGGI18n.t("asset.decrease", { label: labelText(current) }));
+			plus.setAttribute("aria-label", SGGI18n.t("asset.increase", { label: labelText(current) }));
+			if (error) error.textContent = current.invalidMessage || SGGI18n.t("asset.invalidNumber");
+		});
 		return box;
 	}
 	function text(field, value, onChange) {
@@ -168,6 +205,11 @@
 		input.disabled = Boolean(field.disabled);
 		input.addEventListener("input", () => onChange(input.value));
 		box.append(label, input);
+		watch(box, field, (current) => {
+			label.textContent = labelText(current);
+			if (current.placeholderKey) input.placeholder = SGGI18n.t(current.placeholderKey);
+			else if (current.placeholder) input.placeholder = current.placeholder;
+		});
 		return box;
 	}
 	function select(field, value, onChange) {
@@ -183,6 +225,11 @@
 			box.setAttribute("role", "group");
 			box.setAttribute("aria-labelledby", label.id);
 			box.append(label, copy);
+			watch(box, field, (current) => {
+				label.textContent = labelText(current);
+				const option = current.options.find((o) => o.value === value);
+				copy.textContent = option ? labelText(option) : "—";
+			});
 			return box;
 		}
 		const box = el("div", "sg-field"),
@@ -191,7 +238,7 @@
 		label.htmlFor = input.id = "input-" + field.key;
 		input.disabled = Boolean(field.disabled);
 		if (value == null) {
-			const placeholder = el("option", "", field.placeholder || "请选择");
+			const placeholder = el("option", "", field.placeholder || SGGI18n.t("asset.select"));
 			placeholder.value = "";
 			placeholder.disabled = true;
 			placeholder.selected = true;
@@ -216,6 +263,14 @@
 			input.setAttribute("aria-describedby", help.id);
 			box.append(help);
 		}
+		watch(box, field, (current) => {
+			label.textContent = labelText(current);
+			const offset = value == null ? 1 : 0;
+			if (offset) input.options[0].textContent = current.placeholder || SGGI18n.t("asset.select");
+			current.options.forEach((option, i) => {
+				if (input.options[i + offset]) input.options[i + offset].textContent = labelText(option);
+			});
+		});
 		return box;
 	}
 	function enhance(root = document) {
@@ -252,7 +307,7 @@
 			return;
 		}
 		node.dataset.errorSource = source;
-		node.textContent = state[source];
+		node.textContent = SGGI18n.systemCopy(state[source]);
 		if (reveal) {
 			const message = node.textContent;
 			requestAnimationFrame(() =>
@@ -270,7 +325,13 @@
 	}
 	function showError(node, message, source = "submit") {
 		if (!node) return;
-		const state = errorStates.get(node) || {};
+		let state = errorStates.get(node);
+		if (!state) {
+			state = {};
+			SGGI18n.observe(node, () => {
+				if (node.dataset.errorSource && !node.hidden) paintError(node, state, false);
+			});
+		}
 		state[source] = String(message);
 		errorStates.set(node, state);
 		paintError(node, state, true);
@@ -294,6 +355,7 @@
 	);
 	document.addEventListener("DOMContentLoaded", () => enhance());
 	window.SGGControls = Object.freeze({
+		localize,
 		choice,
 		number,
 		syncNumber: (box) => numberStates.get(box)?.(),

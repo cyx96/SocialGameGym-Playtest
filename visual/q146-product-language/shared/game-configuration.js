@@ -1,6 +1,8 @@
 /* Configuration presentation adapter. Existing metadata only; no player readiness or service acceptance. */
 (() => {
 	"use strict";
+	const L = (key, values = {}) => ({ i18n: key, values });
+
 	const D = SGGConfigurationDefinition,
 		C = SGGControls,
 		B = SGGButtons;
@@ -8,7 +10,8 @@
 	const node = (tag, cls, text) => {
 		const n = document.createElement(tag);
 		if (cls) n.className = cls;
-		if (text != null) n.textContent = text;
+		if (text?.i18n) SGGI18n.bind(n, text.i18n, { values: text.values });
+		else if (text != null) n.textContent = text;
 		return n;
 	};
 	const key = (id) => "sgg-a6-q117-" + id + "-draft-v1";
@@ -38,7 +41,7 @@
 	}
 	function validate(id, value) {
 		const g = D.games[id];
-		if (!g) return { value: null, errors: { game: "暂未开放" } };
+		if (!g) return { value: null, errors: { game: SGGI18n.t("asset.unavailable") } };
 		const clean = defaults(id),
 			errors = {};
 		const integer = (v, min) =>
@@ -48,20 +51,21 @@
 			["communication", 0],
 		]) {
 			if (!integer(value?.[name], min))
-				errors[name] = min === 0 ? "请输入不小于 0 的整数" : "请输入不小于 1 的整数";
+				errors[name] = min === 0 ? SGGI18n.t("asset.integerZero") : SGGI18n.t("asset.integerOne");
 			else clean[name] = String(Number(value[name]));
 		}
 		for (const t of D.tools) {
 			clean.tools[t.id] = value?.tools?.[t.id] !== false;
 			const quota = value?.socialQuotas?.[t.id] ?? 1;
 			if (!integer(quota, 1)) {
-				if (clean.tools[t.id]) errors["quota-" + t.id] = "请输入不小于 1 的整数";
+				if (clean.tools[t.id]) errors["quota-" + t.id] = SGGI18n.t("asset.integerOne");
 			} else clean.socialQuotas[t.id] = String(Number(quota));
 		}
 		if (!D.tools.some((t) => clean.tools[t.id])) clean.communication = "0";
 		for (const f of g.extraFields) {
 			const selected = value?.[f.key] === undefined ? clean[f.key] : value[f.key];
-			if (!f.options.some((o) => o.value === selected)) errors[f.key] = "请选择" + f.label;
+			if (!f.options.some((o) => o.value === selected))
+				errors[f.key] = SGGI18n.t("asset.chooseField", { label: f.label });
 			else clean[f.key] = selected;
 		}
 		if (g.rationalFields) {
@@ -74,7 +78,7 @@
 					!/^(0|-?[1-9][0-9]*)$/.test(q.n) ||
 					!/^[1-9][0-9]*$/.test(q.d)
 				) {
-					errors["payoff-" + f.key] = "请输入规范整数分子和正整数分母";
+					errors["payoff-" + f.key] = SGGI18n.t("asset.fractionRequired");
 					continue;
 				}
 				let a = BigInt(q.n);
@@ -86,7 +90,7 @@
 					b = r;
 				}
 				if (a !== 1n) {
-					errors["payoff-" + f.key] = "请使用最简分数，零写作 0 / 1";
+					errors["payoff-" + f.key] = SGGI18n.t("asset.fractionReduced");
 					continue;
 				}
 				clean.payoffs[f.key] = { n: q.n, d: q.d };
@@ -96,7 +100,7 @@
 					const a = clean.payoffs[g.strictOrder[i - 1]],
 						b = clean.payoffs[g.strictOrder[i]];
 					if (BigInt(a.n) * BigInt(b.d) <= BigInt(b.n) * BigInt(a.d))
-						errors["payoff-" + g.strictOrder[i]] = "收益须依次严格递减";
+						errors["payoff-" + g.strictOrder[i]] = SGGI18n.t("asset.payoffOrder");
 				}
 		}
 
@@ -106,17 +110,21 @@
 		const form = node("form", "sg-game-config"),
 			head = node("header", "sg-config-head"),
 			name = node("p", "sg-config-game", gameName),
-			title = node("h2", "", "本场设置"),
+			title = node("h2", "", L("asset.configuration")),
 			body = node("div", "sg-config-body"),
 			footer = node("footer", "sg-config-footer"),
 			status = node("p", "sg-error");
+		name.textContent = SGGI18n.systemCopy(gameName);
+		SGGI18n.observe(name, () => {
+			name.textContent = SGGI18n.systemCopy(gameName);
+		});
 		status.setAttribute("role", "status");
 		head.append(name, title);
 		form.append(head, body, footer);
 		const model = D.games[gameId];
 		if (!model) {
-			body.append(node("p", "sg-config-unavailable", "暂未开放"));
-			const action = B.create({ role: "primary", label: "进入准备" });
+			body.append(node("p", "sg-config-unavailable", L("asset.unavailable")));
+			const action = B.create({ role: "primary", labelKey: "asset.prepare" });
 			action.disabled = true;
 			footer.append(action);
 			return form;
@@ -137,7 +145,11 @@
 			sections = new Map();
 		function group(label, open = false) {
 			const d = node("details", "sg-config-group"),
-				s = node("summary", "", label);
+				s = node(
+					"summary",
+					"",
+					L("asset." + ({ 基础: "basic", 社交: "social", 游戏: "game" }[label] || label)),
+				);
 			d.open = open;
 			d.append(s);
 			body.append(d);
@@ -166,12 +178,21 @@
 			return true;
 		}
 		function number(group, label, k, min, read, write) {
-			const field = C.number({ key: instance + k, label, min }, read(), (v) => {
-				write(v == null ? "" : String(v));
-				field.querySelector(".sg-error").textContent = "";
-				field.querySelector("input").setAttribute("aria-invalid", "false");
-				persist();
-			});
+			const field = C.number(
+				{
+					key: instance + k,
+					label: typeof label === "function" ? label() : label,
+					labelText: typeof label === "function" ? label : undefined,
+					min,
+				},
+				read(),
+				(v) => {
+					write(v == null ? "" : String(v));
+					field.querySelector(".sg-error").textContent = "";
+					field.querySelector("input").setAttribute("aria-invalid", "false");
+					persist();
+				},
+			);
 			field.classList.add("sg-config-field");
 			field.dataset.field = k;
 			const error = node("p", "sg-error");
@@ -186,7 +207,7 @@
 		const basics = group("基础", true);
 		number(
 			basics,
-			"游戏轮数",
+			() => SGGI18n.t("asset.rounds"),
 			"rounds",
 			1,
 			() => draft.rounds,
@@ -194,14 +215,14 @@
 		);
 		const communication = number(
 			basics,
-			"每轮社交步数",
+			() => SGGI18n.t("asset.socialSteps"),
 			"communication",
 			0,
 			() => draft.communication,
 			(v) => (draft.communication = v),
 		);
 		const social = group("社交"),
-			quotaTitle = node("p", "sg-config-quota-title", "每步次数");
+			quotaTitle = node("p", "sg-config-quota-title", L("asset.perStep"));
 		social.append(quotaTitle);
 		function syncTools() {
 			const any = D.tools.some((t) => draft.tools[t.id]);
@@ -218,18 +239,23 @@
 		for (const tool of D.tools) {
 			const row = node("div", "sg-config-tool"),
 				toggle = node("label", "sg-switch"),
-				text = node("span", "", tool.label),
+				text = node("span"),
 				check = node("input"),
 				track = node("span", "sg-switch-track");
 			check.type = "checkbox";
 			check.checked = draft.tools[tool.id];
-			check.setAttribute("aria-label", "开启" + tool.label);
+			const refreshTool = () => {
+				text.textContent = tool.label;
+				check.setAttribute("aria-label", SGGI18n.t("asset.enableTool", { label: tool.label }));
+			};
+			refreshTool();
+			SGGI18n.observe(row, refreshTool);
 			track.setAttribute("aria-hidden", "true");
 			toggle.append(check, track, text);
 			row.append(toggle);
 			const f = number(
 				row,
-				tool.label + "每步次数",
+				() => SGGI18n.t("asset.toolQuota", { label: tool.label }),
 				"quota-" + tool.id,
 				1,
 				() => draft.socialQuotas[tool.id],
@@ -256,23 +282,23 @@
 			social.append(row);
 		}
 		syncTools();
+		const game = group("游戏");
 		if (model.extraFields.length) {
-			const extra = group("游戏");
 			for (const f of model.extraFields) {
 				const control = C.select(
-					{ key: instance + f.key, label: f.label, options: f.options },
+					{ key: instance + f.key, label: f.label, labelText: () => f.label, options: f.options },
 					draft[f.key],
 					(v) => {
 						draft[f.key] = v;
 						persist();
 					},
 				);
-				extra.append(control);
+				game.append(control);
 			}
 		}
 		if (model.rationalFields) {
-			const extra = group("收益表");
-			extra.append(node("p", "", "按最简分数填写；收益须按下列顺序严格递减。"));
+			game.append(node("h3", "sg-config-section-title", L("asset.payoffs")));
+			game.append(node("p", "", L("asset.payoffHelp")));
 			for (const f of model.rationalFields) {
 				const box = node("div", ""),
 					key = "payoff-" + f.key;
@@ -284,7 +310,12 @@
 					["d", "分母"],
 				]) {
 					const control = C.text(
-						{ key: instance + key + part, label: f.label + " · " + label },
+						{
+							key: instance + key + part,
+							label: f.label + " · " + label,
+							labelText: () =>
+								SGGI18n.t("asset.fieldPart", { label: f.label, part: SGGI18n.systemCopy(label) }),
+						},
 						draft.payoffs[f.key][part],
 						(v) => {
 							draft.payoffs[f.key][part] = v;
@@ -300,12 +331,14 @@
 					box.append(control);
 				}
 				box.append(error);
-				fields.set(key, { input: first, error, group: extra });
-				extra.append(box);
+				fields.set(key, { input: first, error, group: game });
+				game.append(box);
 			}
 		}
+		if (!model.extraFields.length && !model.rationalFields?.length)
+			game.append(node("p", "", L("asset.noConfiguration")));
 
-		const action = B.create({ role: "primary", label: "进入准备" });
+		const action = B.create({ role: "primary", labelKey: "asset.prepare" });
 		action.type = "submit";
 		if (document.body.dataset.creationRuntime === "pending") {
 			action.disabled = true;
@@ -328,12 +361,17 @@
 				return;
 			}
 			if (!persist()) {
-				status.textContent = "未能保存设置，请重试。";
+				SGGControls.showError(status, "未能保存设置，请重试。", "draft");
 				return;
 			}
+			SGGControls.clearError(status, "draft");
 			status.textContent = "";
 			onContinue?.(checked.value);
 		};
+		SGGI18n.observe(form, () => {
+			if ([...fields.values()].some((field) => field.error.textContent))
+				feedback(validate(gameId, draft).errors);
+		});
 		C.enhance(form);
 		B.enhance(form);
 		return form;

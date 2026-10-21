@@ -1,5 +1,8 @@
 (() => {
 	"use strict";
+	const I = SGGI18n,
+		gameName = (game) => I.t("catalog.game." + game.id + ".name"),
+		gameDescription = (game) => I.t("catalog.game." + game.id + ".description");
 	const focusOnly = document.body.dataset.focusOnly === "true",
 		flipOnly = document.body.dataset.cardGesture === "flip";
 	const profile = SGGCatalogMotion;
@@ -29,10 +32,18 @@
 	const themes = order
 		.map((id) => {
 			const theme = CatalogStudy.themes.find((t) => t.id === id);
-			return theme ? { ...theme, colors: SGGThemes.get(id) || theme.colors } : null;
+			return theme
+				? {
+						...theme,
+						get label() {
+							return I.t("catalog.theme." + theme.id);
+						},
+						colors: SGGThemes.get(id) || theme.colors,
+					}
+				: null;
 		})
 		.filter(Boolean);
-	const state = { theme: 3, nav: 0, boundary: 0 };
+	const state = { theme: themes.findIndex((theme) => theme.id === "all"), nav: 0, boundary: 0 };
 	Object.defineProperties(state, {
 		open: { enumerable: true, get: () => clamp(state.nav) },
 		flip: { enumerable: true, get: () => clamp(state.nav - 1) },
@@ -52,6 +63,7 @@
 		wheelAxis = null,
 		wheelSum = 0;
 	function addText(target, text) {
+		target.replaceChildren();
 		if (!/\p{Script=Han}/u.test(text)) {
 			target.textContent = text;
 			return;
@@ -103,7 +115,7 @@
 			wrap.dataset.game = game.id;
 			wrap.tabIndex = -1;
 			wrap.setAttribute("role", "group");
-			wrap.setAttribute("aria-label", game.name + "，右滑返回主题，左滑或点击进入设置");
+			wrap.setAttribute("aria-label", I.t("catalog.cardHint", { name: gameName(game) }));
 			paintArt(wrap, game);
 			const gameTheme = themes.find((t) => t.id === game.category);
 			wrap.style.setProperty("--ink", gameTheme.colors.ink);
@@ -119,16 +131,16 @@
 			const copy = document.createElement("div");
 			copy.className = "card-copy";
 			const title = document.createElement("h1");
-			title.textContent = game.name;
+			title.textContent = gameName(game);
 			const desc = document.createElement("p");
-			addText(desc, game.desc);
+			addText(desc, gameDescription(game));
 			copy.append(title, desc);
 			const flip = document.createElement("button");
 			flip.type = "button";
 			flip.className = "sg-button flip-button";
 			flip.dataset.sgButton = "";
 			flip.dataset.sgRole = "icon";
-			flip.setAttribute("aria-label", "翻到设置");
+			I.bind(flip, "catalog.flip", { attr: "aria-label" });
 			flip.innerHTML =
 				'<svg viewBox="0 0 24 24"><path d="M7 7h11v11M18 7l-4-4M18 7l-4 4M6 17l4 4M6 17l4-4M6 17V6"/></svg>';
 			flip.onclick = (e) => {
@@ -203,7 +215,7 @@
 		c.settingsContent.replaceChildren(
 			SGGGameConfiguration.mount({
 				gameId: c.game.id,
-				gameName: c.game.name,
+				gameName: gameName(c.game),
 				initial,
 				onDraftSaved: () => {
 					const url = new URL(location.href);
@@ -242,8 +254,10 @@
 			canvas: theme.colors.canvas || theme.colors.paper,
 		}))
 			document.documentElement.style.setProperty("--" + k, v);
-		announce.textContent =
-			a.theme.label + "，" + a.games[mod(Math.round(a.pos), a.games.length)].name;
+		announce.textContent = I.t("catalog.announcement", {
+			theme: a.theme.label,
+			game: gameName(a.games[mod(Math.round(a.pos), a.games.length)]),
+		});
 	}
 	function measure() {
 		size.w = stage.clientWidth;
@@ -294,7 +308,10 @@
 		stage.dataset.game = owner.games[mod(Math.round(owner.pos), owner.games.length)].id;
 		stage.dataset.motion = running.size || down || wheelAxis ? "active" : "idle";
 		back.hidden = navigationIntent() === 0 && p < 0.01;
-		back.setAttribute("aria-label", navigationIntent() > 1 ? "返回海报" : "返回主题");
+		back.setAttribute(
+			"aria-label",
+			I.t(navigationIntent() > 1 ? "catalog.backPosters" : "catalog.backThemes"),
+		);
 		for (const a of assemblies) {
 			const d = ring(a.index, state.theme, assemblies.length),
 				abs = Math.abs(d),
@@ -821,11 +838,15 @@
 		results = document.querySelector("#results");
 	function showResults() {
 		results.replaceChildren();
-		const hits = CatalogStudy.games.filter((g) => (g.name + g.desc).includes(query.value.trim()));
+		const hits = CatalogStudy.games.filter((g) =>
+			(gameName(g) + " " + gameDescription(g) + " " + g.name + " " + g.desc)
+				.toLocaleLowerCase(I.locale)
+				.includes(query.value.trim().toLocaleLowerCase(I.locale)),
+		);
 		for (const g of hits) {
 			const b = document.createElement("button");
 			b.className = "result";
-			b.textContent = g.name;
+			b.textContent = gameName(g);
 			const small = document.createElement("small");
 			small.textContent = themes.find((t) => t.id === g.category)?.label || "";
 			b.append(small);
@@ -839,7 +860,7 @@
 		}
 		if (!hits.length) {
 			const p = document.createElement("p");
-			p.textContent = "没有找到游戏";
+			p.textContent = I.t("catalog.noResults");
 			results.append(p);
 		}
 	}
@@ -976,6 +997,27 @@
 		if (document.hidden) finishInteraction();
 	});
 
+	function refreshCopy() {
+		document.title = I.t("catalog.title") + " · SocialGameGym";
+		for (const a of assemblies) {
+			const label = a.identity.querySelector(".theme");
+			if (label) label.textContent = a.theme.label;
+			for (const c of a.cards) {
+				c.copy.querySelector("h1").textContent = gameName(c.game);
+				addText(c.desc, gameDescription(c.game));
+				c.wrap.setAttribute("aria-label", I.t("catalog.cardHint", { name: gameName(c.game) }));
+				if (c.ghost) {
+					c.ghost.querySelector("h1").textContent = gameName(c.game);
+					addText(c.ghost.querySelector(".card-copy p"), gameDescription(c.game));
+				}
+			}
+		}
+		if (dialog.open) showResults();
+		setThemeColors();
+		render();
+	}
+	I.subscribe(refreshCopy);
+	I.bindAllAnnotated(document);
 	const params = new URLSearchParams(location.search);
 	if (params.get("game")) {
 		const g = CatalogStudy.games.find((g) => g.id === params.get("game"));
@@ -991,6 +1033,7 @@
 	measure();
 	setThemeColors();
 	render();
+	refreshCopy();
 	window.SGG180 = Object.freeze({
 		inspect: () => ({
 			themeId: selected().theme.id,

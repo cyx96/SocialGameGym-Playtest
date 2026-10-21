@@ -1,0 +1,82 @@
+/* The global utility owns one fixed end slot; contextual header tools precede it. */
+.sg-language-control {
+	position: fixed;
+	inset-block-start: 1rem;
+	inset-inline-end: max(var(--sg-safe-end, 2.5rem), calc((100vw - var(--sg-frame, 70rem)) / 2));
+	z-index: 90;
+	color: var(--secondary, var(--sg-brand-secondary));
+}
+.sg-language-control > .sg-button[data-sg-button] {
+	color: inherit;
+	background: transparent;
+}
+.sg-language-menu {
+	box-sizing: border-box;
+	position: fixed;
+	inset: auto;
+	margin: 0;
+	inline-size: min(13.5rem, calc(100vw - 2rem));
+	padding: var(--sg-space-related);
+	border: 0;
+	border-radius: var(--sg-radius-surface);
+	background: var(--surface, #fff);
+	color: var(--label, var(--sg-brand-ink));
+	box-shadow: var(--sg-shadow-popover);
+	transform-origin: top right;
+}
+.sg-language-menu:popover-open {
+	display: grid;
+	gap: 0.125rem;
+}
+.sg-language-menu > .sg-button[data-sg-button] {
+	inline-size: 100%;
+	min-block-size: 44px;
+	justify-content: space-between;
+	border-radius: var(--sg-radius-control);
+	text-align: start;
+	padding-inline: var(--sg-space-paragraph);
+	color: inherit;
+	font-weight: 400;
+}
+.sg-language-menu > [aria-checked="true"] {
+	background: var(--wash, var(--sg-brand-wash));
+	font-weight: 550;
+}
+.sg-language-check {
+	width: 18px;
+	height: 18px;
+	flex: none;
+	fill: none;
+	stroke: currentColor;
+	stroke-width: var(--sg-icon-stroke);
+	stroke-linecap: round;
+	stroke-linejoin: round;
+	visibility: hidden;
+}
+.sg-language-menu > [aria-checked="true"] .sg-language-check {
+	visibility: visible;
+}
+html[data-sg-language-control]
+	:is(
+		.sg-product-bar > .sg-header-actions,
+		.catalog-header > nav,
+		.sg-utility-shell > .topbar > nav
+	) {
+	padding-inline-end: 3.25rem;
+}
+@media (max-width: 760px) {
+	.sg-language-control {
+		inset-block-start: 0.375rem;
+	}
+	.sg-home ~ .sg-language-control,
+	html[data-sg-language-surface="catalog"] .sg-language-control {
+		inset-block-start: 1rem;
+	}
+}
+
+/* Native modal tools retain their existing header rhythm and focus boundary. */
+.sg-language-control[data-in-modal] {
+	position: static;
+	flex: 0 0 44px;
+	margin-inline-start: auto;
+}

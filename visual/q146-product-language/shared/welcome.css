@@ -1,0 +1,130 @@
+/* First-entry invitation: state template, one command and one action, no input semantics. */
+.sg-home {
+	--ink: var(--sg-brand-ink);
+	--secondary: var(--sg-brand-secondary);
+	--canvas: var(--sg-brand-canvas);
+	--surface: #fff;
+	--wash: var(--sg-brand-wash);
+	min-height: 100dvh;
+	background: var(--canvas);
+	color: var(--ink);
+}
+.sg-catalog-home {
+	position: fixed;
+	inset: 0;
+	visibility: hidden;
+}
+.sg-catalog-home[data-visible="true"] {
+	visibility: visible;
+}
+.sg-catalog-home iframe {
+	display: block;
+	width: 100%;
+	height: 100%;
+	border: 0;
+}
+.sg-welcome {
+	position: fixed;
+	inset: 0;
+	display: grid;
+	grid-template-columns: minmax(0, 1fr);
+	place-items: center;
+	padding: max(var(--sg-safe-start), env(safe-area-inset-top)) var(--sg-safe-end)
+		max(var(--sg-safe-start), env(safe-area-inset-bottom)) var(--sg-safe-start);
+	overflow: auto;
+	background: var(--canvas);
+}
+.sg-welcome[data-leaving="true"] {
+	background: transparent;
+	pointer-events: none;
+}
+.sg-welcome-group {
+	min-width: 0;
+	width: min(100%, var(--sg-focus));
+	position: relative;
+}
+.sg-welcome-prompt {
+	display: flex;
+	align-items: center;
+	gap: var(--sg-space-section);
+	padding: var(--sg-space-sibling) var(--sg-space-sibling) var(--sg-space-sibling)
+		var(--sg-space-task);
+	border-radius: 999px;
+	background: var(--surface);
+}
+.sg-welcome-copy {
+	flex: 1;
+	min-width: 0;
+	display: block;
+	white-space: nowrap;
+	overflow-x: auto;
+	scrollbar-width: none;
+	padding-block: 0.1em;
+	font-size: clamp(var(--sg-type-body), 2.4vw, var(--sg-task-title));
+	line-height: var(--sg-leading-interface);
+	letter-spacing: -0.02em;
+}
+.sg-welcome-copy::-webkit-scrollbar {
+	display: none;
+}
+.sg-welcome-command {
+	font-weight: 500;
+	color: var(--sg-invocation-ink);
+	background: var(--sg-invocation-wash);
+	padding: 0.08em 0.18em;
+	border-radius: 0.22em;
+	white-space: nowrap;
+}
+.sg-welcome-message {
+	font-weight: 400;
+	white-space: nowrap;
+}
+.sg-welcome-caret {
+	display: inline-block;
+	height: 1.1em;
+	width: 2px;
+	margin-left: 0.12em;
+	vertical-align: -0.14em;
+	background: currentColor;
+	animation: sg-welcome-caret 1100ms steps(1, end) infinite;
+}
+.sg-welcome-send .experience-icon {
+	display: inline-flex;
+}
+.sg-welcome-feedback {
+	position: absolute;
+	inset: calc(100% + var(--sg-space-paragraph)) var(--sg-space-task) auto;
+	margin: 0;
+	font-size: var(--sg-type-context);
+	line-height: var(--sg-leading-interface);
+	color: var(--secondary);
+}
+@keyframes sg-welcome-caret {
+	0%,
+	100% {
+		opacity: 1;
+	}
+	50% {
+		opacity: 0;
+	}
+}
+.sg-welcome[data-paused="true"] .sg-welcome-caret,
+.sg-welcome[data-leaving="true"] .sg-welcome-caret,
+[data-sg-motion-input="keyboard"] .sg-welcome-caret {
+	animation: none;
+}
+@media (max-width: 760px) {
+	.sg-welcome-prompt {
+		gap: var(--sg-space-related);
+		padding: var(--sg-space-paragraph);
+		border-radius: 999px;
+	}
+	.sg-welcome-copy {
+		letter-spacing: -0.01em;
+	}
+}
+@media (prefers-reduced-motion: reduce) {
+	.sg-welcome-caret {
+		animation: none;
+	}
+}

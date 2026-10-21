@@ -5,6 +5,11 @@
 }
 button.sg-button[data-sg-button],
 a.sg-button[data-sg-button] {
+	/* Resolve palette references at the component, including locally themed surfaces. */
+	--sg-button-ink: var(--ink, var(--sg-brand-ink));
+	--sg-button-secondary: var(--secondary, var(--sg-brand-secondary));
+	--sg-button-surface: var(--surface, #fff);
+	--sg-button-wash: var(--wash, color-mix(in srgb, var(--sg-button-ink) 12%, white));
 	position: relative;
 	box-sizing: border-box;
 	display: inline-flex;
@@ -290,6 +295,8 @@ button.sg-button[data-sg-button].sg-pressed {
 .sg-button[data-sg-button][data-sg-motion="disclosure"][aria-expanded="true"] > svg {
 	transform: rotate(180deg);
 }
+[data-sg-motion-input="keyboard"] .sg-button[data-sg-button],
+[data-sg-motion-input="keyboard"] .sg-button[data-sg-button] > svg,
 .sg-button[data-sg-button][data-sg-input="keyboard"],
 .sg-button[data-sg-button][data-sg-input="keyboard"] > svg {
 	transition: none;
@@ -399,4 +406,25 @@ button.sg-button[data-sg-button][role="menuitem"] .type-mark {
 .sg-button[data-sg-button][data-sg-role="danger"]:disabled {
 	background: var(--sg-button-wash);
 	color: var(--sg-button-secondary);
+}
+
+/* Sending affordance: the shared glyph rises slightly while its target stays fixed. */
+.sg-button[data-sg-motion="send"] .sg-send-arrow {
+	display: inline-flex;
+	transition: transform var(--sg-motion-release) var(--sg-ease);
+}
+@media (hover: hover) and (pointer: fine) {
+	.sg-button[data-sg-motion="send"]:not(:disabled):hover .sg-send-arrow {
+		transform: translateY(-2px);
+	}
+}
+@media (prefers-reduced-motion: reduce) {
+	.sg-button[data-sg-motion="send"] .sg-send-arrow {
+		transition: none;
+		transform: none !important;
+	}
+}
+[data-sg-motion-input="keyboard"] .sg-button[data-sg-motion="send"] .sg-send-arrow {
+	transition: none;
+	transform: none;
 }

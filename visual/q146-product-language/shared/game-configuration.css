@@ -88,6 +88,12 @@
 	color: var(--secondary);
 	font-size: var(--sg-text-help);
 }
+.sg-config-section-title {
+	margin: var(--sg-space-paragraph) 0;
+	font-size: var(--sg-type-body);
+	font-weight: 550;
+	line-height: var(--sg-leading-interface);
+}
 .sg-switch {
 	display: flex;
 	align-items: center;

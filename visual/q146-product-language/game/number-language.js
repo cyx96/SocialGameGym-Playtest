@@ -57,7 +57,18 @@
 		{ signed = false, unit = "", digits = policy.recurringFractionDigits } = {},
 	) {
 		const r = ratio(value);
-		if (!r) return { text: "—", aria: "暂无数值", missing: true, approx: false, unit };
+		unit =
+			["点", "point", "points"].includes(unit) && r
+				? SGGI18n.t("asset.pointUnit", { count: r.n === r.d || r.n === -r.d ? 1 : 2 })
+				: SGGI18n.systemCopy(unit);
+		if (!r)
+			return {
+				text: "—",
+				aria: SGGI18n.t("asset.numberMissing"),
+				missing: true,
+				approx: false,
+				unit,
+			};
 		const negative = r.n < 0n,
 			n = negative ? -r.n : r.n,
 			d = r.d,
@@ -118,8 +129,12 @@
 			missing: false,
 			unit,
 			aria:
-				(result.approx ? "约" : "") +
-				(negative ? "负" : signed && n !== 0n ? "正" : "") +
+				(result.approx ? SGGI18n.t("asset.numberApprox") : "") +
+				(negative
+					? SGGI18n.t("asset.numberNegative")
+					: signed && n !== 0n
+						? SGGI18n.t("asset.numberPositive")
+						: "") +
 				magnitude +
 				(unit ? " " + unit : ""),
 			r,
@@ -131,7 +146,9 @@
 		if (text !== undefined) n.textContent = text;
 		return n;
 	};
-	let popup;
+	let popup,
+		stopPopupLocale = () => {};
+
 	function showDetail(trigger, value) {
 		if (!popup) {
 			popup = e("div", "number-detail");
@@ -145,12 +162,22 @@
 		detail.append(e("span", "number-detail-digits", value.detail));
 		if (value.unit) detail.append(e("span", "numeric-unit", value.unit));
 		popup.replaceChildren(
-			e("p", "number-detail-label", "更精确的数值"),
+			e("p", "number-detail-label", SGGI18n.t("asset.numberPrecision")),
 			detail,
-			e("p", "number-detail-note", "当前显示为近似值，结果判断不受显示精度影响。"),
+			e("p", "number-detail-note", SGGI18n.t("asset.numberNote")),
 		);
 		const host = trigger.closest("dialog[open]") || document.body;
 		if (popup.parentElement !== host) host.append(popup);
+		stopPopupLocale();
+		const detailPopup = popup;
+		stopPopupLocale = SGGI18n.observe(detailPopup, () => {
+			const label = detailPopup.querySelector(".number-detail-label"),
+				note = detailPopup.querySelector(".number-detail-note"),
+				unit = detailPopup.querySelector(".numeric-unit");
+			if (label) label.textContent = SGGI18n.t("asset.numberPrecision");
+			if (note) note.textContent = SGGI18n.t("asset.numberNote");
+			if (unit) unit.textContent = SGGI18n.systemCopy(unit.textContent);
+		});
 		trigger.setAttribute("aria-controls", popup.id);
 		popup.showPopover({ source: trigger });
 		let zoom = 1;
@@ -167,12 +194,12 @@
 			"px";
 	}
 	function element(value, { role = "data", signed = false, unit = "", digits } = {}) {
-		const f = format(value, { signed, unit, digits }),
-			root = e(f.approx ? "button" : "span", "ui-number num--" + role);
+		let f = format(value, { signed, unit, digits });
+		const root = e(f.approx ? "button" : "span", "ui-number num--" + role);
 		if (f.approx) {
 			root.type = "button";
 			root.classList.add("number-approx");
-			root.setAttribute("aria-label", f.aria + "，查看更精确的数值");
+			root.setAttribute("aria-label", SGGI18n.t("asset.numberDetails", { value: f.aria }));
 			root.addEventListener("click", () => showDetail(root, f));
 		} else root.setAttribute("aria-label", f.aria);
 		if (f.text.length > 11) root.classList.add("number-wide");
@@ -184,7 +211,16 @@
 			text.append(document.createTextNode(part));
 		}
 		root.append(text);
-		if (unit && !f.missing) root.append(e("span", "numeric-unit", unit));
+		if (unit && !f.missing) root.append(e("span", "numeric-unit", f.unit));
+		SGGI18n.observe(root, () => {
+			f = format(value, { signed, unit, digits });
+			root.setAttribute(
+				"aria-label",
+				f.approx ? SGGI18n.t("asset.numberDetails", { value: f.aria }) : f.aria,
+			);
+			const label = root.querySelector(".numeric-unit");
+			if (label) label.textContent = f.unit;
+		});
 		return root;
 	}
 	function text(value, options = {}) {
@@ -195,7 +231,7 @@
 		const a = ratio(current),
 			b = ratio(total);
 		if (!a || !b || a.d !== 1n || b.d !== 1n || a.n < 0n || b.n < 1n || a.n > b.n) return "—";
-		return text(a.n) + "/" + text(b.n) + "\u202f" + unit;
+		return text(a.n) + "/" + text(b.n) + "\u202f" + SGGI18n.systemCopy(unit);
 	}
 	window.NumberUI = { format, element, text, progress, ratio };
 })();

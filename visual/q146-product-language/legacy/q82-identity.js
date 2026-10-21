@@ -24,12 +24,14 @@
 	function person(value) {
 		if (window.SessionApp) {
 			const id = value && typeof value === "object" ? value.id : value;
-			return people[id] || { id: "unknown", name: "该玩家", family: "neutral" };
+			return (
+				people[id] || { id: "unknown", name: SGGI18n.t("asset.unknownPerson"), family: "neutral" }
+			);
 		}
 		if (value && typeof value === "object")
 			return {
 				id: value.id || "unknown",
-				name: value.name || "玩家",
+				name: value.name || SGGI18n.t("asset.unknownPerson"),
 				family: value.family || "neutral",
 			};
 		return (
@@ -37,7 +39,11 @@
 			Object.values(people).find((p) => p.name === value) ||
 			(value === "你"
 				? people.self
-				: { id: "unknown", name: String(value || "玩家"), family: "neutral" })
+				: {
+						id: "unknown",
+						name: String(value || SGGI18n.t("asset.unknownPerson")),
+						family: "neutral",
+					})
 		);
 	}
 	function avatar(value, size = "row", options = {}) {

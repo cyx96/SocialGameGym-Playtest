@@ -10,7 +10,8 @@
 			b.className = "launch-tool";
 			b.dataset.tool = id;
 			b.dataset.asset = "app-launcher@2";
-			b.setAttribute("aria-label", "打开" + label);
+			const translated = () => SGGI18n.systemCopy(label);
+			b.setAttribute("aria-label", SGGI18n.t("asset.openApp", { label: translated() }));
 			const art = document.createElement("span");
 			art.className = "launch-art";
 			const tile = document.createElement("span");
@@ -18,7 +19,12 @@
 			tile.innerHTML = icons[id];
 			art.append(tile);
 			const caption = document.createElement("span");
-			caption.textContent = label;
+			caption.textContent = translated();
+			SGGI18n.observe(b, () => {
+				caption.textContent = translated();
+				if (!b.dataset.mode)
+					b.setAttribute("aria-label", SGGI18n.t("asset.openApp", { label: translated() }));
+			});
 			b.append(art, caption);
 			return b;
 		},

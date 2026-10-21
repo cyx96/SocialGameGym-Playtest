@@ -8,6 +8,12 @@
 		if (text != null) n.textContent = String(text);
 		return n;
 	};
+	const localized = (n, key, live = true) => {
+		n.dataset.sgCopy = key;
+		if (live) SGGI18n.bind(n, key);
+		else n.textContent = SGGI18n.t(key);
+		return n;
+	};
 	const resolve = (id, identities) => {
 		const value = identities && Object.hasOwn(identities, id) ? identities[id] : null;
 		return typeof value?.name === "string" && value.name ? value : null;
@@ -21,11 +27,13 @@
 			selfMarker = false,
 			avatar = settings.avatars,
 			order = settings.order,
+			live = true,
 		} = {},
 	) {
 		const value = resolve(id, identities);
-		if (!value) return element("span", "sg-person-unknown", "该玩家");
-		if (mention && id === viewerId) return element("span", "sg-person-self", "你");
+		if (!value) return localized(element("span", "sg-person-unknown"), "asset.unknownPerson", live);
+		if (mention && id === viewerId)
+			return localized(element("span", "sg-person-self"), "asset.you", live);
 		const n = element(
 			mention ? "button" : "span",
 			mention ? "sg-person-mention sg-person-link" : "sg-person-name",
@@ -34,7 +42,13 @@
 		if (mention) {
 			n.type = "button";
 			n.dataset.sgProfilePerson = id;
-			n.setAttribute("aria-label", "查看" + value.name + "的资料");
+			n.dataset.sgPersonName = value.name;
+			if (live)
+				SGGI18n.bind(n, "asset.personProfile", {
+					attr: "aria-label",
+					values: { name: value.name },
+				});
+			else n.setAttribute("aria-label", SGGI18n.t("asset.personProfile", { name: value.name }));
 		}
 		if (mention && avatar && window.SGGAvatar) {
 			n.classList.add("sg-person-inline");
@@ -66,7 +80,8 @@
 			}
 			n.append(document.createTextNode(value.name));
 		}
-		if (!mention && selfMarker && id === viewerId) n.append(element("span", "sg-person-you", "你"));
+		if (!mention && selfMarker && id === viewerId)
+			n.append(localized(element("span", "sg-person-you"), "asset.you", live));
 		return n;
 	}
 
@@ -99,10 +114,10 @@
 		render(root, parts, { identities, viewerId });
 	}
 	function html(id, identities, options) {
-		return label(id, identities, options).outerHTML;
+		return label(id, identities, { ...options, live: false }).outerHTML;
 	}
 	function text(id, identities, options) {
-		return label(id, identities, options).textContent;
+		return label(id, identities, { ...options, live: false }).textContent;
 	}
 	let opener = null;
 	document.addEventListener(
@@ -134,6 +149,23 @@
 			opener?.isConnected
 		)
 			opener.focus({ preventScroll: true });
+	});
+	SGGI18n.subscribe(() => {
+		// Serialized person HTML keeps explicit owned marker slots; names are verbatim.
+		for (const slot of document.querySelectorAll(
+			".sg-person-self,.sg-person-you,.sg-person-unknown",
+		))
+			SGGI18n.bind(
+				slot,
+				slot.classList.contains("sg-person-unknown") ? "asset.unknownPerson" : "asset.you",
+			);
+		for (const link of document.querySelectorAll(
+			"button[data-sg-profile-person][data-sg-person-name]",
+		))
+			link.setAttribute(
+				"aria-label",
+				SGGI18n.t("asset.personProfile", { name: link.dataset.sgPersonName }),
+			);
 	});
 	window.SGGInlinePerson = Object.freeze({
 		label,

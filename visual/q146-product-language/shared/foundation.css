@@ -1,6 +1,14 @@
 /* Shared primitives and semantic roles. Themes remain owned by theme-source.json. */
 :root {
-	--sg-font-ui: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", sans-serif;
+	--sg-invocation-ink: #0969c3;
+	--sg-invocation-wash: #e4f0fc;
+	--sg-brand-ink: #202321;
+	--sg-brand-secondary: #585e59;
+	--sg-brand-wash: #eeeeee;
+	--sg-brand-canvas: #f5f6f4;
+	--sg-font-ui:
+		-apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Arial, "PingFang SC",
+		"Microsoft YaHei", sans-serif;
 	--sg-font-art: "Songti SC", "Noto Serif CJK SC", serif;
 	--sg-font-number: var(--sg-font-ui);
 	--sg-inline-avatar-size: 1em;
@@ -93,4 +101,13 @@ body {
 	:root {
 		--sg-space-surface: 1rem;
 	}
+}
+
+/* Script-specific rhythm, shared semantic scale and native font metrics. */
+:root:lang(en) {
+	--sg-font-art:
+		"Iowan Old Style", Baskerville, "Palatino Linotype", "Book Antiqua", Georgia, serif;
+	--sg-leading-copy: 1.6;
+	--sg-leading-body: 1.6;
+	--sg-leading-description: 1.6;
 }

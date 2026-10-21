@@ -22,12 +22,18 @@
 		document.documentElement.style.setProperty("--" + k, v);
 	document.querySelector('meta[name="theme-color"]').content = palette.canvas;
 	if (readOnly) {
-		document.querySelector("#phase-name").textContent = "游戏";
+		document.querySelector("#phase-name").dataset.sgCopy = "asset.game";
+		SGGI18n.bind(document.querySelector("#phase-name"), "asset.game");
 		document.querySelector("#phase-step").textContent = "1/1 步";
 		document.querySelector("#phase-note").hidden = false;
 	}
 	const people = structuredClone(data.people),
-		person = (id) => people.find((p) => p.id === id) || { id, name: "该玩家", art: "neutral" };
+		person = (id) =>
+			people.find((p) => p.id === id) || {
+				id,
+				name: SGGI18n.t("asset.unknownPerson"),
+				art: "neutral",
+			};
 	if (scenario === "long") {
 		people[1].name = "林舟与很长很长的中文名字";
 		people[2].name = "Alexandra Chen-Montgomery";
@@ -125,7 +131,8 @@
 			state.scroll = s.scroll && typeof s.scroll === "object" ? s.scroll : {};
 			state.listScroll = Number.isFinite(s.listScroll) ? Math.max(0, s.listScroll) : 0;
 		} catch {
-			storageMessage.textContent = "未能恢复草稿，请检查本机存储后重试。";
+			storageMessage.innerHTML = '<span data-sg-copy="asset.recoverDraft"></span>';
+			SGGI18n.bindAllAnnotated(storageMessage);
 			storageMessage.hidden = false;
 		}
 	}
@@ -140,7 +147,8 @@
 		} catch {
 			storageUnsafe = true;
 			storageMessage.innerHTML =
-				'草稿未能保存，请留在当前页面重试。<button type="button" id="retry-storage">重试</button>';
+				'<span data-sg-copy="asset.storeDraft">草稿未能保存，请留在当前页面重试。</span><button type="button" id="retry-storage" data-sg-copy="asset.retry">重试</button>';
+			SGGI18n.bindAllAnnotated(storageMessage);
 			storageMessage.hidden = false;
 			return false;
 		}
@@ -196,20 +204,22 @@
 					score = s.count ? NumberUI.text(s.mean) : "",
 					count = NumberUI.text(s.count),
 					meta = s.count
-						? `<span class="rating-value">${stars(s.mean, "list-stars", true)}<span class="list-score">${score}</span></span><span class="rating-count">${count}\u202f人评分</span>`
-						: '<span class="rating-unrated">暂无评分</span>',
-					description = s.count ? `${score}星，${count}人评分` : "暂无评分";
-				return `<button type="button" class="player-row" data-player="${p.id}" aria-current="${state.selected === p.id}" aria-label="查看${esc(p.name)}的公开评分，${description}">${avatar(p.id)}<span class="player-label"><span class="player-name">${esc(p.name)}${p.id === self ? '<span class="you">你</span>' : ""}</span><span class="player-meta player-rating">${meta}<span class="draft-flag" data-draft-for="${p.id}">${!readOnly && state.drafts[p.id] && hasChange(p.id) ? "草稿" : ""}</span></span></span><svg class="player-chevron" aria-hidden="true"><use href="#arrow"/></svg></button>`;
+						? `<span class="rating-value">${stars(s.mean, "list-stars", true)}<span class="list-score">${score}</span></span><span class="rating-count">${esc(SGGI18n.t("asset.ratingCount", { count: s.count }))}</span>`
+						: '<span class="rating-unrated" data-sg-copy="asset.noRating">暂无评分</span>',
+					description = s.count
+						? SGGI18n.t("asset.ratingDescription", { score, count: s.count })
+						: SGGI18n.t("asset.noRating");
+				return `<button type="button" class="player-row" data-player="${p.id}" aria-current="${state.selected === p.id}" aria-label="${esc(SGGI18n.t("asset.playerRating", { name: p.name, description }))}">${avatar(p.id)}<span class="player-label"><span class="player-name">${esc(p.name)}${p.id === self ? '<span class="you" data-sg-copy="asset.you">你</span>' : ""}</span><span class="player-meta player-rating">${meta}<span class="draft-flag" data-draft-for="${p.id}">${!readOnly && state.drafts[p.id] && hasChange(p.id) ? SGGI18n.t("asset.draft") : ""}</span></span></span><svg class="player-chevron" aria-hidden="true"><use href="#arrow"/></svg></button>`;
 			})
 			.join("");
 	}
 	function distributionMarkup(id) {
 		const s = summaries[id],
 			denom = Math.max(1, s.count);
-		return `<div class="distribution" id="distribution" role="img" aria-label="评分分布：${[5, 4, 3, 2, 1].map((n) => n + " 星 " + (s.distribution[n] || 0) + " 人").join("，")}">${[5, 4, 3, 2, 1].map((n) => `<div class="distribution-row" aria-hidden="true"><span class="distribution-score">${n}${icon("star")}</span><div class="bar-track"><div class="bar-fill" style="width:${(100 * (s.distribution[n] || 0)) / denom}%"></div></div><span class="distribution-count">${NumberUI.text(s.distribution[n] || 0)}</span></div>`).join("")}</div>`;
+		return `<div class="distribution" id="distribution" role="img" aria-label="${esc(SGGI18n.t("asset.distribution", { distribution: [5, 4, 3, 2, 1].map((n) => SGGI18n.t("asset.distributionItem", { score: n, count: s.distribution[n] || 0 })).join("; ") }))}">${[5, 4, 3, 2, 1].map((n) => `<div class="distribution-row" aria-hidden="true"><span class="distribution-score">${n}${icon("star")}</span><div class="bar-track"><div class="bar-fill" style="width:${(100 * (s.distribution[n] || 0)) / denom}%"></div></div><span class="distribution-count">${NumberUI.text(s.distribution[n] || 0)}</span></div>`).join("")}</div>`;
 	}
 	function stars(value, cls = "", decorative = false) {
-		return `<span class="stars ${cls}" ${decorative ? 'aria-hidden="true"' : `role="img" aria-label="${value} 星，满分 5 星"`}>${[1, 2, 3, 4, 5].map((n) => `<span class="star-unit">${icon("star")}<span class="star-fill" style="width:${Math.max(0, Math.min(1, Number(value) - n + 1)) * 100}%">${icon("star")}</span></span>`).join("")}</span>`;
+		return `<span class="stars ${cls}" ${decorative ? 'aria-hidden="true"' : `role="img" data-rating-stars="${value}" aria-label="${esc(SGGI18n.t("asset.starsOutOfFive", { score: value }))}"`}>${[1, 2, 3, 4, 5].map((n) => `<span class="star-unit">${icon("star")}<span class="star-fill" style="width:${Math.max(0, Math.min(1, Number(value) - n + 1)) * 100}%">${icon("star")}</span></span>`).join("")}</span>`;
 	}
 	function paintStars(preview = null) {
 		const value =
@@ -219,7 +229,7 @@
 	}
 	function editorMarkup(id) {
 		const d = draftFor(id);
-		return `<form class="editor" id="editor" novalidate><header class="composer-toolbar"><h3>${ownPublished(id) ? "编辑评价" : "写评价"}</h3><button class="icon-button" type="button" id="close-editor" aria-label="收起编辑">${icon("close")}</button></header><div class="composer-writing"><div class="composer-byline">${avatar(self, 30)}<span>${SGGInlinePerson.html(self, Object.fromEntries(people.map((p) => [p.id, p])), { viewerId: self, selfMarker: true })}</span></div><fieldset class="score-options" aria-label="给${esc(person(id).name)}的评分"><legend class="sr-only">评分，必填</legend>${[1, 2, 3, 4, 5].map((n) => `<label class="score-option${n <= d.score ? " filled" : ""}" data-star="${n}"><input type="radio" name="score" value="${n}"${d.score === n ? " checked" : ""} aria-label="${n} 星"><span>${icon("star")}</span></label>`).join("")}</fieldset><label class="sr-only" for="review-text">评价（选填）</label><textarea data-sg-auto-size id="review-text" name="review" rows="3" placeholder="写下你的看法（选填）…">${esc(d.text)}</textarea></div><footer class="editor-footer"><p class="quota">${SGGProductLanguage.quota(quota)}</p><button class="primary" id="submit-feedback" type="submit" aria-label="提交反馈"${!validDraft(id) ? " disabled" : ""}>提交</button></footer><p class="editor-timing">本步结束后，所有玩家可见。</p><p class="submit-error" id="submit-error" role="alert" hidden></p></form>`;
+		return `<form class="editor" id="editor" novalidate><header class="composer-toolbar"><h3>${esc(SGGI18n.t(ownPublished(id) ? "asset.editReview" : "asset.writeReview"))}</h3><button class="icon-button" type="button" id="close-editor" aria-label="收起编辑" data-sg-copy-aria-label="asset.closeEditor">${icon("close")}</button></header><div class="composer-writing"><div class="composer-byline">${avatar(self, 30)}<span>${SGGInlinePerson.html(self, Object.fromEntries(people.map((p) => [p.id, p])), { viewerId: self, selfMarker: true })}</span></div><fieldset class="score-options" aria-label="${esc(SGGI18n.t("asset.ratePerson", { name: person(id).name }))}"><legend class="sr-only" data-sg-copy="asset.ratingRequired">评分，必填</legend>${[1, 2, 3, 4, 5].map((n) => `<label class="score-option${n <= d.score ? " filled" : ""}" data-star="${n}"><input type="radio" name="score" value="${n}"${d.score === n ? " checked" : ""} aria-label="${esc(SGGI18n.t("asset.starChoice", { count: n }))}"><span>${icon("star")}</span></label>`).join("")}</fieldset><label class="sr-only" for="review-text" data-sg-copy="asset.reviewOptional">评价（选填）</label><textarea data-sg-auto-size id="review-text" name="review" rows="3" placeholder="写下你的看法（选填）…" data-sg-copy-placeholder="asset.reviewPlaceholder">${esc(d.text)}</textarea></div><footer class="editor-footer"><p class="quota">${SGGProductLanguage.quota(quota)}</p><button class="primary" id="submit-feedback" type="submit" aria-label="提交反馈" data-sg-copy-aria-label="asset.submitFeedback"${!validDraft(id) ? " disabled" : ""} data-sg-copy="asset.submit">提交</button></footer><p class="editor-timing" data-sg-copy="asset.publicAfterStep">本步结束后，所有玩家可见。</p><p class="submit-error" id="submit-error" role="alert" hidden></p></form>`;
 	}
 	function validDraft(id) {
 		const d = draftFor(id);
@@ -245,11 +255,11 @@
 					)
 				: isPending;
 			if (!saved || !awaiting) return "";
-			return `<section class="my-section" id="my-feedback"><div class="my-row"><p class="my-label">我的反馈</p><div class="pending-score">${stars(saved.score)}<span class="status">待公开</span></div></div>${saved.text ? `<p class="pending-note">${esc(saved.text)}</p>` : ""}</section>`;
+			return `<section class="my-section" id="my-feedback"><div class="my-row"><p class="my-label" data-sg-copy="asset.myFeedback">我的反馈</p><div class="pending-score">${stars(saved.score)}<span class="status" data-sg-copy="asset.pendingPublic">待公开</span></div></div>${saved.text ? `<p class="pending-note">${esc(saved.text)}</p>` : ""}</section>`;
 		}
 		if (isPending || (!window.SessionApp && quota <= 0))
-			return `<section class="my-section is-pending" id="my-feedback"><div class="my-row"><p class="my-label">我的反馈</p>${isPending ? `<div class="pending-score">${stars(pending.score)}<span class="status">待公开</span></div>` : '<span class="readonly-note">本步次数已用完</span>'}</div>${isPending ? `<p class="pending-note">${esc(pending.text)}</p><p class="pending-explainer">本步结束后公开，不计入当前均分。</p>` : ""}</section>`;
-		return `<section class="my-section" id="my-feedback"><div class="inline-slot"><div class="compose-launch" style="height:auto"><div class="my-row"><div><p class="my-label">我的反馈</p>${saved ? stars(saved.score) : ""}</div><div class="action-group" id="edit-actions"><button class="text-action" type="button" data-edit="score" aria-label="编辑数字评分">评分</button><button class="text-action" type="button" data-edit="text" aria-label="写文字评价">评价</button></div></div>${saved?.text ? `<p class="pending-note">${esc(saved.text)}</p>` : ""}</div><div class="feedback-shell" hidden><div class="feedback-inner"></div></div></div></section>`;
+			return `<section class="my-section is-pending" id="my-feedback"><div class="my-row"><p class="my-label" data-sg-copy="asset.myFeedback">我的反馈</p>${isPending ? `<div class="pending-score">${stars(pending.score)}<span class="status" data-sg-copy="asset.pendingPublic">待公开</span></div>` : '<span class="readonly-note" data-sg-copy="asset.quotaUsed">本步次数已用完</span>'}</div>${isPending ? `<p class="pending-note">${esc(pending.text)}</p><p class="pending-explainer" data-sg-copy="asset.pendingMean">本步结束后公开，不计入当前均分。</p>` : ""}</section>`;
+		return `<section class="my-section" id="my-feedback"><div class="inline-slot"><div class="compose-launch" style="height:auto"><div class="my-row"><div><p class="my-label" data-sg-copy="asset.myFeedback">我的反馈</p>${saved ? stars(saved.score) : ""}</div><div class="action-group" id="edit-actions"><button class="text-action" type="button" data-edit="score" aria-label="编辑数字评分" data-sg-copy-aria-label="asset.editScore" data-sg-copy="asset.rating">评分</button><button class="text-action" type="button" data-edit="text" aria-label="写文字评价" data-sg-copy-aria-label="asset.writeText" data-sg-copy="asset.review">评价</button></div></div>${saved?.text ? `<p class="pending-note">${esc(saved.text)}</p>` : ""}</div><div class="feedback-shell" hidden><div class="feedback-inner"></div></div></div></section>`;
 	}
 	function reviewMarkup(id) {
 		const records = publicReviews
@@ -258,12 +268,12 @@
 				(a, b) =>
 					b.publishedRound - a.publishedRound || b.publishedSocialStep - a.publishedSocialStep,
 			);
-		return `<section class="public-section"><h3 class="section-heading">评价</h3><div id="public-reviews">${records.length ? records.map((r) => `<article class="review"><div class="review-author">${avatar(r.author, 32)}<div class="review-identity"><span class="review-name">${esc(person(r.author).name)}${r.author === self ? '<span class="you">你</span>' : ""}</span>${stars(r.score, "review-stars")}</div><span class="review-time">${SGGProductLanguage.stamp({ round: r.publishedRound, step: r.publishedSocialStep, steps: window.SessionApp ? SessionApp.context.socialSteps : 3 })}</span></div><p class="review-text">${esc(r.text)}</p></article>`).join("") : '<p class="empty">暂无评价。</p>'}</div></section>`;
+		return `<section class="public-section"><h3 class="section-heading" data-sg-copy="asset.review">评价</h3><div id="public-reviews">${records.length ? records.map((r) => `<article class="review"><div class="review-author">${avatar(r.author, 32)}<div class="review-identity"><span class="review-name">${esc(person(r.author).name)}${r.author === self ? '<span class="you" data-sg-copy="asset.you">你</span>' : ""}</span>${stars(r.score, "review-stars")}</div><span class="review-time">${SGGProductLanguage.stamp({ round: r.publishedRound, step: r.publishedSocialStep, steps: window.SessionApp ? SessionApp.context.socialSteps : 3 })}</span></div><p class="review-text">${esc(r.text)}</p></article>`).join("") : '<p class="empty" data-sg-copy="asset.noReviews">暂无评价。</p>'}</div></section>`;
 	}
 	function detailMarkup() {
 		const p = person(state.selected),
 			s = summaries[p.id];
-		return `<header class="person-heading"><div class="person-main">${avatar(p.id, 52)}<h2>${esc(p.name)}${p.id === self ? '<span class="you">你</span>' : ""}</h2></div></header><section class="rating-summary" aria-label="${esc(p.name)}的评分概览">${s.count ? `<div class="average"><span class="mean" id="public-mean">${s.mean}</span>${stars(s.mean, "summary-stars")}<span class="count">${NumberUI.text(s.count)}\u202f人评分</span></div>${distributionMarkup(p.id)}` : '<p class="no-mean" id="public-mean">暂无评分</p>'}</section>${myMarkup(p.id)}${reviewMarkup(p.id)}`;
+		return `<header class="person-heading"><div class="person-main">${avatar(p.id, 52)}<h2>${esc(p.name)}${p.id === self ? '<span class="you" data-sg-copy="asset.you">你</span>' : ""}</h2></div></header><section class="rating-summary" aria-label="${esc(SGGI18n.t("asset.ratingOverview", { name: p.name }))}">${s.count ? `<div class="average"><span class="mean" id="public-mean">${s.mean}</span>${stars(s.mean, "summary-stars")}<span class="count">${esc(SGGI18n.t("asset.ratingCount", { count: s.count }))}</span></div>${distributionMarkup(p.id)}` : '<p class="no-mean" id="public-mean" data-sg-copy="asset.noRating">暂无评分</p>'}</section>${myMarkup(p.id)}${reviewMarkup(p.id)}`;
 	}
 	function render({ motion = false, restore = true, direction = "replace" } = {}) {
 		editorMotion?.destroy();
@@ -309,8 +319,9 @@
 		detail.scrollTop = restore ? Number(state.scroll[state.selected]) || 0 : oldScroll;
 		if (motion) animate(detail, direction);
 		if (scenario === "failure" && state.edit === state.selected) showSubmitError();
+		localizeRatings();
 	}
-	function showSubmitError(message = "提交未完成，草稿已保留。") {
+	function showSubmitError(message = SGGI18n.t("asset.submitFailed")) {
 		SGGControls.showError(document.querySelector("#submit-error"), message, "submit");
 	}
 	function ensureEditorVisible() {
@@ -343,6 +354,7 @@
 		state.noteOpen = true;
 		const inner = detail.querySelector(".feedback-inner");
 		if (!inner.querySelector("#editor")) inner.innerHTML = editorMarkup(state.selected);
+		localizeRatings();
 		editorMotion.set(true);
 		persist();
 		focusEditor(field);
@@ -366,7 +378,7 @@
 		const submit = document.querySelector("#submit-feedback");
 		if (submit) submit.disabled = !validDraft(state.selected);
 		const marker = document.querySelector(`[data-draft-for="${state.selected}"]`);
-		if (marker) marker.textContent = state.drafts[state.selected] ? "草稿" : "";
+		if (marker) marker.textContent = state.drafts[state.selected] ? SGGI18n.t("asset.draft") : "";
 		SGGControls.clearError(document.querySelector("#submit-error"), "draft");
 	}
 	function selectPlayer(id) {
@@ -491,6 +503,87 @@
 		stopAnimations();
 		app.classList.toggle("mobile-detail", state.mobileDetail);
 	});
+
+	function localizeRatings() {
+		SGGI18n.bindAllAnnotated(document);
+		for (const row of list.querySelectorAll("[data-player]")) {
+			const p = person(row.dataset.player),
+				summary = summaries[p.id];
+			const description = summary.count
+				? SGGI18n.t("asset.ratingDescription", {
+						score: NumberUI.text(summary.mean),
+						count: summary.count,
+					})
+				: SGGI18n.t("asset.noRating");
+			row.setAttribute(
+				"aria-label",
+				SGGI18n.t("asset.playerRating", { name: p.name, description }),
+			);
+			const count = row.querySelector(".rating-count"),
+				marker = row.querySelector(".draft-flag");
+			if (count) count.textContent = SGGI18n.t("asset.ratingCount", { count: summary.count });
+			if (marker)
+				marker.textContent =
+					!readOnly && state.drafts[p.id] && hasChange(p.id) ? SGGI18n.t("asset.draft") : "";
+		}
+		for (const stars of document.querySelectorAll("[data-rating-stars]"))
+			stars.setAttribute(
+				"aria-label",
+				SGGI18n.t("asset.starsOutOfFive", { score: stars.dataset.ratingStars }),
+			);
+		const p = person(state.selected),
+			summary = summaries[p.id],
+			overview = detail.querySelector(".rating-summary");
+		if (overview)
+			overview.setAttribute("aria-label", SGGI18n.t("asset.ratingOverview", { name: p.name }));
+		const count = detail.querySelector(".average > .count");
+		if (count) count.textContent = SGGI18n.t("asset.ratingCount", { count: summary.count });
+		const distribution = detail.querySelector(".distribution");
+		if (distribution)
+			distribution.setAttribute(
+				"aria-label",
+				SGGI18n.t("asset.distribution", {
+					distribution: [5, 4, 3, 2, 1]
+						.map((score) =>
+							SGGI18n.t("asset.distributionItem", {
+								score,
+								count: summary.distribution[score] || 0,
+							}),
+						)
+						.join("; "),
+				}),
+			);
+		const heading = detail.querySelector(".composer-toolbar h3");
+		if (heading)
+			heading.textContent = SGGI18n.t(
+				ownPublished(p.id) ? "asset.editReview" : "asset.writeReview",
+			);
+		const options = detail.querySelector(".score-options");
+		if (options)
+			options.setAttribute("aria-label", SGGI18n.t("asset.ratePerson", { name: p.name }));
+		for (const option of detail.querySelectorAll('input[name="score"]'))
+			option.setAttribute(
+				"aria-label",
+				SGGI18n.t("asset.starChoice", { count: Number(option.value) }),
+			);
+		for (const quotaLabel of detail.querySelectorAll(".quota"))
+			quotaLabel.textContent = SGGProductLanguage.quota(quota);
+		for (const [index, row] of [...detail.querySelectorAll(".review-time")].entries()) {
+			const review = publicReviews
+				.filter((r) => r.target === state.selected)
+				.sort(
+					(a, b) =>
+						b.publishedRound - a.publishedRound || b.publishedSocialStep - a.publishedSocialStep,
+				)[index];
+			if (review)
+				row.textContent = SGGProductLanguage.stamp({
+					round: review.publishedRound,
+					step: review.publishedSocialStep,
+					steps: window.SessionApp ? SessionApp.context.socialSteps : 3,
+				});
+		}
+	}
+	SGGI18n.subscribe(localizeRatings);
 	render();
 	window.Q93Preview = {
 		open: openEditor,

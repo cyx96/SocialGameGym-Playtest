@@ -1,5 +1,7 @@
 /* Read-only visual projections. A missing record projection stays missing, never invented. */
 (() => {
+	const L = (key, values = {}) => ({ i18n: key, values });
+
 	const B = window.SGGButtons,
 		I = window.SGGIcons;
 	if (!B || !I) return;
@@ -17,14 +19,14 @@
 	if (!reading) {
 		reading = document.createElement("nav");
 		reading.className = "reading";
-		reading.setAttribute("aria-label", "本场查阅");
+		if (reading) SGGI18n.bind(reading, "asset.reading", { attr: "aria-label" });
 		header.append(reading);
 	}
 	if (!reading.children.length)
 		for (const kind of ["rules", "records"]) {
 			const b = B.create({
 				role: "icon",
-				ariaLabel: kind === "rules" ? "游戏规则" : "游戏记录",
+				ariaLabelKey: kind === "rules" ? "asset.rules" : "asset.records",
 				icon: I.create(kind),
 			});
 			b.dataset.panel = kind;
@@ -33,22 +35,23 @@
 	for (const [i, b] of [...reading.querySelectorAll("button")].entries()) {
 		const kind = i === 0 ? "rules" : "records";
 		b.dataset.journeyReading = kind;
-		B.iconize(b, { name: kind, label: kind === "rules" ? "游戏规则" : "游戏记录" });
+		B.iconize(b, { name: kind, labelKey: kind === "rules" ? "asset.rules" : "asset.records" });
 	}
 	const e = (tag, cls, text) => {
 		const n = document.createElement(tag);
 		if (cls) n.className = cls;
-		if (text !== undefined) n.textContent = text;
+		if (text?.i18n) SGGI18n.bind(n, text.i18n, { values: text.values });
+		else if (text !== undefined) n.textContent = text;
 		return n;
 	};
 	const dialog = e("dialog", "sg-reading"),
 		head = e("header", "sg-reading-head"),
-		title = e("h2", "", "游戏规则"),
+		title = e("h2", "", L("asset.rules")),
 		body = e("div", "sg-reading-body"),
-		close = B.create({ role: "icon", ariaLabel: "关闭查阅", icon: I.create("close") });
+		close = B.create({ role: "icon", ariaLabelKey: "asset.closeReading", icon: I.create("close") });
 	title.id = "journey-reading-title";
 	dialog.setAttribute("aria-labelledby", title.id);
-	B.iconize(close, { name: "close", label: "关闭查阅" });
+	B.iconize(close, { name: "close", labelKey: "asset.closeReading" });
 	head.append(title, close);
 	dialog.append(head, body);
 	dialog.id = "journey-reading";
@@ -73,7 +76,9 @@
 					arrived = { ...g, brief: g.brief.replaceAll("{rounds}", String(rounds)) };
 					const ctx = header.querySelector(".game-context");
 					ctx.firstElementChild.textContent = g.gameName;
-					ctx.querySelector(".round").textContent = "1/" + rounds + " 轮";
+					SGGI18n.bind(ctx.querySelector(".round"), "asset.roundProgress", {
+						values: { round: 1, rounds },
+					});
 					for (const [k, v] of Object.entries(g.colors))
 						document.documentElement.style.setProperty("--" + k, v);
 				}
@@ -83,7 +88,7 @@
 	function show(kind, button) {
 		opener = button;
 		body.replaceChildren();
-		title.textContent = kind === "rules" ? "游戏规则" : "游戏记录";
+		SGGI18n.bind(title, kind === "rules" ? "asset.rules" : "asset.records");
 		dialog.dataset.content = kind;
 		dialog.dataset.keyboard = String(button.matches(":focus-visible"));
 		if (kind === "rules") {
@@ -100,7 +105,9 @@
 						body.append(e("p", "rules-brief", text));
 					}
 			} else
-				body.append(e("p", "rules-brief", arrived?.brief || trust?.brief || "暂时无法读取玩法。"));
+				body.append(
+					e("p", "rules-brief", arrived?.brief || trust?.brief || L("asset.rulesUnavailable")),
+				);
 		} else {
 			const knownEmpty = isCatalog || ["q82-profile.html", "q82-profile-edit.html"].includes(file);
 			body.append(
