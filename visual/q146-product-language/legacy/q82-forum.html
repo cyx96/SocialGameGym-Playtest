@@ -618,13 +618,16 @@ html[data-sg-language-control]
 				"collapse",
 				"app-open",
 				"app-close",
+				"gateway",
 			].includes(role)
 		)
 			throw Error("Unregistered motion role: " + role);
 		const css = getComputedStyle(root);
 		return {
 			duration: parseFloat(css.getPropertyValue("--sg-motion-" + role)) || 0,
-			easing: css.getPropertyValue("--sg-ease").trim() || "linear",
+			easing:
+				css.getPropertyValue(role === "gateway" ? "--sg-ease-gateway" : "--sg-ease").trim() ||
+				"linear",
 		};
 	}
 	function cancel(node) {
@@ -731,10 +734,10 @@ html[data-sg-language-control]
 			run(
 				destination,
 				[
-					{ clipPath: `inset(${y}px ${right}px ${bottom}px ${x}px round ${radius}px)`, opacity: 0 },
+					{ clipPath: `inset(${y}px ${right}px ${bottom}px ${x}px round ${radius}px)`, opacity: 1 },
 					{ clipPath: "inset(0px 0px 0px 0px round 0px)", opacity: 1 },
 				],
-				{ role: "app-open" },
+				{ role: "gateway" },
 			),
 		].filter(Boolean);
 	}
@@ -1228,6 +1231,9 @@ window.SGGAvatarRegistry=Object.freeze({"default":{"label":"默认","paper":"#EA
 		0 6px 18px -10px color-mix(in srgb, var(--label, #1f2320) 10%, transparent),
 		0 24px 64px -24px color-mix(in srgb, var(--label, #1f2320) 18%, transparent);
 	--sg-backdrop: color-mix(in srgb, var(--label, #1f2320) 14%, transparent);
+	/* First-entry spatial explanation; ordinary App navigation keeps its shorter roles. */
+	--sg-motion-gateway: 420ms;
+	--sg-ease-gateway: cubic-bezier(0.77, 0, 0.175, 1);
 	--sg-motion-app-open: 240ms;
 	--sg-motion-app-close: 200ms;
 	--sg-motion-expand: 200ms;

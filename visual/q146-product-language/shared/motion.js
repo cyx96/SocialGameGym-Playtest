@@ -21,13 +21,16 @@
 				"collapse",
 				"app-open",
 				"app-close",
+				"gateway",
 			].includes(role)
 		)
 			throw Error("Unregistered motion role: " + role);
 		const css = getComputedStyle(root);
 		return {
 			duration: parseFloat(css.getPropertyValue("--sg-motion-" + role)) || 0,
-			easing: css.getPropertyValue("--sg-ease").trim() || "linear",
+			easing:
+				css.getPropertyValue(role === "gateway" ? "--sg-ease-gateway" : "--sg-ease").trim() ||
+				"linear",
 		};
 	}
 	function cancel(node) {
@@ -134,10 +137,10 @@
 			run(
 				destination,
 				[
-					{ clipPath: `inset(${y}px ${right}px ${bottom}px ${x}px round ${radius}px)`, opacity: 0 },
+					{ clipPath: `inset(${y}px ${right}px ${bottom}px ${x}px round ${radius}px)`, opacity: 1 },
 					{ clipPath: "inset(0px 0px 0px 0px round 0px)", opacity: 1 },
 				],
-				{ role: "app-open" },
+				{ role: "gateway" },
 			),
 		].filter(Boolean);
 	}

@@ -70,6 +70,9 @@
 		0 6px 18px -10px color-mix(in srgb, var(--label, #1f2320) 10%, transparent),
 		0 24px 64px -24px color-mix(in srgb, var(--label, #1f2320) 18%, transparent);
 	--sg-backdrop: color-mix(in srgb, var(--label, #1f2320) 14%, transparent);
+	/* First-entry spatial explanation; ordinary App navigation keeps its shorter roles. */
+	--sg-motion-gateway: 420ms;
+	--sg-ease-gateway: cubic-bezier(0.77, 0, 0.175, 1);
 	--sg-motion-app-open: 240ms;
 	--sg-motion-app-close: 200ms;
 	--sg-motion-expand: 200ms;
