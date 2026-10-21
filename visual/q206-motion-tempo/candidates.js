@@ -1,6 +1,6 @@
-/* Exploration only: no production component imports these unselected budgets. */
+/* Comparison only: C is selected; production budgets remain owned by foundation.css. */
 window.SGGTempoCandidates = Object.freeze([
-	{ id: "current", name: "原版", description: "现有节奏", gateway: 420, open: 240, close: 200 },
+	{ id: "current", name: "原版", description: "此前节奏", gateway: 420, open: 240, close: 200 },
 	{
 		id: "gentle",
 		name: "A · 舒缓",

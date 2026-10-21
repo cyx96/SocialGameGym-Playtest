@@ -4,7 +4,7 @@
 		frame = document.querySelector("#preview");
 	const params = new URLSearchParams(location.search);
 	let scene = params.get("scene") === "app" ? "app" : "gateway";
-	const selected = { gateway: "composed", app: "gentle" };
+	const selected = { gateway: "unhurried", app: "unhurried" };
 	for (const key of ["gateway", "app"])
 		if (choices.some((c) => c.id === params.get(key))) selected[key] = params.get(key);
 	const buttons = choices.map((choice) => {
