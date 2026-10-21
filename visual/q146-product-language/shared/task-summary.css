@@ -47,9 +47,11 @@
 	}
 }
 
-/* A summary's navigation and content share one focus guide; the parent owns both. */
-.sg-inset-pane:has(> .sg-summary-page) {
-	--sg-pane-content-width: var(--sg-focus);
+/* Short state content uses focus without moving its parent's App navigation. */
+.sg-inset-pane > .sg-summary-page {
+	inline-size: calc(100% - 2 * var(--sg-pane-inset));
+	max-inline-size: var(--sg-focus);
+	margin-inline: auto;
 }
 .sg-summary-score {
 	display: grid;
