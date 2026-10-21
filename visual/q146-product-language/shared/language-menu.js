@@ -67,6 +67,7 @@
 		function open(event, last = false) {
 			const rect = trigger.getBoundingClientRect();
 			menu.style.top = `${rect.bottom + 8}px`;
+			menu.style.setProperty("--sg-language-top", `${rect.bottom + 8}px`);
 			menu.style.right = `${Math.max(16, innerWidth - rect.right)}px`;
 			menu.showPopover();
 			trigger.setAttribute("aria-expanded", "true");
@@ -110,6 +111,9 @@
 			trigger.setAttribute("aria-expanded", String(menu.matches(":popover-open"))),
 		);
 		window.addEventListener("resize", () => close());
+		// Native light-dismiss does not cross into an embedded catalog/App document.
+		// Opening focuses an option here; entering any child frame then blurs this window.
+		window.addEventListener("blur", () => close());
 		I.subscribe(update);
 		wrapper.append(trigger, menu, live);
 		// The welcome is deliberately only an invitation. Mount the utility when the

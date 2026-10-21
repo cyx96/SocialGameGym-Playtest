@@ -225,7 +225,8 @@ window.SGGI18nDefinition = {"version":"sgg.locale/1","fallback":"zh-CN","initial
 	position: fixed;
 	inset-block-start: 1rem;
 	inset-inline-end: max(var(--sg-safe-end, 2.5rem), calc((100vw - var(--sg-frame, 70rem)) / 2));
-	z-index: 90;
+	/* Above embedded/standalone header tracks; native modal top layers still own focus. */
+	z-index: 210;
 	color: var(--secondary, var(--sg-brand-secondary));
 }
 .sg-language-control > .sg-button[data-sg-button] {
@@ -238,6 +239,9 @@ window.SGGI18nDefinition = {"version":"sgg.locale/1","fallback":"zh-CN","initial
 	inset: auto;
 	margin: 0;
 	inline-size: min(13.5rem, calc(100vw - 2rem));
+	block-size: max-content;
+	max-block-size: calc(100dvh - var(--sg-language-top, 5rem) - 1rem);
+	overflow-y: auto;
 	padding: var(--sg-space-related);
 	border: 0;
 	border-radius: var(--sg-radius-surface);
@@ -248,6 +252,8 @@ window.SGGI18nDefinition = {"version":"sgg.locale/1","fallback":"zh-CN","initial
 }
 .sg-language-menu:popover-open {
 	display: grid;
+	align-content: start;
+	grid-auto-rows: max-content;
 	gap: 0.125rem;
 }
 .sg-language-menu > .sg-button[data-sg-button] {
@@ -371,6 +377,7 @@ html[data-sg-language-control]
 		function open(event, last = false) {
 			const rect = trigger.getBoundingClientRect();
 			menu.style.top = `${rect.bottom + 8}px`;
+			menu.style.setProperty("--sg-language-top", `${rect.bottom + 8}px`);
 			menu.style.right = `${Math.max(16, innerWidth - rect.right)}px`;
 			menu.showPopover();
 			trigger.setAttribute("aria-expanded", "true");
@@ -414,6 +421,9 @@ html[data-sg-language-control]
 			trigger.setAttribute("aria-expanded", String(menu.matches(":popover-open"))),
 		);
 		window.addEventListener("resize", () => close());
+		// Native light-dismiss does not cross into an embedded catalog/App document.
+		// Opening focuses an option here; entering any child frame then blurs this window.
+		window.addEventListener("blur", () => close());
 		I.subscribe(update);
 		wrapper.append(trigger, menu, live);
 		// The welcome is deliberately only an invitation. Mount the utility when the
