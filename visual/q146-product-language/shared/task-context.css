@@ -192,6 +192,17 @@
 	min-inline-size: 0;
 	max-inline-size: 22rem;
 }
+.sg-task-reference {
+	min-inline-size: 0;
+	inline-size: 100%;
+	margin-block-start: var(--sg-space-section);
+}
+.sg-task-reference > :first-child {
+	margin-block-start: 0;
+}
+.sg-task-reference > :last-child {
+	margin-block-end: 0;
+}
 .sg-task-message .sg-task-primary {
 	margin: 0;
 	font: 600 var(--sg-task-title) / var(--sg-task-title-leading) var(--sg-font-ui);
@@ -244,6 +255,9 @@
 	overflow: hidden;
 	text-overflow: ellipsis;
 	white-space: nowrap;
+}
+.sg-task-context-slot .sg-person-inline .sg-person-tail {
+	flex: none;
 }
 .sg-task-context-slot .sg-person-inline .sg-avatar {
 	flex: none;

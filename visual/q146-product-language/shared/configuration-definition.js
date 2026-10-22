@@ -24,12 +24,11 @@
   "games": {
     "trust": {
       "rounds": 5,
-      "communication": 1,
-      "extraFields": []
+      "extraFields": [],
+      "communication": 2
     },
     "network-pd": {
       "rounds": 5,
-      "communication": 1,
       "extraFields": [
         {
           "key": "disclosure",
@@ -46,21 +45,21 @@
           ]
         }
       ],
-      "disclosure": "actions"
+      "disclosure": "actions",
+      "communication": 2
     },
     "ultimatum": {
       "rounds": 3,
-      "communication": 1,
-      "extraFields": []
+      "extraFields": [],
+      "communication": 2
     },
     "best-shot": {
       "rounds": 5,
-      "communication": 1,
-      "extraFields": []
+      "extraFields": [],
+      "communication": 2
     },
     "stag-hunt": {
       "rounds": 3,
-      "communication": 1,
       "extraFields": [],
       "rationalFields": [
         {
@@ -101,16 +100,16 @@
         "BA",
         "BB",
         "AB"
-      ]
+      ],
+      "communication": 2
     },
     "dictator": {
       "rounds": 3,
-      "communication": 1,
-      "extraFields": []
+      "extraFields": [],
+      "communication": 2
     },
     "threshold-public-good": {
       "rounds": 3,
-      "communication": 1,
       "extraFields": [
         {
           "key": "institution",
@@ -127,22 +126,23 @@
             }
           ]
         }
-      ]
+      ],
+      "communication": 2
     },
     "hidden-profile": {
       "rounds": 5,
-      "communication": 1,
-      "extraFields": []
+      "extraFields": [],
+      "communication": 2
     },
     "double-auction": {
       "rounds": 3,
-      "communication": 1,
-      "extraFields": []
+      "extraFields": [],
+      "communication": 2
     },
     "cooperative-search": {
       "rounds": 3,
-      "communication": 0,
-      "extraFields": []
+      "extraFields": [],
+      "communication": 0
     }
   }
 };

@@ -90,6 +90,9 @@
 		store.set(locale);
 	}
 	function bind(node, message, { attr, values = {} } = {}) {
+		const annotation = attr ? "data-sg-copy-" + attr : "data-sg-copy";
+		if ((!attr || attrs.includes(attr)) && node.getAttribute(annotation) !== message)
+			node.setAttribute(annotation, message);
 		const slot = attr || "text",
 			update = () => {
 				const text = store.t(message, values);
@@ -113,10 +116,11 @@
 			...scope.querySelectorAll(selector),
 		];
 		for (const node of nodes) {
-			if (node.dataset.sgCopy) bind(node, node.dataset.sgCopy);
+			// An explicit state binding owns its slot. A later static scan only fills unbound slots.
+			if (node.dataset.sgCopy && !bindings.get(node)?.has("text")) bind(node, node.dataset.sgCopy);
 			for (const attr of attrs) {
 				const message = node.getAttribute("data-sg-copy-" + attr);
-				if (message) bind(node, message, { attr });
+				if (message && !bindings.get(node)?.has(attr)) bind(node, message, { attr });
 			}
 		}
 	}

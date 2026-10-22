@@ -59,7 +59,7 @@ body[data-sg-shell][data-scroll="workspace"] {
 	transform: none;
 	white-space: nowrap;
 	flex: none;
-	font: 650 1.125rem / 1.5 var(--sg-font-ui);
+	font: var(--sg-weight-brand) var(--sg-type-brand) / var(--sg-leading-interface) var(--sg-font-ui);
 	letter-spacing: -0.025em;
 	color: var(--ink);
 	text-decoration: none;
@@ -374,7 +374,7 @@ body[data-layout-surface="social"] > .tool-home {
 	.sg-product-bar > .brand {
 		grid-column: 1;
 		grid-row: 1;
-		font-size: 1.0625rem;
+		font-size: var(--sg-type-brand-compact);
 		min-block-size: 2.75rem;
 		display: flex;
 		align-items: center;
@@ -622,10 +622,23 @@ body[data-task-scene] > .sg-page {
 	row-gap: var(--sg-space-section);
 }
 
-/* Gallery navigation: anchor the shared icon button to the content canvas, outside its masked track. */
+/* Gallery navigation shares the product frame; the visible glyph hangs on its reading guide. */
 .sg-page-back.sg-button[data-sg-button] {
 	position: absolute;
-	inset-inline-start: max(var(--sg-safe-start), calc((100% - var(--sg-frame)) / 2));
+	--sg-nav-leading-overhang: calc(
+		(var(--sg-button-compact) - var(--sg-icon-action)) /
+		2 +
+		var(--sg-icon-action) /
+		3
+	);
+	inline-size: var(--sg-button-compact);
+	block-size: var(--sg-button-compact);
+	min-inline-size: var(--sg-button-compact);
+	min-block-size: var(--sg-button-compact);
+	inset-inline-start: calc(
+		max(var(--sg-safe-start), (100% - var(--sg-frame)) / 2) -
+		var(--sg-nav-leading-overhang)
+	);
 	inset-block-start: var(--sg-page-gap);
 	z-index: 160;
 }
@@ -675,30 +688,18 @@ body[data-task-scene] > .sg-page {
 	}
 }
 
-/* End is the existing summary recipe: one reading lane and the shared action rail. */
-.sg-terminal-page.sg-page {
+/* A state host delivers the remaining canvas; the shared summary owns its inner rhythm once. */
+.sg-state-page,
+.sg-page.sg-state-page,
+body[data-task-scene] > .sg-page.sg-state-page {
 	flex: 1;
 	display: flex;
 	flex-direction: column;
 	min-block-size: min-content;
-	padding-block: var(--sg-space-task) max(var(--sg-space-section), env(safe-area-inset-bottom));
-	margin-block: 0;
-}
-.sg-terminal-page .sg-task-layout[data-scene="summary"] {
-	flex: 1;
-	grid-template-rows: minmax(var(--sg-space-section), 0.8fr) auto minmax(var(--sg-space-task), 1fr) auto;
-	grid-template-areas: "." "context" "." "actions";
-}
-.sg-terminal-page .content {
-	display: none;
-}
-@media (max-height: 600px) {
-	.sg-terminal-page .sg-task-layout[data-scene="summary"] {
-		grid-template-rows: auto auto;
-		grid-template-areas: "context" "actions";
-		align-content: start;
-		row-gap: var(--sg-space-task);
-	}
+	inline-size: calc(100% - var(--sg-safe-start) - var(--sg-safe-end));
+	max-inline-size: var(--sg-focus);
+	margin: 0 auto;
+	padding: 0;
 }
 
 /* Full-width App host. Its navigation and reading content own separate canvases. */
@@ -712,7 +713,7 @@ body[data-task-scene] > .sg-page {
 .sg-inset-pane.sg-page {
 	max-inline-size: none;
 }
-.sg-inset-pane > :is(.sg-context-task, .sg-task-context-rail) {
+.sg-inset-pane > :is(.sg-context-task, .sg-task-context-rail, .sg-summary-page) {
 	inline-size: calc(
 		100% -
 		max(var(--sg-pane-inset), var(--sg-safe-start)) -

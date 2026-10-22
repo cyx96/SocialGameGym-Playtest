@@ -33,7 +33,13 @@
 	display: none !important;
 }
 .launch-tool .tool-mode:empty {
-	display: none;
+	visibility: hidden;
+}
+.launch-tool .tool-mode {
+	display: block;
+	min-block-size: 1.4em;
+	font: 400 var(--sg-type-meta) / 1.4 var(--sg-font-ui);
+	color: var(--secondary);
 }
 .sg-live-only {
 	position: absolute;

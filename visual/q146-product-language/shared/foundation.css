@@ -18,6 +18,9 @@
 	--sg-icon-control: 18px;
 	--sg-icon-chevron: 16px;
 	--sg-icon-stroke: 1.65;
+	--sg-type-brand: 1.125rem;
+	--sg-type-brand-compact: 1.0625rem;
+	--sg-weight-brand: 600;
 	--sg-type-body: 1rem;
 	--sg-type-description: var(--sg-type-body);
 	--sg-type-title: 1.1875rem;
