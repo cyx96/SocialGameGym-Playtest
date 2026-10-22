@@ -25,6 +25,7 @@
     "trust": {
       "rounds": 5,
       "extraFields": [],
+      "progressUnit": "round",
       "communication": 2
     },
     "network-pd": {
@@ -46,16 +47,19 @@
         }
       ],
       "disclosure": "actions",
+      "progressUnit": "round",
       "communication": 2
     },
     "ultimatum": {
       "rounds": 3,
       "extraFields": [],
+      "progressUnit": "round",
       "communication": 2
     },
     "best-shot": {
       "rounds": 5,
       "extraFields": [],
+      "progressUnit": "round",
       "communication": 2
     },
     "stag-hunt": {
@@ -101,11 +105,13 @@
         "BB",
         "AB"
       ],
+      "progressUnit": "round",
       "communication": 2
     },
     "dictator": {
       "rounds": 3,
       "extraFields": [],
+      "progressUnit": "round",
       "communication": 2
     },
     "threshold-public-good": {
@@ -127,21 +133,25 @@
           ]
         }
       ],
+      "progressUnit": "round",
       "communication": 2
     },
     "hidden-profile": {
       "rounds": 5,
       "extraFields": [],
+      "progressUnit": "revision",
       "communication": 2
     },
     "double-auction": {
       "rounds": 3,
       "extraFields": [],
+      "progressUnit": "batch",
       "communication": 2
     },
     "cooperative-search": {
       "rounds": 3,
       "extraFields": [],
+      "progressUnit": "search-step",
       "communication": 0
     }
   }

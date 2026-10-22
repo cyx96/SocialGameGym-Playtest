@@ -8,25 +8,6 @@
 .launch-tool[data-mode="read"] .tool-tile .ink-line {
 	stroke: color-mix(in srgb, var(--ink) 55%, var(--surface));
 }
-.tool-unread {
-	position: absolute;
-	top: -5px;
-	right: -5px;
-	display: grid;
-	place-items: center;
-	min-inline-size: 22px;
-	block-size: 22px;
-	padding-inline: 5px;
-	border-radius: 99px;
-	background: var(--ink, #216b45);
-	color: white;
-	font:
-		600 12px / 1 -apple-system,
-		BlinkMacSystemFont,
-		"PingFang SC",
-		sans-serif;
-	font-variant-numeric: tabular-nums;
-}
 .tool-unread[hidden],
 .tool-access[hidden],
 .sg-product-bar .sg-button[hidden] {

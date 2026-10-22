@@ -291,3 +291,121 @@ html[data-sg-motion-input="keyboard"] .sg-reading {
 html[data-sg-motion-input="keyboard"] .sg-reading::backdrop {
 	animation: none;
 }
+
+/* Full rules share the existing Reading canvas and foundation roles at every entry. */
+.sg-player-rules {
+	display: grid;
+	gap: var(--sg-space-section);
+	min-inline-size: 0;
+	font: var(--sg-type-body) / var(--sg-leading-body) var(--sg-font-ui);
+	color: var(--label);
+}
+.sg-player-rules :is(section, .sg-rules-participation) {
+	display: grid;
+	gap: var(--sg-space-paragraph);
+	scroll-margin-block-start: var(--sg-space-paragraph);
+}
+.sg-player-rules :is(p, h3, h4, ul) {
+	margin: 0;
+	overflow-wrap: anywhere;
+}
+.sg-player-rules :is(h3, h4) {
+	font: var(--sg-weight-name) var(--sg-text-name) / var(--sg-leading-copy) var(--sg-font-ui);
+}
+.sg-player-rules > section:first-child h3 {
+	font-size: var(--sg-type-title);
+}
+.sg-player-rules ul {
+	padding-inline-start: var(--sg-space-section);
+}
+.sg-player-rules li + li {
+	margin-block-start: var(--sg-space-paragraph);
+}
+.sg-rules-participation {
+	border-block-start: 1px solid var(--sg-line-separator);
+	padding-block-start: var(--sg-space-task);
+	gap: var(--sg-space-section);
+}
+.sg-rules-participation > h3 {
+	font:
+		var(--sg-weight-name) var(--sg-type-context) / var(--sg-leading-interface) var(--sg-font-ui);
+	color: var(--secondary);
+}
+.sg-rules-index {
+	font-size: var(--sg-type-context);
+}
+.sg-rules-index summary {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	min-block-size: var(--sg-target);
+	gap: var(--sg-space-sibling);
+	cursor: pointer;
+	list-style: none;
+	color: var(--secondary);
+}
+.sg-rules-index summary::-webkit-details-marker {
+	display: none;
+}
+.sg-rules-index summary .experience-icon {
+	inline-size: var(--sg-icon-chevron);
+	block-size: var(--sg-icon-chevron);
+}
+.sg-rules-index[open] summary .experience-icon {
+	transform: rotate(180deg);
+}
+.sg-rules-index nav {
+	display: grid;
+	gap: var(--sg-space-section);
+	padding-block: var(--sg-space-paragraph) var(--sg-space-sibling);
+}
+.sg-rules-index nav p {
+	color: var(--secondary);
+}
+.sg-rules-index nav ul {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(min(100%, 9rem), 1fr));
+	gap: var(--sg-space-related) var(--sg-space-sibling);
+	list-style: none;
+	padding: 0;
+}
+.sg-rules-index nav li + li {
+	margin: 0;
+}
+.sg-rules-index a {
+	display: flex;
+	align-items: center;
+	min-block-size: var(--sg-target);
+	color: var(--ink);
+	text-decoration: none;
+	text-underline-offset: 0.2em;
+}
+@media (hover: hover) {
+	.sg-rules-index a:hover {
+		text-decoration: underline;
+	}
+}
+.sg-rule-table {
+	max-block-size: 50dvh;
+	overflow: auto;
+	border-radius: var(--sg-radius-control);
+}
+.sg-rule-table table {
+	border-collapse: collapse;
+	inline-size: 100%;
+	text-align: start;
+	font: inherit;
+	font-variant-numeric: tabular-nums;
+}
+.sg-rule-table :is(th, td) {
+	padding: var(--sg-space-related) var(--sg-space-sibling);
+	text-align: start;
+	white-space: nowrap;
+}
+.sg-rule-table th {
+	font-weight: 400;
+	color: var(--secondary);
+}
+.sg-rule-table tbody tr:nth-child(odd) {
+	background: var(--canvas);
+}

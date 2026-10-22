@@ -33,6 +33,7 @@
 	});
 	let memoryDraft = null,
 		editing = false,
+		saving = false,
 		preset = "default",
 		savedScroll = Number(sessionStorage.getItem(scrollKey) || 0),
 		followedOnly = false,
@@ -52,6 +53,29 @@
 		else if (text !== undefined) n.textContent = text;
 		return n;
 	};
+	const actionRail = node("footer", "sg-scene-actions profile-editor-actions");
+	const saveButton = B.create({ role: "primary", labelKey: "asset.saveProfile" });
+	saveButton.type = "submit";
+	actionRail.append(saveButton);
+	form.append(actionRail);
+	const unchanged = () => {
+		const profile = own();
+		return (
+			name.value === profile.name &&
+			bio.value === (profile.bio || "") &&
+			preset === V.resolve(profile.avatar)
+		);
+	};
+	function refreshAction() {
+		SGGI18n.bind(
+			saveButton,
+			initial
+				? unchanged()
+					? "asset.useProfileContinue"
+					: "asset.saveProfileContinue"
+				: "asset.saveProfile",
+		);
+	}
 	const own = () =>
 		A.context.profiles[c.viewer] || {
 			name: c.people.find((p) => p.id === c.viewer)?.name || "",
@@ -65,6 +89,7 @@
 	function rememberDraft() {
 		if (window.__SGG_RETIRED__) return;
 		memoryDraft = { name: name.value, bio: bio.value, avatar: preset };
+		refreshAction();
 		try {
 			localStorage.setItem(draftKey, JSON.stringify(memoryDraft));
 		} catch {
@@ -91,7 +116,7 @@
 		if (!editing || initial) back.classList.add("sg-root-back");
 		back.onclick = (event) => (editing && !initial ? showList(event) : A.close());
 		toolbar.append(back, title);
-		if (canEdit()) {
+		if (canEdit() && !editing) {
 			const action = B.create({
 				role: "icon",
 				ariaLabelKey: editing ? "asset.saveProfile" : "asset.editProfile",
@@ -496,6 +521,7 @@
 		filter.hidden = true;
 		form.hidden = false;
 		const profile = own();
+		bio.closest("label").hidden = initial && c.profileEnabled === false;
 		let draft = memoryDraft;
 		try {
 			draft ??= JSON.parse(localStorage.getItem(draftKey));
@@ -506,6 +532,7 @@
 		validateFields();
 		avatarPicker.setValue(preset);
 		bar();
+		refreshAction();
 		if (event) {
 			SGGMotion.scene(form, { direction: "forward", event });
 			if (event.detail === 0 || document.documentElement.dataset.sgMotionInput === "keyboard")
@@ -546,14 +573,27 @@
 		return !message;
 	}
 	async function save(button, event) {
+		if (saving) return;
 		if (!validateFields(true)) {
 			form.reportValidity();
 			return;
 		}
 		if (!form.reportValidity()) return;
 		rememberDraft();
+		saving = true;
+		const controls = [...form.querySelectorAll("input, textarea, select, button")].filter(
+			(n) => n !== button,
+		);
+		const disabled = controls.map((n) => n.disabled);
+		controls.forEach((n) => (n.disabled = true));
 		try {
-			await A.submit(button, "profile.save", { name: name.value, bio: bio.value, avatar: preset });
+			await A.submit(
+				button,
+				"profile.save",
+				initial && unchanged()
+					? { kind: "default" }
+					: { name: name.value, bio: bio.value, avatar: preset },
+			);
 			memoryDraft = null;
 			SGGControls.clearError(status, "draft");
 			SGGControls.clearError(status, "submit");
@@ -568,6 +608,9 @@
 			status.dataset.errorSource = "submit";
 			SGGControls.showError(status, e.message, "submit");
 			rememberDraft();
+		} finally {
+			saving = false;
+			controls.forEach((n, i) => (n.disabled = disabled[i]));
 		}
 	}
 	for (const input of [name, bio])
@@ -577,8 +620,7 @@
 		});
 	form.onsubmit = (e) => {
 		e.preventDefault();
-		const b = toolbar.querySelector(".sg-toolbar-trailing");
-		if (b) save(b, e);
+		save(saveButton, e);
 	};
 	main.addEventListener(
 		"scroll",
@@ -667,7 +709,10 @@
 	SGGI18n.bind(document.querySelector("#avatar-picker-title"), "asset.avatar");
 	SGGI18n.bind(document.querySelector("#avatar-options"), "asset.avatar", { attr: "aria-label" });
 	SGGI18n.subscribe(() => {
-		if (editing) validateFields(status.dataset.errorSource === "validation");
+		if (editing) {
+			validateFields(status.dataset.errorSource === "validation");
+			refreshAction();
+		}
 	});
 	document.documentElement.dataset.sessionReady = "true";
 })();

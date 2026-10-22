@@ -140,9 +140,6 @@ html[data-session-app="rating"] .app-toolbar #back-list {
 	visibility: visible !important;
 	font-size: 0;
 }
-html[data-session-app="rating"] .app-toolbar #back-list span {
-	display: none;
-}
 html[data-session-app="forum"] .newpost-footer .quota {
 	font-size: var(--sg-type-meta);
 	color: var(--secondary);

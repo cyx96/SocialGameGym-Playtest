@@ -313,7 +313,45 @@
 		for (const group of document.querySelectorAll("[data-sg-segmented]"))
 			groups.get(group)?.update(true);
 	});
-	window.SGGButtons = Object.freeze({ version: "1.3.0", enhance, busy, create, iconize, feedback });
+	/** Presentation only: callers provide an authorized unread-content count. */
+	function badge(host, value) {
+		const count = Number.isSafeInteger(value) && value > 0 ? value : 0;
+		let node = host.querySelector(
+			":scope > .sg-unread, :scope > .tool-unread, :scope > .sg-button-label > .sg-unread",
+		);
+		if (!node && !count) return null;
+		if (!node) {
+			node = document.createElement("span");
+			node.setAttribute("aria-hidden", "true");
+			host.append(node);
+		}
+		const initialized = node.hasAttribute("data-count"),
+			previous = Number(node.dataset.count || 0);
+		if (!node.classList.contains("sg-unread")) node.classList.add("sg-unread");
+		if (node.dataset.count !== String(count)) node.dataset.count = String(count);
+		const text = count > 99 ? "99+" : String(count);
+		if (node.textContent !== text) node.textContent = text;
+		node.hidden = count === 0;
+		if (initialized && count > previous && node.getClientRects().length)
+			window.SGGMotion?.run(
+				node,
+				[
+					{ opacity: 0.5, transform: "translateY(2px)" },
+					{ opacity: 1, transform: "translateY(0)" },
+				],
+				{ role: "state" },
+			);
+		return node;
+	}
+	window.SGGButtons = Object.freeze({
+		version: "1.4.0",
+		enhance,
+		busy,
+		create,
+		iconize,
+		feedback,
+		badge,
+	});
 	enhance();
 	requestAnimationFrame(() =>
 		requestAnimationFrame(() => (document.documentElement.dataset.sgMounted = "true")),

@@ -2,7 +2,45 @@
 (() => {
 	"use strict";
 	const A = window.SessionApp;
-	if (!A || A.app === "profile") return;
+	if (!A) return;
+	function returnBadge() {
+		const count =
+			Number.isSafeInteger(A.context.desktopUnread) && A.context.desktopUnread > 0
+				? A.context.desktopUnread
+				: 0;
+		for (const button of document.querySelectorAll(".sg-root-back")) {
+			const badge = SGGButtons.badge(button, count);
+			if (badge && !badge.classList.contains("sg-desktop-unread"))
+				badge.classList.add("sg-desktop-unread");
+			if (count) {
+				button.dataset.sgDesktopNotice = "";
+				button.setAttribute("aria-description", SGGI18n.t("asset.otherAppsUnread", { count }));
+			} else if (button.hasAttribute("data-sg-desktop-notice")) {
+				delete button.dataset.sgDesktopNotice;
+				button.removeAttribute("aria-description");
+			}
+		}
+		// Nested list/editor Back is not a desktop action.
+		for (const button of document.querySelectorAll(
+			"button[data-sg-desktop-notice]:not(.sg-root-back)",
+		)) {
+			button.removeAttribute("aria-description");
+			delete button.dataset.sgDesktopNotice;
+		}
+
+		for (const badge of document.querySelectorAll("button:not(.sg-root-back) > .sg-desktop-unread"))
+			badge.remove();
+	}
+	new MutationObserver(returnBadge).observe(document.body, {
+		subtree: true,
+		childList: true,
+		attributes: true,
+		attributeFilter: ["class"],
+	});
+	addEventListener("sgg:notice-update", returnBadge);
+	SGGI18n.observe(document.body, returnBadge);
+	returnBadge();
+	if (A.app === "profile") return;
 	let visible = true,
 		scheduled = false;
 	const acknowledged = new Set();

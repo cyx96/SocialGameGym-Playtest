@@ -346,6 +346,7 @@ const ThreadData = window.SessionApp
 				round: p.round,
 				step: p.step,
 				text: p.text,
+				delivered: p.delivered,
 				replies: SessionApp.context.posts
 					.filter((r) => r.parent === p.id)
 					.map((r) => ({
@@ -358,6 +359,7 @@ const ThreadData = window.SessionApp
 						round: r.round,
 						step: r.step,
 						text: r.text,
+						delivered: r.delivered,
 					})),
 			}))
 	: [
@@ -449,6 +451,13 @@ if (window.SessionApp) {
 			steps: SessionApp.context.socialSteps,
 		});
 		article.querySelector(":scope > p").textContent = post.text;
+		if (post.delivered === false) {
+			const pending = document.createElement("p");
+			pending.className = "sg-phase-guide";
+			pending.dataset.pendingDelivery = "";
+			SGGI18n.bind(pending, "asset.awaitingDelivery");
+			article.querySelector(":scope > p").after(pending);
+		}
 		article.querySelector(":scope > p").dataset.noticeRecord = post.id;
 		const area = article.querySelector(".inline-editor textarea");
 		area.id = "text-" + post.id;
@@ -505,6 +514,17 @@ for (const post of ThreadData) {
 						`<li class="thread-reply" data-notice-record="${escapeText(r.id || "")}"><span class="avatar" aria-hidden="true">${window.SessionApp ? SGGIdentity.avatar(r.author, "reply") : escapeText(r.initial)}</span><div class="reply-content"><div class="reply-heading"><strong>${window.SessionApp ? SGGInlinePerson.html(r.author, SGGProductLanguage.identities(SessionApp.context), { viewerId: SessionApp.context.viewer, selfMarker: true }) : escapeText(r.name)}</strong><small>${window.SessionApp ? SGGProductLanguage.stamp({ round: r.round, step: r.step, steps: SessionApp.context.socialSteps }) : "第 " + r.round + " 轮 · 社交 1/1 步"}</small></div><p>${escapeText(r.text)}</p></div></li>`,
 				)
 				.join("");
+		for (const reply of post.replies.filter((r) => r.delivered === false)) {
+			const item = [...list.querySelectorAll("[data-notice-record]")].find(
+				(n) => n.dataset.noticeRecord === reply.id,
+			);
+			if (item && !item.querySelector("[data-pending-delivery]")) {
+				const note = document.createElement("small");
+				note.dataset.pendingDelivery = "";
+				SGGI18n.bind(note, "asset.awaitingDelivery");
+				item.querySelector(".reply-content").append(note);
+			}
+		}
 		if (toggle) {
 			toggle.hidden = post.replies.length <= 2;
 			toggle.setAttribute("aria-expanded", String(expanded));

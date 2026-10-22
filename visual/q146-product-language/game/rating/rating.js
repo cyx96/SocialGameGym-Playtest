@@ -520,6 +520,7 @@
 				window.SessionApp && (!compact.matches || !state.mobileDetail)
 					? "asset.backDesktop"
 					: "asset.backPlayers";
+		back.classList.toggle("sg-root-back", key === "asset.backDesktop");
 		back.dataset.sgCopyAriaLabel = key;
 		SGGButtons.iconize(back, { name: "back", labelKey: key });
 		SGGI18n.bindAllAnnotated(document);

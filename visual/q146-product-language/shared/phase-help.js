@@ -6,7 +6,7 @@
 		const context = app.context;
 		const initial = window.__SGG_INITIAL_PROFILE__ === true;
 		const key = initial
-			? "ui.guide.profile"
+			? null
 			: !app.readonly
 				? null
 				: context.phase === "game" || context.phase === "decision"

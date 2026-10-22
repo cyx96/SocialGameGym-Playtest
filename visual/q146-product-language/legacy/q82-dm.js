@@ -94,6 +94,7 @@ if (window.SessionApp) {
 			round: m.round,
 			step: m.step,
 			text: m.text,
+			delivered: m.delivered,
 		})),
 	}));
 }
@@ -276,10 +277,17 @@ function renderConversation(c) {
 				(showStamp && stamp
 					? `<p class="step-label" data-stamp-round="${g.round || 3}" data-stamp-step="${g.step || 1}">${escapeText(stamp)}</p>`
 					: "") +
-				`<div class="message ${self ? "self" : ""}" data-author="${escapeText(g.by)}">${self ? "" : SGGIdentity.avatar(ctx ? g.authorId : g.by, "message")}<div class="message-content">${self ? "" : `<span class="message-name">${ctx ? SGGInlinePerson.html(g.authorId, SGGProductLanguage.identities(ctx)) : escapeText(g.by)}</span>`}${g.items.map((m) => `<div class="bubble" data-notice-record="${escapeText(m.noticeRecordId || m.id || "")}">${escapeText(m.text)}</div>`).join("")}</div></div>`
+				`<div class="message ${self ? "self" : ""}" data-author="${escapeText(g.by)}">${self ? "" : SGGIdentity.avatar(ctx ? g.authorId : g.by, "message")}<div class="message-content">${self ? "" : `<span class="message-name">${ctx ? SGGInlinePerson.html(g.authorId, SGGProductLanguage.identities(ctx)) : escapeText(g.by)}</span>`}${g.items.map((m) => `<div class="bubble" data-delivered="${m.delivered !== false}" data-notice-record="${escapeText(m.noticeRecordId || m.id || "")}">${escapeText(m.text)}</div>`).join("")}</div></div>`
 			);
 		})
 		.join("");
+	for (const bubble of flow.querySelectorAll('[data-delivered="false"]')) {
+		const note = document.createElement("small");
+		note.className = "sg-phase-guide";
+		note.dataset.pendingDelivery = "";
+		SGGI18n.bind(note, "asset.awaitingDelivery");
+		bubble.after(note);
+	}
 	input.value = drafts[c.id] || "";
 	resizeInput();
 	messages.scrollTop = positions[c.id] ?? messages.scrollHeight;
@@ -287,6 +295,7 @@ function renderConversation(c) {
 
 function syncView() {
 	const opened = !!selected;
+	back.classList.toggle("sg-root-back", !creating && (!mobile.matches || !opened));
 	workspace.dataset.view = creating ? "create" : opened ? "conversation" : "list";
 	chat.hidden = creating || !opened;
 	empty.hidden = creating || opened;

@@ -210,7 +210,7 @@
 		const basics = group("基础", true);
 		number(
 			basics,
-			() => SGGI18n.t("asset.rounds"),
+			() => SGGI18n.t("asset.progress." + (D.games[gameId].progressUnit || "round")),
 			"rounds",
 			1,
 			() => draft.rounds,

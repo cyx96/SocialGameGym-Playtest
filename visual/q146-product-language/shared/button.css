@@ -428,3 +428,29 @@ button.sg-button[data-sg-button][role="menuitem"] .type-mark {
 	transition: none;
 	transform: none;
 }
+
+/* One counter material for App launchers and the return-to-desktop affordance. */
+.sg-unread {
+	position: absolute;
+	inset-block-start: -5px;
+	inset-inline-end: -5px;
+	display: grid;
+	place-items: center;
+	min-inline-size: 22px;
+	block-size: 22px;
+	padding-inline: 5px;
+	box-sizing: border-box;
+	border-radius: 99px;
+	background: var(--ink, var(--sg-brand-ink));
+	color: var(--surface, #fff);
+	font: 600 var(--sg-type-caption) / 1 var(--sg-font-number);
+	font-variant-numeric: tabular-nums;
+	pointer-events: none;
+}
+.sg-button > .sg-unread {
+	inset-block-start: 0;
+	inset-inline-end: 0;
+}
+.sg-unread[hidden] {
+	display: none !important;
+}
