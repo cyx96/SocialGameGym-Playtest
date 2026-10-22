@@ -17,6 +17,7 @@ let width = 0,
 	frame = 0,
 	progress = 0,
 	pressed = false,
+	pressedPointer = null,
 	keyboard = false,
 	newpostState = "closed",
 	motionToken = 0,
@@ -98,19 +99,33 @@ new ResizeObserver((entries) => {
 	schedule();
 }).observe(slot);
 scroller.addEventListener("scroll", schedule, { passive: true });
-document.addEventListener("keydown", () => (keyboard = true), { capture: true });
+function releasePress(event) {
+	if (event?.pointerId != null && event.pointerId !== pressedPointer) return;
+	pressed = false;
+	pressedPointer = null;
+	scroller.classList.remove("pressed");
+	schedule();
+}
+document.addEventListener(
+	"keydown",
+	() => {
+		keyboard = true;
+		releasePress();
+	},
+	{ capture: true },
+);
 document.addEventListener("pointerdown", () => (keyboard = false), { capture: true });
-hit.addEventListener("pointerdown", () => {
+hit.addEventListener("pointerdown", (event) => {
+	if (!event.isPrimary || event.button !== 0) return;
 	pressed = true;
+	pressedPointer = event.pointerId;
 	scroller.classList.add("pressed");
 });
 for (const event of ["pointerup", "pointercancel"])
-	hit.addEventListener(event, () => {
-		pressed = false;
-		scroller.classList.remove("pressed");
-		schedule();
-	});
-hit.addEventListener("blur", schedule);
+	document.addEventListener(event, releasePress, { passive: true });
+hit.addEventListener("pointerleave", releasePress);
+hit.addEventListener("blur", () => releasePress());
+window.addEventListener("blur", () => releasePress());
 function refreshSubmit() {
 	editor.querySelector(".submit-newpost").disabled =
 		!field.value.trim() || (window.SessionApp && SessionApp.context.remaining <= 0);
@@ -277,16 +292,19 @@ editor.addEventListener("keydown", (e) => {
 });
 // The single observer above owns open-composer geometry, including long drafts.
 SGGMotion.onSettle(() => {
+	releasePress();
 	if (scrollTarget !== null) scrollToTarget(scrollTarget, true);
 	if (newpostState === "opening" || newpostState === "closing")
 		transitionTo(newpostState === "opening", true);
 });
 reduce.addEventListener("change", () => {
+	if (reduce.matches) releasePress();
 	if (reduce.matches && scrollTarget !== null) scrollToTarget(scrollTarget, true);
 	if (newpostState === "opening" || newpostState === "closing")
 		transitionTo(newpostState === "opening", true);
 });
 document.addEventListener("visibilitychange", () => {
+	if (document.hidden) releasePress();
 	if (document.hidden && (newpostState === "opening" || newpostState === "closing"))
 		transitionTo(newpostState === "opening", true);
 });

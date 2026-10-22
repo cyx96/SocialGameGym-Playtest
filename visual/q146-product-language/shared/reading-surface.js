@@ -3,7 +3,7 @@
 	"use strict";
 	const reduced = matchMedia("(prefers-reduced-motion: reduce)"),
 		active = new WeakMap(),
-		known = new Set();
+		known = new WeakSet();
 	function clear(dialog) {
 		const a = active.get(dialog);
 		active.delete(dialog);
@@ -96,13 +96,16 @@
 	}
 	for (const dialog of document.querySelectorAll("dialog.sg-reading")) enhance(dialog);
 	window.SGGMotion?.onSettle(() => {
-		for (const d of known) {
+		for (const d of document.querySelectorAll("dialog")) {
+			if (!known.has(d)) continue;
 			if (active.has(d)) finish(d);
 			else for (const a of d.getAnimations()) a.cancel();
 		}
 	});
 	reduced.addEventListener("change", () => {
-		if (reduced.matches) for (const d of known) if (active.has(d)) finish(d);
+		if (reduced.matches)
+			for (const d of document.querySelectorAll("dialog"))
+				if (known.has(d) && active.has(d)) finish(d);
 	});
 	window.SGGReading = Object.freeze({ enhance, open, close });
 })();

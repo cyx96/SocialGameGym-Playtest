@@ -25,7 +25,10 @@
 				if (!b.dataset.mode)
 					b.setAttribute("aria-label", SGGI18n.t("asset.openApp", { label: translated() }));
 			});
-			b.append(art, caption);
+			const mode = document.createElement("span");
+			mode.className = "tool-mode";
+			mode.setAttribute("aria-hidden", "true");
+			b.append(art, caption, mode);
 			return b;
 		},
 	});

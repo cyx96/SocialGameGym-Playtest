@@ -178,7 +178,7 @@
 }
 .search-head input {
 	font-family: inherit;
-	font-size: 16px;
+	font-size: var(--sg-type-input);
 	line-height: 1.5;
 	min-height: 44px;
 	caret-color: var(--ink);
@@ -241,6 +241,10 @@ body {
 	box-shadow: var(--sg-shadow-paper);
 }
 #search-dialog {
+	box-sizing: border-box;
+	inline-size: min(var(--sg-focus), calc(100% - var(--sg-safe-start) - var(--sg-safe-end)));
+	max-inline-size: none;
+	margin-inline: auto;
 	box-shadow: var(--sg-shadow-dialog);
 	border-radius: var(--sg-radius-reading);
 }
@@ -289,6 +293,16 @@ body {
 
 #search-dialog .search-head {
 	border: 0;
+}
+#query {
+	min-inline-size: 0;
+	flex: 1;
+}
+#query::-webkit-search-cancel-button {
+	-webkit-appearance: none;
+}
+#clear-query[hidden] {
+	display: none;
 }
 
 /* Programmatic pointer entry must not draw a keyboard ring around the whole stage. */

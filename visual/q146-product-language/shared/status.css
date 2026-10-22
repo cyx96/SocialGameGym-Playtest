@@ -56,33 +56,48 @@
 	padding-block: var(--sg-space-task) max(var(--sg-space-section), env(safe-area-inset-bottom));
 }
 
-/* Terminal reason is passive supporting copy, never a second warning surface. */
-.sg-terminal-page .intro {
-	display: grid;
-	gap: var(--sg-space-paragraph);
+.sg-state-content > .sg-status {
+	inline-size: 100%;
 }
-.sg-terminal-page .intro h1 {
-	margin: 0;
-	font: 600 var(--sg-task-title) / var(--sg-task-title-leading) var(--sg-font-ui);
-	text-wrap: balance;
+
+/* Finite state template: the message owns reading; recovery/exit actions own the common lower rail. */
+.sg-state-layout > .intro {
+	min-inline-size: 0;
+	inline-size: 100%;
 }
-.sg-terminal-page .intro .description {
-	margin: 0;
-	color: var(--secondary);
-	font: 400 var(--sg-text-help) / var(--sg-leading-body) var(--sg-font-ui);
-	overflow-wrap: anywhere;
+.sg-state-layout .sg-task-message {
+	gap: 0;
 }
-.sg-terminal-page .sg-scene-actions {
+.sg-state-layout > .sg-scene-actions {
 	display: flex;
 	flex-wrap: wrap;
-	align-items: center;
 	justify-content: flex-end;
 	gap: var(--sg-space-sibling);
 }
-
-/* Passive room entry has one message after the host's feedback threshold, never fake progress. */
-.sg-status[data-placement="entry"][data-status="loading"] .sg-status-message {
-	font: 600 var(--sg-task-title) / var(--sg-task-title-leading) var(--sg-font-ui);
-	color: var(--label);
-	text-wrap: balance;
+@container (max-width: 30rem) {
+	.sg-state-layout > .sg-scene-actions {
+		flex-direction: column;
+		align-items: stretch;
+	}
+	.sg-state-layout > .sg-scene-actions > .sg-button {
+		inline-size: 100%;
+	}
+}
+.sg-phase-guide {
+	margin: 0 0 var(--sg-space-paragraph);
+	color: var(--secondary);
+	font: 400 var(--sg-type-body) / var(--sg-leading-body) var(--sg-font-ui);
+	overflow-wrap: anywhere;
+	text-wrap: pretty;
+	text-align: start;
+}
+.sg-phase-notice {
+	flex: none;
+	inline-size: calc(100% - var(--sg-safe-start) - var(--sg-safe-end));
+	max-inline-size: var(--sg-frame);
+	margin-inline: auto;
+	padding-block: var(--sg-space-related);
+}
+.sg-phase-notice[data-reading="focus"] {
+	max-inline-size: var(--sg-focus);
 }

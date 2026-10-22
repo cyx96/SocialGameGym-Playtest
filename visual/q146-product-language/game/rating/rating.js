@@ -450,16 +450,21 @@
 		captureDraft();
 		if (!validDraft(state.selected) || storageUnsafe) return;
 		if (window.SessionApp) {
-			const d = draftFor(state.selected);
+			const target = state.selected,
+				d = { ...draftFor(target) };
 			SessionApp.submit(document.querySelector("#submit-feedback"), "rating.save", {
-				target: state.selected,
+				target,
 				score: d.score,
 				text: d.text,
 			})
 				.then(() => {
-					delete state.drafts[state.selected];
-					state.edit = null;
-					state.noteOpen = false;
+					const current = state.drafts[target],
+						acceptedDraft = current?.score === d.score && current?.text === d.text;
+					if (acceptedDraft) delete state.drafts[target];
+					if (acceptedDraft && state.edit === target) {
+						state.edit = null;
+						state.noteOpen = false;
+					}
 					persist();
 					SessionApp.refresh();
 				})
@@ -468,6 +473,10 @@
 	});
 	document.querySelector("#back-list").addEventListener("click", () => {
 		if (!canLeave()) return;
+		if (window.SessionApp && (!compact.matches || !state.mobileDetail)) {
+			SessionApp.close();
+			return;
+		}
 		state.mobileDetail = false;
 		render();
 		if (compact.matches) animate(document.querySelector(".players-pane"), "back");
@@ -502,9 +511,17 @@
 	compact.addEventListener("change", () => {
 		stopAnimations();
 		app.classList.toggle("mobile-detail", state.mobileDetail);
+		localizeRatings();
 	});
 
 	function localizeRatings() {
+		const back = document.querySelector("#back-list"),
+			key =
+				window.SessionApp && (!compact.matches || !state.mobileDetail)
+					? "asset.backDesktop"
+					: "asset.backPlayers";
+		back.dataset.sgCopyAriaLabel = key;
+		SGGButtons.iconize(back, { name: "back", labelKey: key });
 		SGGI18n.bindAllAnnotated(document);
 		for (const row of list.querySelectorAll("[data-player]")) {
 			const p = person(row.dataset.player),

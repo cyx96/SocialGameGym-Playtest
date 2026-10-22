@@ -75,7 +75,8 @@ html[data-sg-language-control]
 		inset-block-start: 0.375rem;
 	}
 	.sg-home ~ .sg-language-control,
-	html[data-sg-language-surface="catalog"] .sg-language-control {
+	html[data-sg-language-surface="catalog"] .sg-language-control,
+	body:has(.sg-utility-shell) > .sg-language-control {
 		inset-block-start: 1rem;
 	}
 }
@@ -85,4 +86,9 @@ html[data-sg-language-control]
 	position: static;
 	flex: 0 0 44px;
 	margin-inline-start: auto;
+}
+
+/* Utility headers have one centered row, unlike the two-row player header. */
+body:has(.sg-utility-shell) > .sg-language-control:not([data-in-modal]) {
+	inset-block-start: calc((var(--sg-header-height) - var(--sg-target)) / 2);
 }
