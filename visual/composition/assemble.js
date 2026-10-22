@@ -59,7 +59,6 @@
 		});
 		frame.mount(host);
 		if (spec.purpose === "terminal") frame.main.classList.add("sg-terminal-page");
-		if (spec.recipe === "summary" && !contextTask) frame.main.classList.add("sg-state-page");
 		if (contextTask) frame.main.classList.add("sg-task-page", "sg-inset-pane");
 		if (spec.navigation) {
 			const bar = el("nav", "");
@@ -196,8 +195,6 @@
 			recipe: spec.recipe,
 		});
 		scene.dataset.assembly = spec.purpose || "task";
-		if (spec.recipe === "summary" && !contextTask)
-			scene.classList.add("sg-state-layout", "sg-summary-page");
 		if (spec.purpose === "result") scene.dataset.scene = "result";
 		if (onPerson)
 			scene.addEventListener("sgg:profile-request", (event) => {

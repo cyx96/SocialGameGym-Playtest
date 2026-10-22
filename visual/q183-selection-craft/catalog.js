@@ -834,10 +834,8 @@
 	const dialog = document.querySelector("#search-dialog"),
 		searchButton = document.querySelector("#search"),
 		query = document.querySelector("#query"),
-		clearQuery = document.querySelector("#clear-query"),
 		results = document.querySelector("#results");
 	function showResults() {
-		clearQuery.hidden = !query.value;
 		results.replaceChildren();
 		const hits = CatalogStudy.games.filter((g) =>
 			(gameName(g) + " " + gameDescription(g) + " " + g.name + " " + g.desc)
@@ -923,12 +921,7 @@
 		}
 	}
 	let dialogReturn = searchButton;
-	const closeSearch = dialog.querySelector("#close-search");
-	clearQuery.onclick = () => {
-		query.value = "";
-		showResults();
-		query.focus();
-	};
+	const closeSearch = dialog.querySelector("button");
 	closeSearch.type = "button";
 	closeSearch.onclick = () => SGGReading.close(dialog);
 	searchButton.onclick = () => {

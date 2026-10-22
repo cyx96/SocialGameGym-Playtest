@@ -145,14 +145,11 @@
 			sections = new Map();
 		function group(label, open = false) {
 			const d = node("details", "sg-config-group"),
-				s = node("summary");
-			s.append(
-				node(
-					"span",
+				s = node(
+					"summary",
 					"",
 					L("asset." + ({ 基础: "basic", 社交: "social", 游戏: "game" }[label] || label)),
-				),
-			);
+				);
 			d.open = open;
 			d.append(s);
 			body.append(d);

@@ -111,7 +111,7 @@
 		}
 		return root;
 	}
-	function message({ primary, support, leading, reference, level = 1 } = {}) {
+	function message({ primary, support, leading, level = 1 } = {}) {
 		const header = document.createElement("header"),
 			copy = document.createElement("div"),
 			title = document.createElement(level === 2 ? "h2" : "h1");
@@ -134,12 +134,6 @@
 		}
 		if (leading) header.append(leading);
 		header.append(copy);
-		if (reference instanceof Node) {
-			const background = document.createElement("div");
-			background.className = "sg-task-reference";
-			background.append(reference);
-			header.append(background);
-		}
 		return header;
 	}
 	window.SGGTaskContext = Object.freeze({

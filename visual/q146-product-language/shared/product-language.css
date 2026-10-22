@@ -152,11 +152,6 @@ textarea {
 	line-height: inherit;
 	overflow-wrap: anywhere;
 }
-.sg-person-inline .sg-person-tail {
-	display: inline-block;
-	white-space: nowrap;
-	overflow-wrap: normal;
-}
 .sg-person-inline .sg-person-at {
 	font-weight: 400;
 }
@@ -185,8 +180,7 @@ button.sg-person-link:focus-visible {
 	outline-offset: 2px;
 }
 @media (hover: hover) and (pointer: fine) {
-	button.sg-person-link:hover .sg-person-text,
-	button.sg-person-link:hover .sg-person-tail > .sg-person-visible-name {
+	button.sg-person-link:hover .sg-person-text {
 		text-decoration: underline;
 		text-underline-offset: 0.18em;
 	}

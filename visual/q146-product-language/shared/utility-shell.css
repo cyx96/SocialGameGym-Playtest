@@ -25,7 +25,7 @@
 	background: var(--surface);
 }
 .sg-utility-shell .topbar .brand {
-	font: var(--sg-weight-brand) var(--sg-type-brand) / var(--sg-leading-interface) var(--sg-font-ui);
+	font: 650 1.125rem / 1.5 var(--sg-font-ui);
 	letter-spacing: -0.025em;
 	color: var(--ink);
 	text-decoration: none;
@@ -274,18 +274,4 @@
 	.sg-utility-shell .page-heading {
 		align-items: start;
 	}
-}
-
-/* Short recovery routes use the same state canvas and action rail as player states. */
-.sg-utility-shell:has(> .work-surface > .sg-state-layout) {
-	display: flex;
-	flex-direction: column;
-}
-.sg-utility-shell > .work-surface:has(> .sg-state-layout) {
-	container-type: inline-size;
-	flex: 1;
-	display: flex;
-	margin-block: 0;
-	padding-block: 0;
-	max-inline-size: var(--sg-focus);
 }

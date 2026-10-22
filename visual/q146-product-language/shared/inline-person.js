@@ -63,21 +63,8 @@
 			at.setAttribute("aria-hidden", "true");
 			if (order === "at-name-avatar") {
 				const text = element("span", "sg-person-text");
-				const graphemes =
-					typeof Intl.Segmenter === "function"
-						? Array.from(
-								new Intl.Segmenter(undefined, { granularity: "grapheme" }).segment(
-									name.textContent,
-								),
-								(part) => part.segment,
-							)
-						: Array.from(name.textContent);
-				const final = graphemes.pop() || "";
-				name.textContent = graphemes.join("");
-				const tail = element("span", "sg-person-tail");
-				tail.append(element("span", "sg-person-visible-name", final), image);
 				text.append(at, name);
-				n.append(text, tail);
+				n.append(text, image);
 			} else if (order === "avatar-at-name") {
 				const text = element("span", "sg-person-text");
 				text.append(at, name);

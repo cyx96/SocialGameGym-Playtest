@@ -159,6 +159,20 @@
 			document.querySelector(".dm-empty button").hidden = true;
 		}
 	}
+	if (app === "rating") {
+		const listBack = document.querySelector("#back-list");
+		listBack.addEventListener(
+			"click",
+			(event) => {
+				if (!document.querySelector(".rating-app").classList.contains("mobile-detail")) {
+					event.preventDefault();
+					event.stopImmediatePropagation();
+					A.close();
+				}
+			},
+			true,
+		);
+	}
 	if (app === "game") {
 		const toolbar = e("nav", "sg-game-toolbar");
 		if (toolbar) SGGI18n.bind(toolbar, "asset.gameApps", { attr: "aria-label" });
