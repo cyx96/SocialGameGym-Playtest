@@ -1,3 +1,5 @@
+@import url("./data-table.css");
+
 .sg-reading {
 	--sg-reading-entry-transform: translateY(6px);
 	--sg-reading-exit-transform: translateY(6px);
@@ -22,10 +24,10 @@
 .sg-reading > .sg-reading-head {
 	margin: 0;
 	flex: none;
-	display: flex;
+	display: grid;
+	grid-template-columns: var(--sg-target) minmax(0, 1fr) var(--sg-target);
 	align-items: center;
-	justify-content: space-between;
-	gap: 16px;
+	gap: 0;
 	padding: 16px 24px 8px;
 }
 .sg-reading-head h2 {
@@ -33,10 +35,18 @@
 	font-weight: 550;
 	line-height: 1.5;
 	margin: 0;
-	text-align: left;
-	flex: 1;
+	grid-column: 2;
+	grid-row: 1;
+	text-align: center;
 	min-inline-size: 0;
-	overflow-wrap: anywhere;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+.sg-reading-head > .sg-button[data-sg-button] {
+	grid-column: 3;
+	grid-row: 1;
+	justify-self: end;
 }
 .sg-reading > .sg-reading-body {
 	min-height: 0;
@@ -167,7 +177,7 @@ body:has(#deck) {
 
 :root {
 	--sg-shell: 1120px;
-	--sg-app-title: 19px;
+	--sg-app-title: var(--sg-type-app-navigation);
 	--sg-app-toolbar: 56px;
 	--sg-surface-radius: var(--sg-radius-surface);
 	--sg-control-radius: var(--sg-radius-control);
@@ -312,100 +322,28 @@ html[data-sg-motion-input="keyboard"] .sg-reading::backdrop {
 .sg-player-rules :is(h3, h4) {
 	font: var(--sg-weight-name) var(--sg-text-name) / var(--sg-leading-copy) var(--sg-font-ui);
 }
-.sg-player-rules > section:first-child h3 {
-	font-size: var(--sg-type-title);
-}
 .sg-player-rules ul {
 	padding-inline-start: var(--sg-space-section);
 }
 .sg-player-rules li + li {
 	margin-block-start: var(--sg-space-paragraph);
 }
-.sg-rules-participation {
-	border-block-start: 1px solid var(--sg-line-separator);
-	padding-block-start: var(--sg-space-task);
+.sg-player-rules .sg-rules-participation {
 	gap: var(--sg-space-section);
+	padding-block-start: var(--sg-space-paragraph);
 }
 .sg-rules-participation > h3 {
 	font:
 		var(--sg-weight-name) var(--sg-type-context) / var(--sg-leading-interface) var(--sg-font-ui);
 	color: var(--secondary);
 }
-.sg-rules-index {
-	font-size: var(--sg-type-context);
+/* Scroll space belongs to the reading body; headers and actions never share its gutter. */
+.sg-reading > .sg-reading-body {
+	scrollbar-gutter: stable;
+	scroll-padding-block: var(--sg-space-sibling);
 }
-.sg-rules-index summary {
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
-	min-block-size: var(--sg-target);
-	gap: var(--sg-space-sibling);
-	cursor: pointer;
-	list-style: none;
-	color: var(--secondary);
-}
-.sg-rules-index summary::-webkit-details-marker {
-	display: none;
-}
-.sg-rules-index summary .experience-icon {
-	inline-size: var(--sg-icon-chevron);
-	block-size: var(--sg-icon-chevron);
-}
-.sg-rules-index[open] summary .experience-icon {
-	transform: rotate(180deg);
-}
-.sg-rules-index nav {
-	display: grid;
-	gap: var(--sg-space-section);
-	padding-block: var(--sg-space-paragraph) var(--sg-space-sibling);
-}
-.sg-rules-index nav p {
-	color: var(--secondary);
-}
-.sg-rules-index nav ul {
-	display: grid;
-	grid-template-columns: repeat(auto-fit, minmax(min(100%, 9rem), 1fr));
-	gap: var(--sg-space-related) var(--sg-space-sibling);
-	list-style: none;
-	padding: 0;
-}
-.sg-rules-index nav li + li {
-	margin: 0;
-}
-.sg-rules-index a {
-	display: flex;
-	align-items: center;
-	min-block-size: var(--sg-target);
-	color: var(--ink);
-	text-decoration: none;
-	text-underline-offset: 0.2em;
-}
-@media (hover: hover) {
-	.sg-rules-index a:hover {
-		text-decoration: underline;
-	}
-}
-.sg-rule-table {
-	max-block-size: 50dvh;
-	overflow: auto;
-	border-radius: var(--sg-radius-control);
-}
-.sg-rule-table table {
-	border-collapse: collapse;
-	inline-size: 100%;
-	text-align: start;
-	font: inherit;
-	font-variant-numeric: tabular-nums;
-}
-.sg-rule-table :is(th, td) {
-	padding: var(--sg-space-related) var(--sg-space-sibling);
-	text-align: start;
-	white-space: nowrap;
-}
-.sg-rule-table th {
-	font-weight: 400;
-	color: var(--secondary);
-}
-.sg-rule-table tbody tr:nth-child(odd) {
-	background: var(--canvas);
+
+/* Programmatic pointer focus belongs to the reading surface, not a visible control ring. */
+.sg-reading[data-keyboard-open="false"]:focus {
+	outline: none;
 }

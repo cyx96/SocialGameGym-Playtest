@@ -79,6 +79,14 @@
 	font-weight: 400;
 	white-space: nowrap;
 }
+.sg-welcome-full {
+	position: absolute;
+	inline-size: 1px;
+	block-size: 1px;
+	margin: -1px;
+	overflow: hidden;
+	clip-path: inset(50%);
+}
 .sg-welcome-caret {
 	display: inline-block;
 	height: 1.1em;
@@ -109,6 +117,7 @@
 	}
 }
 .sg-welcome[data-paused="true"] .sg-welcome-caret,
+.sg-welcome[data-invitation-ready="false"] .sg-welcome-caret,
 .sg-welcome[data-leaving="true"] .sg-welcome-caret,
 [data-sg-motion-input="keyboard"] .sg-welcome-caret {
 	animation: none;

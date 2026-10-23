@@ -64,6 +64,12 @@ body[data-sg-shell][data-scroll="workspace"] {
 	color: var(--ink);
 	text-decoration: none;
 }
+.sg-product-bar > .brand > span {
+	min-inline-size: 0;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
 .sg-product-bar > .game-context,
 .sg-product-bar > .page-name {
 	position: static;
@@ -153,6 +159,7 @@ body.config-open > .sg-product-bar {
 }
 .sg-progress-group {
 	display: inline-flex;
+	flex-wrap: nowrap;
 	align-items: baseline;
 	gap: var(--sg-related);
 	margin: 0;
@@ -454,6 +461,17 @@ body[data-layout-surface="social"] > .tool-home {
 }
 
 /* Game / round and phase / step share one context line (latest user decision). */
+.sg-product-bar:has(> .sg-context-line) {
+	display: grid;
+	grid-template-columns: minmax(0, 1fr) minmax(0, 2fr) minmax(0, 1fr);
+}
+.sg-product-bar > .sg-context-line {
+	justify-content: center;
+	text-align: center;
+}
+.sg-product-bar > .sg-header-actions {
+	justify-self: end;
+}
 .sg-product-bar > .game-context {
 	align-items: center;
 	gap: 0.25rem var(--sg-section);
@@ -462,14 +480,18 @@ body[data-layout-surface="social"] > .tool-home {
 .sg-context-game {
 	display: inline-flex;
 	align-items: baseline;
-	flex-wrap: wrap;
+	flex-wrap: nowrap;
 	gap: 0.125rem var(--sg-related);
 	min-inline-size: 0;
 	max-inline-size: 100%;
 }
 .sg-context-game > :first-child {
+	font-size: var(--sg-type-body);
+	font-weight: var(--sg-weight-name);
 	min-inline-size: 0;
-	overflow-wrap: anywhere;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
 }
 .sg-context-line > .sg-progress {
 	inline-size: auto;
@@ -482,8 +504,12 @@ body[data-layout-surface="social"] > .tool-home {
 	flex-wrap: wrap;
 	gap: var(--sg-related);
 }
+.sg-context-line :is(.sg-progress-name, .sg-progress-group > strong) {
+	font-size: var(--sg-type-body);
+	font-weight: var(--sg-weight-name);
+}
 .sg-context-line .sg-progress-group {
-	font-size: var(--sg-type-meta);
+	font-size: var(--sg-type-context);
 	line-height: 1.5;
 }
 .sg-context-line .sg-progress-actions {
@@ -497,6 +523,18 @@ body[data-context-progress] > .sg-page {
 	margin-inline: 0;
 }
 @media (max-width: 760px) {
+	.sg-product-bar:has(> .sg-context-line) {
+		grid-template-columns: minmax(0, 1fr) auto;
+		gap: 0;
+	}
+	.sg-product-bar > .sg-context-line {
+		grid-column: 1 / -1;
+		grid-row: 2;
+	}
+	.sg-product-bar > .sg-header-actions {
+		grid-column: 2;
+		grid-row: 1;
+	}
 	.sg-product-bar {
 		padding-block: 0.375rem 0.5rem;
 	}
@@ -614,9 +652,9 @@ body[data-task-scene] > .sg-page {
 /* Quiet states use one reading lane; empty columns do not determine their position. */
 .sg-task-layout[data-scene="summary"] {
 	grid-template-columns: minmax(0, 1fr);
-	grid-template-rows: minmax(1.5rem, 0.8fr) auto auto minmax(2rem, 1fr) auto;
-	grid-template-areas: "." "context" "interaction" "." "actions";
-	max-inline-size: var(--sg-focus);
+	grid-template-rows: auto auto minmax(0, 1fr) auto;
+	grid-template-areas: "context" "interaction" "." "actions";
+	max-inline-size: var(--sg-task-reading-width);
 	inline-size: 100%;
 	margin-inline: auto;
 	row-gap: var(--sg-space-section);
@@ -697,7 +735,7 @@ body[data-task-scene] > .sg-page.sg-state-page {
 	flex-direction: column;
 	min-block-size: min-content;
 	inline-size: calc(100% - var(--sg-safe-start) - var(--sg-safe-end));
-	max-inline-size: var(--sg-focus);
+	max-inline-size: var(--sg-work);
 	margin: 0 auto;
 	padding: 0;
 }
@@ -735,11 +773,46 @@ body[data-task-scene] > .sg-page.sg-state-page {
 }
 /* Align the visible back glyph to the reading guide, independently of its full target. */
 .sg-pane-toolbar {
+	grid-template-columns: minmax(var(--sg-nav-target), 1fr) minmax(0, auto) minmax(
+			var(--sg-nav-target),
+			1fr
+		);
 	--sg-nav-target: var(--sg-button-compact);
 	--sg-nav-leading-overhang: min(
 		var(--sg-space-surface),
 		calc((var(--sg-nav-target) - var(--sg-icon-action)) / 2 + var(--sg-icon-action) / 4)
 	);
+}
+.sg-pane-toolbar > :is(h1, h2, .sg-toolbar-title),
+.sg-pane-toolbar > :is(.sg-task-toolbar-label, .sg-toolbar-title) > :is(h1, h2) {
+	font-size: var(--sg-type-app-navigation);
+	line-height: var(--sg-leading-interface);
+	font-weight: 600;
+}
+.sg-app-navigation-title {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+	align-items: baseline;
+	gap: 0 var(--sg-space-related);
+	min-inline-size: 0;
+}
+.sg-app-name {
+	display: block;
+	min-inline-size: 0;
+	max-inline-size: 100%;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+.sg-app-navigation-title > .app-readonly {
+	font: 400 var(--sg-type-meta) / var(--sg-leading-interface) var(--sg-font-ui);
+	color: var(--secondary);
+	margin-inline-start: 0;
+	white-space: nowrap;
+}
+.sg-pane-toolbar > .sg-button[data-sg-button]:last-child {
+	justify-self: end;
 }
 .sg-pane-toolbar > .sg-button[data-sg-button]:first-child:has(svg[data-sg-icon="back"]) {
 	inline-size: var(--sg-nav-target);
@@ -756,6 +829,18 @@ body[data-task-scene] > .sg-page.sg-state-page {
 	outline-offset: -2px;
 }
 
+/* Keep the icon on its navigation axis while its centered reason uses the safe outer gutter. */
+.sg-pane-toolbar .sg-action-stack {
+	grid-template-columns: minmax(0, 1fr);
+}
+.sg-pane-toolbar .sg-action-stack > .sg-action-hint {
+	inline-size: max-content;
+	max-inline-size: min(
+		16rem,
+		calc(var(--sg-nav-target, var(--sg-target)) + 2 * var(--sg-safe-end))
+	);
+}
+
 /* Text enlargement preserves a two-character App name before spending space on side gaps. */
 @container (max-width: 14rem) {
 	.sg-toolbar {
@@ -765,6 +850,25 @@ body[data-task-scene] > .sg-page.sg-state-page {
 				1fr
 			);
 	}
+}
+
+/* Disabled navigation actions retain a button row and a separate reason row. */
+.sg-toolbar:has(> .sg-action-stack.sg-toolbar-trailing) {
+	grid-template-rows: minmax(var(--sg-target), auto) auto;
+	row-gap: var(--sg-space-related);
+	padding-block: max(0px, calc((var(--sg-toolbar-height) - var(--sg-target)) / 2));
+}
+.sg-toolbar:has(> .sg-action-stack.sg-toolbar-trailing)
+	> :is(.sg-toolbar-leading, .sg-toolbar-title) {
+	grid-row: 1;
+	align-self: center;
+}
+.sg-toolbar > .sg-action-stack.sg-toolbar-trailing {
+	grid-row: 1 / span 2;
+	display: grid;
+	grid-template-rows: subgrid;
+	align-self: stretch;
+	justify-self: end;
 }
 
 /* Short entry flows consume the actual flex shell remainder, even when its header grows. */

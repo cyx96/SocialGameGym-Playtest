@@ -31,7 +31,17 @@
 	}
 	function readonly() {
 		if (!A.readonly) return;
-		for (const input of document.querySelectorAll("input,textarea,select")) input.disabled = true;
+		// Read-only restricts write surfaces, never search, navigation or reading controls.
+		const writeScopes = {
+			profile: ".profile-fields,.avatar-picker",
+			forum: ".newpost-editor,.inline-editor,.composer-dialog",
+			dm: ".dm-compose,.dm-create",
+			game: "#game-decision",
+		};
+		for (const scope of document.querySelectorAll(writeScopes[app] || "[data-write-surface]"))
+			for (const input of scope.querySelectorAll("input,textarea,select"))
+				if (!input.matches('input[type="search"],[role="searchbox"],[data-search-input]'))
+					input.disabled = true;
 		const title = document.querySelector(
 			"#app-title,.forum-toolbar h1,.dm-toolbar h1,.app-toolbar h1,.sg-game-toolbar h2",
 		);
@@ -141,7 +151,7 @@
 			);
 		const note = e("p", "quota");
 		SGGI18n.bind(note, "asset.quota", { values: { count: c.remaining } });
-		document.querySelector(".newpost-footer").prepend(note);
+		if (!A.readonly) document.querySelector(".newpost-footer").prepend(note);
 	}
 	if (app === "dm") {
 		const count = document.querySelector(".compose-meta b");
@@ -152,12 +162,8 @@
 			SGGI18n.observe(host, refreshQuota);
 		}
 		const createBudget = document.querySelector(".create-budget");
-		if (createBudget) SGGI18n.bind(createBudget, "asset.quota", { values: { count: c.remaining } });
-		if (A.readonly) {
-			const composer = document.querySelector(".dm-compose");
-			if (composer) composer.hidden = true;
-			document.querySelector(".dm-empty button").hidden = true;
-		}
+		if (createBudget && !A.readonly)
+			SGGI18n.bind(createBudget, "asset.quota", { values: { count: c.remaining } });
 	}
 	if (app === "game") {
 		const toolbar = e("nav", "sg-game-toolbar");

@@ -285,7 +285,7 @@
 			social.append(row);
 		}
 		syncTools();
-		const game = group("游戏");
+		const game = model.extraFields.length || model.rationalFields?.length ? group("游戏") : null;
 		if (model.extraFields.length) {
 			for (const f of model.extraFields) {
 				const control = C.select(
@@ -338,8 +338,6 @@
 				game.append(box);
 			}
 		}
-		if (!model.extraFields.length && !model.rationalFields?.length)
-			game.append(node("p", "", L("asset.noConfiguration")));
 
 		const action = B.create({ role: "primary", labelKey: "asset.prepare" });
 		action.type = "submit";

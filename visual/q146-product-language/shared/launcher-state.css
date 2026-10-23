@@ -31,7 +31,10 @@
 	white-space: nowrap;
 }
 #finish-social[data-waiting="true"] {
-	background: var(--wash, #e6efea);
+	background: var(
+		--sg-button-disabled-fill,
+		color-mix(in srgb, var(--secondary) 7%, var(--surface))
+	);
 	color: var(--secondary, #535a55);
 	opacity: 1;
 }

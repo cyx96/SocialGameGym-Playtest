@@ -68,7 +68,7 @@ html[data-sg-language-control]
 		.catalog-header > nav,
 		.sg-utility-shell > .topbar > nav
 	) {
-	padding-inline-end: 3.25rem;
+	padding-inline-end: calc(var(--sg-button-compact) + var(--sg-space-related));
 }
 @media (max-width: 760px) {
 	.sg-language-control {
@@ -81,14 +81,7 @@ html[data-sg-language-control]
 	}
 }
 
-/* Native modal tools retain their existing header rhythm and focus boundary. */
-.sg-language-control[data-in-modal] {
-	position: static;
-	flex: 0 0 44px;
-	margin-inline-start: auto;
-}
-
 /* Utility headers have one centered row, unlike the two-row player header. */
-body:has(.sg-utility-shell) > .sg-language-control:not([data-in-modal]) {
+body:has(.sg-utility-shell) > .sg-language-control {
 	inset-block-start: calc((var(--sg-header-height) - var(--sg-target)) / 2);
 }

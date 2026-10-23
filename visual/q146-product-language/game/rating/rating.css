@@ -10,7 +10,6 @@
 	--line: #cbcfcc;
 	--control: #f1f4f1;
 	--error: #a32920;
-	--ease: cubic-bezier(0.23, 1, 0.32, 1);
 }
 * {
 	box-sizing: border-box;
@@ -45,20 +44,12 @@ button:disabled {
 button:focus-visible,
 summary:focus-visible,
 a:focus-visible {
-	outline: 2px solid var(--ink);
+	outline: 2px var(--sg-focus-style, none) var(--ink);
 	outline-offset: 3px;
 }
 button {
 	border: 0;
 	background: none;
-}
-button:active:not(:disabled) {
-	transform: scale(0.97);
-}
-button {
-	transition:
-		transform 120ms var(--ease),
-		background-color 120ms ease;
 }
 svg {
 	width: 20px;
@@ -262,7 +253,7 @@ svg {
 .disclosure svg {
 	width: 16px;
 	height: 16px;
-	transition: transform 160ms var(--ease);
+	transition: transform var(--sg-motion-state) var(--sg-ease);
 }
 .disclosure[aria-expanded="true"] svg {
 	transform: rotate(180deg);
@@ -400,8 +391,8 @@ svg {
 	font-size: var(--sg-type-body);
 	font-variant-numeric: tabular-nums;
 	transition:
-		background-color 120ms ease,
-		color 120ms ease;
+		background-color var(--sg-motion-state) ease,
+		color var(--sg-motion-state) ease;
 }
 .score-option input:checked + span {
 	background: var(--ink);
@@ -409,7 +400,7 @@ svg {
 	font-weight: 600;
 }
 .score-option input:focus-visible + span {
-	outline: 2px solid var(--ink);
+	outline: 2px var(--sg-focus-style, none) var(--ink);
 	outline-offset: 3px;
 }
 .text-field {
@@ -793,7 +784,7 @@ textarea::placeholder {
 	width: 13px;
 	height: 13px;
 	color: var(--secondary);
-	transition: transform 160ms var(--ease);
+	transition: transform var(--sg-motion-state) var(--sg-ease);
 }
 .average-toggle[aria-expanded="true"] .count svg {
 	transform: rotate(180deg);
@@ -1122,8 +1113,8 @@ textarea::placeholder {
 	opacity: 0;
 	transform: translateY(-4px);
 	transition:
-		opacity 140ms var(--ease),
-		transform 180ms var(--ease);
+		opacity var(--sg-motion-state) var(--sg-ease),
+		transform var(--sg-motion-expand) var(--sg-ease);
 }
 .inline-slot[data-editor-state="open"] .feedback-inner,
 .inline-slot[data-editor-state="opening"] .feedback-inner {
@@ -1221,7 +1212,7 @@ textarea::placeholder {
 	stroke: var(--ink);
 }
 .score-option input:focus-visible + span {
-	outline: 2px solid var(--ink);
+	outline: 2px var(--sg-focus-style, none) var(--ink);
 	outline-offset: -2px;
 }
 .composer-writing textarea {
@@ -1241,7 +1232,7 @@ textarea::placeholder {
 	overflow-wrap: anywhere;
 }
 .keyboard-focus .composer-writing textarea:focus {
-	outline: 2px solid var(--ink);
+	outline: 2px var(--sg-focus-style, none) var(--ink);
 	outline-offset: 4px;
 }
 .editor-footer {

@@ -56,7 +56,10 @@
 	const actionRail = node("footer", "sg-scene-actions profile-editor-actions");
 	const saveButton = B.create({ role: "primary", labelKey: "asset.saveProfile" });
 	saveButton.type = "submit";
-	actionRail.append(saveButton);
+	const saveStack = node("div", "sg-action-stack");
+	saveStack.append(saveButton);
+	if (A.readonly) saveStack.append(node("p", "sg-action-hint", L("asset.actionUnavailable")));
+	actionRail.append(saveStack);
 	form.append(actionRail);
 	const unchanged = () => {
 		const profile = own();
@@ -67,6 +70,7 @@
 		);
 	};
 	function refreshAction() {
+		saveButton.disabled = A.readonly || !canEdit();
 		SGGI18n.bind(
 			saveButton,
 			initial
@@ -87,7 +91,7 @@
 		SGGControls.showError(n, message, "submit");
 	}
 	function rememberDraft() {
-		if (window.__SGG_RETIRED__) return;
+		if (window.__SGG_RETIRED__ || A.readonly) return;
 		memoryDraft = { name: name.value, bio: bio.value, avatar: preset };
 		refreshAction();
 		try {
@@ -116,15 +120,15 @@
 		if (!editing || initial) back.classList.add("sg-root-back");
 		back.onclick = (event) => (editing && !initial ? showList(event) : A.close());
 		toolbar.append(back, title);
-		if (canEdit() && !editing) {
+		if ((canEdit() || A.readonly) && !editing) {
 			const action = B.create({
 				role: "icon",
-				ariaLabelKey: editing ? "asset.saveProfile" : "asset.editProfile",
-				icon: I.create(editing ? "check" : "edit"),
+				ariaLabelKey: "asset.editProfile",
+				icon: I.create("edit"),
 			});
-			action.dataset.profileAction = editing ? "save" : "edit";
-			action.onclick = (event) => (editing ? save(action, event) : edit(event));
-			toolbar.append(action);
+			action.dataset.profileAction = "edit";
+			action.onclick = (event) => edit(event);
+			toolbar.append(A.readonly ? B.unavailable(action) : action);
 		}
 		SGGLayout.toolbar(toolbar);
 	}
@@ -227,30 +231,36 @@
 		if (person.id === c.viewer) return;
 		const following = A.context.following?.includes(person.id) || false,
 			values = A.context.profileActions?.follow?.[person.id] || [];
-		if (!A.readonly && values.includes(!following)) {
-			const button = B.create({ labelKey: following ? "asset.unfollow" : "asset.follow" }),
-				error = node("p", "profile-error");
-			error.hidden = true;
-			error.setAttribute("role", "alert");
-			button.onclick = async () => {
-				try {
-					await A.submit(button, "profile.follow", { target: person.id, following: !following });
-					drawFollow(host, person);
-					drawList();
-					bar();
-					(host.querySelector("button") || dialog.querySelector("header button"))?.focus({
-						preventScroll: true,
-					});
-				} catch (e) {
-					showError(error, e.message);
-				}
-			};
-			host.append(
-				button,
-				node("span", "profile-quota", SGGProductLanguage.quota(A.context.remaining)),
-				error,
-			);
-		} else if (following) host.append(node("p", "profile-relation", L("asset.following")));
+		const available = values.includes(!following),
+			button = B.create({
+				labelKey: following ? "asset.unfollow" : "asset.follow",
+				disabled: !available,
+			}),
+			error = node("p", "profile-error"),
+			stack = node("div", "sg-action-stack"),
+			hint = node("p", "sg-action-hint");
+		const charged = A.context.profileActions?.followChargesQuota ?? !A.readonly;
+		hint.hidden = available && !charged;
+		if (available) hint.textContent = SGGProductLanguage.quota(A.context.remaining);
+		else SGGI18n.bind(hint, "asset.actionUnavailable");
+		error.hidden = true;
+		error.setAttribute("role", "alert");
+		button.onclick = async () => {
+			if (!available) return;
+			try {
+				await A.submit(button, "profile.follow", { target: person.id, following: !following });
+				drawFollow(host, person);
+				drawList();
+				bar();
+				(host.querySelector("button") || dialog.querySelector("header button"))?.focus({
+					preventScroll: true,
+				});
+			} catch (e) {
+				showError(error, e.message);
+			}
+		};
+		stack.append(button, hint);
+		host.append(stack, error);
 	}
 	function activityMeta(source, detail) {
 		const meta = node("span", "profile-activity-tag sg-activity-meta");
@@ -513,6 +523,7 @@
 		}
 	}
 	function edit(event) {
+		if (A.readonly || !canEdit()) return;
 		SGGMotion.cancel(list);
 		editing = true;
 		editorMode(true);
@@ -531,6 +542,11 @@
 		preset = V.resolve(draft?.avatar || profile.avatar);
 		validateFields();
 		avatarPicker.setValue(preset);
+		name.disabled = bio.disabled = A.readonly;
+		document.querySelector("#profile-avatar").inert = A.readonly;
+		form.querySelectorAll("#profile-avatar button").forEach((control) => {
+			control.disabled = A.readonly;
+		});
 		bar();
 		refreshAction();
 		if (event) {
@@ -545,6 +561,7 @@
 		options: document.querySelector("#avatar-options"),
 		allowedPresets: () => A.context.avatarPresets,
 		onChange: (key) => {
+			if (A.readonly) return;
 			preset = key;
 			rememberDraft();
 		},
@@ -573,7 +590,7 @@
 		return !message;
 	}
 	async function save(button, event) {
-		if (saving) return;
+		if (A.readonly || !canEdit() || saving) return;
 		if (!validateFields(true)) {
 			form.reportValidity();
 			return;
@@ -690,7 +707,7 @@
 		try {
 			restoreEditor = sessionStorage.getItem(editorKey) === "true";
 		} catch {}
-		if ((initial || restoreEditor) && canEdit()) edit();
+		if ((initial || restoreEditor) && (canEdit() || A.readonly)) edit();
 		else showList();
 	}
 	SGGI18n.bind(list, "asset.playerProfiles", { attr: "aria-label" });

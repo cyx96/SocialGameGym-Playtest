@@ -39,24 +39,6 @@ html[data-session-app] .local-status {
 	margin: var(--sg-space-paragraph) 0;
 	min-height: 1.5em;
 }
-html[data-readonly="true"] .compose-hit,
-html[data-readonly="true"] .compose-surface,
-html[data-readonly="true"] .compose-copy,
-html[data-readonly="true"] .compose-icon,
-html[data-readonly="true"] .entry-spacer,
-html[data-readonly="true"] #composer,
-html[data-readonly="true"] .reply-root,
-html[data-readonly="true"] .inline-editor,
-html[data-readonly="true"] .new-conversation,
-html[data-readonly="true"] .message-compose,
-html[data-readonly="true"] .dm-input,
-html[data-readonly="true"] .save,
-html[data-readonly="true"] .change {
-	display: none !important;
-}
-html[data-readonly="true"] .forum-app .feed {
-	padding-top: 16px !important;
-}
 html[data-session-app="game"] body {
 	height: auto;
 	min-height: 100dvh;

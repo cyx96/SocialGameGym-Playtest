@@ -1,0 +1,123 @@
+/* Shared enabled preparation roster. Geometry of the surrounding task remains task-context's owner. */
+.preparation-roster {
+	display: grid;
+	gap: var(--sg-space-sibling);
+	inline-size: 100%;
+	min-inline-size: 0;
+	background: transparent;
+	padding: 0;
+}
+.preparation-seat {
+	display: grid;
+	grid-template-columns: var(--sg-target) minmax(0, 1fr) auto;
+	align-items: center;
+	gap: var(--sg-space-paragraph);
+	min-inline-size: 0;
+	min-block-size: 88px;
+}
+.seat-copy {
+	display: grid;
+	min-inline-size: 0;
+	gap: var(--sg-space-related);
+}
+.seat-copy strong {
+	font-size: var(--sg-type-body);
+	font-weight: 550;
+	overflow-wrap: anywhere;
+}
+.seat-copy strong small {
+	font-weight: 400;
+	white-space: nowrap;
+}
+.seat-meta {
+	display: flex;
+	align-items: center;
+	flex-wrap: wrap;
+	gap: var(--sg-space-related);
+	font-size: var(--sg-type-meta);
+	line-height: var(--sg-leading-interface);
+	color: var(--secondary);
+	min-inline-size: 0;
+}
+.seat-identity-icon {
+	position: relative;
+	display: grid;
+	place-items: center;
+	inline-size: var(--sg-target);
+	block-size: var(--sg-target);
+	border-radius: 50%;
+	background: var(--sg-control-fill);
+	color: var(--secondary);
+}
+.seat-identity-icon > .experience-icon,
+.seat-identity-icon > .experience-icon > svg {
+	inline-size: 24px;
+	block-size: 24px;
+}
+.seat-organizer-mark,
+.seat-status-mark {
+	position: absolute;
+	inset-inline-end: -1px;
+	display: grid;
+	place-items: center;
+	inline-size: 16px;
+	block-size: 16px;
+	background: var(--canvas);
+	border-radius: 50%;
+	color: var(--secondary);
+}
+.seat-organizer-mark {
+	inset-block-start: -1px;
+	color: var(--ink);
+}
+.seat-status-mark {
+	inset-block-end: -1px;
+}
+.seat-organizer-mark .experience-icon,
+.seat-status-mark .experience-icon,
+.seat-organizer-mark svg,
+.seat-status-mark svg {
+	inline-size: 14px;
+	block-size: 14px;
+}
+.seat-status-mark:has([data-sg-icon="check"]) {
+	color: var(--ink);
+}
+.seat-actions {
+	display: flex;
+	align-items: center;
+	gap: 0;
+	flex: none;
+}
+.preparation-roster > .add-seat {
+	justify-self: start;
+	margin-block-start: var(--sg-space-related);
+	background: var(--sg-control-fill);
+}
+.seat-feedback {
+	font-size: var(--sg-type-meta);
+	line-height: var(--sg-leading-interface);
+	color: var(--ink);
+}
+.seat-feedback:empty,
+.preparation-feedback:empty {
+	display: none;
+}
+.preparation-feedback {
+	display: grid;
+	gap: var(--sg-space-related);
+}
+.preparation-page .sg-reading-actions {
+	justify-content: flex-end;
+}
+@media (max-width: 520px) {
+	.preparation-seat {
+		column-gap: var(--sg-space-related);
+	}
+}
+@media (max-width: 350px) {
+	.preparation-seat .seat-actions {
+		grid-column: 2 / -1;
+		justify-self: end;
+	}
+}

@@ -1,0 +1,130 @@
+/* One shared route material: explicit nodes, bounded window, quiet adjacent connectors. */
+.sg-stage-route-host {
+	display: flex;
+	justify-content: center;
+	flex: none;
+	padding: var(--sg-space-sibling) var(--sg-safe-start) 0;
+	background: var(--canvas);
+}
+.sg-stage-route {
+	--sg-route-pitch: 64px;
+	--sg-route-marker: 40px;
+	flex: none;
+	position: relative;
+	inline-size: calc((var(--sg-route-count) - 1) * var(--sg-route-pitch) + var(--sg-route-marker));
+	block-size: 48px;
+	margin: 0;
+	padding: 0;
+	list-style: none;
+	isolation: isolate;
+	color: var(--secondary);
+}
+.sg-stage-track {
+	position: absolute;
+	inset: 0;
+	pointer-events: none;
+	z-index: -2;
+}
+.sg-stage-segment {
+	position: absolute;
+	inset-block-start: calc(var(--sg-route-marker) / 2);
+	inset-inline-start: 0;
+	inline-size: 1px;
+	block-size: 1px;
+	transform-origin: left center;
+	background: color-mix(in srgb, var(--secondary) 18%, var(--canvas));
+}
+.sg-stage-segment::after {
+	content: "";
+	position: absolute;
+	inset: 0;
+	background: color-mix(in srgb, var(--ink) 35%, var(--canvas));
+	opacity: 0;
+	transition: opacity var(--sg-motion-state) var(--sg-ease);
+}
+.sg-stage-segment[data-stage-state="past"]::after {
+	opacity: 1;
+}
+.sg-stage-route[data-instant] .sg-stage-segment::after,
+[data-sg-motion-input="keyboard"] .sg-stage-segment::after {
+	transition: none;
+}
+.sg-stage-route[data-has-before="true"] .sg-stage-track {
+	mask-image: linear-gradient(to right, transparent, #000 20%);
+}
+.sg-stage-route[data-has-after="true"] .sg-stage-track {
+	mask-image: linear-gradient(to left, transparent, #000 20%);
+}
+.sg-stage-route[data-has-before="true"][data-has-after="true"] .sg-stage-track {
+	mask-image: linear-gradient(to right, transparent, #000 20%, #000 80%, transparent);
+}
+.sg-stage-focus {
+	position: absolute;
+	inset: 0 auto auto 0;
+	inline-size: var(--sg-route-marker);
+	block-size: var(--sg-route-marker);
+	border-radius: 50%;
+	background: var(--wash);
+	z-index: -1;
+	pointer-events: none;
+}
+.sg-stage-route > li {
+	position: absolute;
+	inset: 0 auto auto 0;
+	display: grid;
+	place-items: center;
+	inline-size: var(--sg-route-marker);
+	block-size: var(--sg-route-marker);
+	margin: 0;
+	padding: 0;
+	pointer-events: none;
+}
+.sg-stage-marker {
+	display: grid;
+	place-items: center;
+	inline-size: 28px;
+	block-size: 28px;
+	border-radius: 50%;
+	background: var(--canvas);
+	color: var(--secondary);
+	opacity: 0.62;
+}
+.sg-stage-marker > svg {
+	inline-size: var(--sg-icon-action);
+	block-size: var(--sg-icon-action);
+	fill: none;
+	stroke: currentColor;
+	stroke-width: var(--sg-icon-stroke);
+	stroke-linecap: round;
+	stroke-linejoin: round;
+}
+.sg-stage-route [data-stage-state="past"] > .sg-stage-marker {
+	color: var(--ink);
+	opacity: 0.72;
+}
+.sg-stage-route [data-stage-state="current"] > .sg-stage-marker {
+	background: transparent;
+	color: var(--ink);
+	opacity: 1;
+}
+.sg-stage-route [data-stage-conditional] > .sg-stage-marker {
+	opacity: 0.4;
+}
+@media (max-width: 760px) {
+	.sg-stage-route {
+		--sg-route-pitch: 56px;
+	}
+}
+@media (max-height: 540px) {
+	.sg-stage-route-host {
+		padding-top: var(--sg-space-related);
+	}
+	.sg-stage-route {
+		block-size: 40px;
+	}
+}
+@media (prefers-reduced-motion: reduce) {
+	.sg-stage-segment::after {
+		transition: none;
+	}
+}

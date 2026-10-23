@@ -2,6 +2,80 @@
 (() => {
 	"use strict";
 	const owners = new WeakMap();
+	/* The shell supplies a viewport, not a second page center below its navigation.
+	   Measure only after layout changes; scrolling remains owned by the existing pane. */
+	const canvases = new Map();
+	let canvasFrame = 0;
+	function updateCanvases() {
+		canvasFrame = 0;
+		const viewport = document.documentElement.clientHeight;
+		for (const [source, targets] of canvases) {
+			if (!source.isConnected) {
+				for (const target of targets) canvasSize.unobserve(target);
+				canvases.delete(source);
+				continue;
+			}
+			if (
+				!source.checkVisibility({ checkVisibilityCSS: true }) &&
+				!source.closest("[data-sg-app-measuring]")
+			)
+				continue;
+			const intro = source.querySelector(":scope > .intro"),
+				style = getComputedStyle(source),
+				children = intro ? [...intro.children] : [];
+			if (!children.length) continue;
+			const bounds = source.getBoundingClientRect();
+			// App flight changes painted coordinates, never the underlying reading layout.
+			if (Math.abs(bounds.width - source.offsetWidth) > 1) continue;
+			const stacked = style.getPropertyValue("--sg-task-stacked").trim() === "1",
+				start = bounds.top + parseFloat(style.paddingTop),
+				first = children[0].getBoundingClientRect(),
+				last = children.at(-1).getBoundingClientRect(),
+				copy = intro.querySelector(".sg-task-copy")?.getBoundingClientRect(),
+				height = copy ? copy.height : last.bottom - first.top,
+				before = copy ? copy.top - first.top : 0,
+				available = bounds.height - parseFloat(style.paddingTop) - parseFloat(style.paddingBottom),
+				inset = stacked
+					? 0
+					: Math.max(
+							0,
+							Math.min(
+								viewport / 2 - start - before - height / 2,
+								available - (last.bottom - first.top),
+							),
+						),
+				value = inset + "px";
+			if (source.style.getPropertyValue("--sg-task-context-inset") !== value)
+				source.style.setProperty("--sg-task-context-inset", value);
+		}
+	}
+	function scheduleCanvases() {
+		if (!canvasFrame) canvasFrame = requestAnimationFrame(updateCanvases);
+	}
+	const canvasSize = new ResizeObserver(scheduleCanvases);
+	function discoverCanvases() {
+		for (const source of document.querySelectorAll(".sg-context-task, .sg-summary-page")) {
+			const previous = canvases.get(source) || new Set(),
+				targets = new Set([
+					source,
+					...source.querySelectorAll(".intro, .sg-task-copy, .sg-task-reference"),
+				]);
+			for (const target of previous) if (!targets.has(target)) canvasSize.unobserve(target);
+			for (const target of targets) if (!previous.has(target)) canvasSize.observe(target);
+			canvases.set(source, targets);
+		}
+		scheduleCanvases();
+	}
+	const canvasChanges = new MutationObserver(discoverCanvases);
+	canvasChanges.observe(document.documentElement, {
+		childList: true,
+		subtree: true,
+		characterData: true,
+		attributes: true,
+		attributeFilter: ["hidden"],
+	});
+	window.addEventListener("resize", scheduleCanvases, { passive: true });
+	discoverCanvases();
 	function connect({ pane, toolbar, source, primary }) {
 		if (!pane || !source || !primary) return () => {};
 		owners.get(pane)?.();
@@ -29,7 +103,7 @@
 			clone.append(...content.childNodes);
 			for (const node of clone.querySelectorAll("[id]")) node.removeAttribute("id");
 			slot.replaceChildren(clone);
-			slot.title = primary.textContent.trim();
+			slot.removeAttribute("title");
 		}
 		function update() {
 			frame = 0;
@@ -145,6 +219,11 @@
 	window.SGGTaskContext = Object.freeze({
 		version: "sgg.task-context/1",
 		connect,
+		refresh() {
+			discoverCanvases();
+			cancelAnimationFrame(canvasFrame);
+			updateCanvases();
+		},
 		message,
 		renderText,
 	});

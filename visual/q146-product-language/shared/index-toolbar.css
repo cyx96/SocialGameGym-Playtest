@@ -1,0 +1,135 @@
+/* Shared index search/filter track. Host owns placement, data, query and focus policy. */
+@import url("./foundation.css");
+.search-tools {
+	--index-filter-cell: calc((100% - 2 * var(--sg-space-related)) / 3);
+	position: relative;
+	width: 100%;
+	height: var(--sg-target);
+	isolation: isolate;
+	overflow: clip;
+	border-radius: var(--sg-radius-control);
+}
+.search-tools .sg-button[data-sg-button]:focus-visible,
+.search-tools .filter:focus-visible {
+	outline-offset: -3px;
+}
+.search-surface {
+	position: absolute;
+	inset: 0;
+	display: grid;
+	grid-template-columns: 44px minmax(0, 1fr) 44px;
+	align-items: center;
+	z-index: 2;
+	pointer-events: none;
+}
+.search-backdrop {
+	position: absolute;
+	inset: 0;
+	z-index: -1;
+	background: var(--surface);
+	border-radius: var(--sg-radius-control);
+	pointer-events: none;
+}
+.search-surface :is(#search-trigger, .search-trigger),
+.search-surface :is(#search-clear, .search-clear) {
+	border-radius: var(--sg-radius-control);
+}
+.search-surface :is(#search-trigger, .search-trigger) {
+	pointer-events: auto;
+	color: var(--secondary);
+}
+.search-surface input {
+	min-width: 0;
+	width: 100%;
+	height: 44px;
+	border: 0;
+	background: transparent;
+	padding: 0 4px;
+	color: var(--label);
+	font-size: var(--sg-type-input);
+	line-height: var(--sg-leading-interface);
+	pointer-events: auto;
+	outline-offset: -3px;
+	border-radius: 4px;
+	appearance: none;
+}
+.search-surface input::-webkit-search-cancel-button {
+	display: none;
+}
+.search-surface input::placeholder {
+	color: var(--secondary);
+	opacity: 1;
+}
+.search-surface :is(#search-clear, .search-clear) {
+	pointer-events: auto;
+	color: var(--secondary);
+}
+.search-tools[data-has-filters="true"][data-open="false"] input,
+.search-tools[data-has-filters="true"][data-open="false"] :is(#search-clear, .search-clear) {
+	opacity: 0;
+	pointer-events: none;
+	visibility: hidden;
+}
+.search-tools[data-has-filters="true"][data-open="false"] .search-backdrop {
+	opacity: 0;
+}
+.search-tools[data-has-filters="true"][data-open="false"] .search-surface {
+	grid-template-columns: var(--index-filter-cell) minmax(0, 1fr) var(--sg-target);
+}
+.search-tools[data-has-filters="true"][data-open="false"] :is(#search-trigger, .search-trigger) {
+	width: 100%;
+	justify-self: stretch;
+}
+.index-filters {
+	position: absolute;
+	inset: 0 0 0 calc(var(--index-filter-cell) + var(--sg-space-related));
+	display: grid;
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+	gap: var(--sg-space-related);
+	align-items: center;
+	overflow: hidden;
+}
+.index-filters .sg-button.filter {
+	background: transparent;
+	color: var(--secondary);
+	border: 0;
+	border-radius: var(--sg-radius-control);
+	height: var(--sg-target);
+	padding: var(--sg-space-related);
+	font-size: var(--sg-text-help);
+	white-space: nowrap;
+	min-inline-size: 0;
+	justify-content: center;
+}
+.index-filters .sg-button.filter[aria-pressed="true"] {
+	color: var(--ink);
+	background: var(--wash);
+	font-weight: 550;
+}
+.search-tools[data-open="true"] .index-filters {
+	opacity: 0;
+	transform: translateX(calc(100% + var(--sg-space-related)));
+	pointer-events: none;
+}
+.search-surface :is(#search-trigger, .search-trigger) {
+	grid-column: 1;
+	grid-row: 1;
+}
+.search-surface input {
+	grid-column: 2;
+	grid-row: 1;
+}
+.search-surface :is(#search-clear, .search-clear) {
+	grid-column: 3;
+	grid-row: 1;
+}
+.filter-label {
+	min-inline-size: 0;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+.filter .filter-count {
+	margin-inline-start: 0;
+	font-variant-numeric: tabular-nums;
+}

@@ -1,6 +1,23 @@
 /* No business timer, success assumption, or framework dependency. */
 (() => {
 	"use strict";
+	// Editing text does not switch the focus treatment to keyboard navigation.
+	const focusRoot = document.documentElement;
+	focusRoot.dataset.sgFocusInput ||= "pointer";
+	document.addEventListener(
+		"pointerdown",
+		() => {
+			focusRoot.dataset.sgFocusInput = "pointer";
+		},
+		{ capture: true, passive: true },
+	);
+	document.addEventListener(
+		"keydown",
+		(event) => {
+			if (event.key === "Tab") focusRoot.dataset.sgFocusInput = "keyboard";
+		},
+		true,
+	);
 	const reduce = matchMedia("(prefers-reduced-motion:reduce)"),
 		groups = new WeakMap();
 	const block = (b) =>
@@ -8,7 +25,7 @@
 		b.getAttribute("aria-disabled") === "true" ||
 		b.getAttribute("aria-busy") === "true";
 	const getButton = (target) =>
-		target instanceof Element ? target.closest("[data-sg-button]") : null;
+		target instanceof Element ? target.closest("[data-sg-button],[data-sg-press]") : null;
 	function enhance(root = document) {
 		for (const b of root.querySelectorAll("[data-sg-button]")) {
 			if (b.dataset.sgReady) continue;
@@ -54,9 +71,30 @@
 		}
 	}
 	let pressed = null,
-		pointer = null;
-	function release() {
-		pressed?.classList.remove("sg-pressed");
+		pointer = null,
+		releaseGeneration = 0;
+	const releasing = new Map();
+	function settlePress(button) {
+		button.dataset.sgInstant = "";
+		button.classList.remove("sg-pressed");
+		button.getBoundingClientRect();
+		releasing.delete(button);
+	}
+	function release(instant = false) {
+		if (pressed) {
+			const button = pressed;
+			if (instant) settlePress(button);
+			else {
+				button.classList.remove("sg-pressed");
+				const stamp = ++releaseGeneration;
+				releasing.set(button, stamp);
+				Promise.allSettled(button.getAnimations().map((animation) => animation.finished)).then(
+					() => {
+						if (releasing.get(button) === stamp) releasing.delete(button);
+					},
+				);
+			}
+		}
 		pressed = null;
 		pointer = null;
 	}
@@ -65,7 +103,9 @@
 		(event) => {
 			const b = getButton(event.target);
 			if (!b || block(b) || event.button !== 0 || !event.isPrimary) return;
-			release();
+			release(true);
+			delete b.dataset.sgInstant;
+			releasing.delete(b);
 			b.dataset.sgInput = "pointer";
 			pressed = b;
 			pointer = event.pointerId;
@@ -90,18 +130,22 @@
 		document.addEventListener(
 			event,
 			(e) => {
-				if (e.pointerId === pointer) release();
+				if (e.pointerId === pointer) release(e.type === "pointercancel");
 			},
 			{ passive: true },
 		);
+	function settleFeedback() {
+		release(true);
+		for (const button of releasing.keys()) settlePress(button);
+	}
 	window.SGGMotion?.onSettle(() => {
-		release();
+		settleFeedback();
 		for (const group of document.querySelectorAll("[data-sg-segmented]"))
 			groups.get(group)?.update(true);
 	});
-	window.addEventListener("blur", release);
+	window.addEventListener("blur", settleFeedback);
 	document.addEventListener("visibilitychange", () => {
-		if (document.hidden) release();
+		if (document.hidden) settleFeedback();
 	});
 	document.addEventListener(
 		"keydown",
@@ -209,7 +253,6 @@
 			return;
 		button.dataset.sgIconName = name;
 		button.setAttribute("aria-label", label);
-		button.dataset.sgTooltip = label;
 		button.removeAttribute("title");
 		if (motion) button.dataset.sgMotion = motion;
 		const text = document.createElement("span");
@@ -218,7 +261,6 @@
 		button.replaceChildren(window.SGGIcons.create(name), text);
 		if (labelKey) {
 			SGGI18n.bind(button, labelKey, { attr: "aria-label", values: labelValues });
-			SGGI18n.bind(button, labelKey, { attr: "data-sg-tooltip", values: labelValues });
 			SGGI18n.bind(text, labelKey, { values: labelValues });
 		}
 	}
@@ -227,87 +269,6 @@
 		if (button.dataset.sgFeedback === state) return;
 		button.dataset.sgFeedback = state;
 	}
-	let tip = null,
-		owner = null,
-		timer = 0,
-		lastClose = -Infinity;
-	const tipOwnerObserver = new MutationObserver(() => {
-		if (owner && !owner.isConnected) hideTip();
-	});
-	function hideTip() {
-		clearTimeout(timer);
-		timer = 0;
-		const wasVisible = tip && !tip.hidden;
-		if (tip) {
-			if (tip.matches(":popover-open")) tip.hidePopover();
-			tip.hidden = true;
-		}
-		owner = null;
-		tipOwnerObserver.disconnect();
-		if (wasVisible) lastClose = performance.now();
-	}
-	function showTip(button, keyboard = false) {
-		clearTimeout(timer);
-		if (!button?.isConnected || !button.dataset.sgTooltip) return;
-		if (!tip) {
-			tip = document.createElement("div");
-			tip.className = "sg-tooltip";
-			tip.setAttribute("role", "tooltip");
-			tip.setAttribute("popover", "manual");
-			tip.hidden = true;
-			document.body.append(tip);
-		}
-		owner = button;
-		tip.textContent = button.getAttribute("aria-label") || button.dataset.sgTooltip;
-		tip.hidden = false;
-		tipOwnerObserver.observe(document.body, { childList: true, subtree: true });
-		if (tip.showPopover && !tip.matches(":popover-open")) tip.showPopover();
-		const r = button.getBoundingClientRect(),
-			t = tip.getBoundingClientRect();
-		tip.style.left =
-			Math.max(8, Math.min(innerWidth - t.width - 8, r.x + (r.width - t.width) / 2)) + "px";
-		tip.style.top =
-			(r.bottom + t.height + 12 < innerHeight ? r.bottom + 8 : Math.max(8, r.top - t.height - 8)) +
-			"px";
-	}
-	document.addEventListener(
-		"pointerover",
-		(event) => {
-			if (!matchMedia("(hover:hover) and (pointer:fine)").matches) return;
-			const b = getButton(event.target);
-			if (!b?.dataset.sgTooltip || b.contains(event.relatedTarget)) return;
-			clearTimeout(timer);
-			timer = setTimeout(() => showTip(b), performance.now() - lastClose < 120 ? 0 : 400);
-		},
-		{ passive: true },
-	);
-	document.addEventListener(
-		"pointerout",
-		(event) => {
-			const b = getButton(event.target);
-			if (b?.dataset.sgTooltip && !b.contains(event.relatedTarget)) hideTip();
-		},
-		{ passive: true },
-	);
-	document.addEventListener("focusin", (event) => {
-		const b = getButton(event.target);
-		if (b?.matches(":focus-visible"))
-			queueMicrotask(() => {
-				if (document.activeElement === b && b.isConnected && b.matches(":focus-visible"))
-					showTip(b, true);
-			});
-	});
-	document.addEventListener("focusout", hideTip);
-	document.addEventListener("pointerdown", hideTip, true);
-	document.addEventListener(
-		"keydown",
-		(e) => {
-			if (e.key === "Escape") hideTip();
-		},
-		true,
-	);
-	document.addEventListener("scroll", hideTip, true);
-	window.addEventListener("resize", hideTip);
 	reduce.addEventListener("change", () => {
 		release();
 		for (const group of document.querySelectorAll("[data-sg-segmented]"))
@@ -343,6 +304,45 @@
 			);
 		return node;
 	}
+	let unavailableId = 0;
+	/** Callers decide capability; the button owns only disabled presentation and its reason. */
+	function unavailable(button, { label } = {}) {
+		if (!button) return null;
+		button.disabled = true;
+		if (pressed === button) release();
+		let stack = button.parentElement;
+		if (!stack?.classList.contains("sg-action-stack")) {
+			stack = document.createElement("span");
+			stack.className = "sg-action-stack";
+			button.before(stack);
+			stack.append(button);
+			if (button.classList.contains("sg-toolbar-trailing")) {
+				button.classList.remove("sg-toolbar-trailing");
+				stack.classList.add("sg-toolbar-trailing");
+			}
+		}
+		let hint = stack.querySelector(":scope > .sg-action-hint");
+		if (!hint) {
+			hint = document.createElement("span");
+			hint.className = "sg-action-hint";
+			stack.append(hint);
+		}
+		hint.id ||= "sg-unavailable-" + ++unavailableId;
+		if (label !== undefined) hint.textContent = label;
+		else SGGI18n.bind(hint, "asset.actionUnavailable");
+		if (!button.hasAttribute("data-sg-button")) {
+			button.dataset.sgButton = "";
+			button.dataset.sgRole = "quiet";
+			enhance(stack);
+		}
+		const describedBy = new Set(
+			(button.getAttribute("aria-describedby") || "").split(/\s+/).filter(Boolean),
+		);
+		describedBy.add(hint.id);
+		button.setAttribute("aria-describedby", [...describedBy].join(" "));
+		stack.hidden = button.hidden;
+		return stack;
+	}
 	window.SGGButtons = Object.freeze({
 		version: "1.4.0",
 		enhance,
@@ -351,6 +351,7 @@
 		iconize,
 		feedback,
 		badge,
+		unavailable,
 	});
 	enhance();
 	requestAnimationFrame(() =>

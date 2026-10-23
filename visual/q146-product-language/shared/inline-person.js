@@ -54,11 +54,7 @@
 			n.classList.add("sg-person-inline");
 			n.dataset.personOrder = order;
 			const at = element("span", "sg-person-at", "@"),
-				name = element(
-					"span",
-					"sg-person-visible-name",
-					value.name.startsWith("@") ? value.name.slice(1) : value.name,
-				),
+				name = element("span", "sg-person-visible-name", value.name),
 				image = SGGAvatar.node({ preset: value.avatar || "default", size: "message", person: id });
 			at.setAttribute("aria-hidden", "true");
 			if (order === "at-name-avatar") {
@@ -86,7 +82,7 @@
 				n.append(at, image, name);
 			}
 		} else {
-			if (mention && !value.name.startsWith("@")) {
+			if (mention) {
 				const at = element("span", "sg-person-at", "@");
 				at.setAttribute("aria-hidden", "true");
 				n.append(at);

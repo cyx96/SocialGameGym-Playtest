@@ -1,0 +1,83 @@
+@import url("../shared/profile-content.css");
+/* Profile presentation: the shared Reading, identity art, type, controls and action roles remain owners. */
+:where(.sg-social-workspace-host) .profile-card {
+	inline-size: 35rem;
+	max-inline-size: calc(100% - 2 * var(--sg-space-sibling));
+	max-block-size: calc(100dvh - 2 * var(--sg-space-sibling));
+	color: var(--label);
+}
+:where(.sg-social-workspace-host) .profile-card > .sg-reading-head {
+	padding-inline: var(--sg-space-surface);
+}
+:where(.sg-social-workspace-host) .profile-card > .profile-card-body {
+	padding: var(--sg-space-sibling) var(--sg-space-surface) var(--sg-space-section);
+	max-block-size: none;
+	min-block-size: 0;
+	overflow: auto;
+	scrollbar-gutter: stable;
+}
+:where(.sg-social-workspace-host) .profile-card .temporal-entry {
+	column-gap: var(--sg-space-paragraph);
+}
+:where(.sg-social-workspace-host) .profile-card .temporal-feed {
+	gap: var(--sg-space-section);
+}
+:where(.sg-social-workspace-host) .profile-card .avatar-grid {
+	grid-template-columns: repeat(5, minmax(0, 1fr));
+	margin-block-start: var(--sg-space-sibling);
+}
+:where(.sg-social-workspace-host) .profile-card .avatar-option {
+	min-inline-size: 0;
+}
+:where(.sg-social-workspace-host) .profile-card-actions {
+	flex: none;
+	display: flex;
+	justify-content: flex-end;
+	padding: var(--sg-space-related) var(--sg-space-surface) var(--sg-space-section);
+	gap: var(--sg-space-related);
+}
+:where(.sg-social-workspace-host) .profile-card-actions .sg-action-stack {
+	justify-items: center;
+}
+:where(.sg-social-workspace-host) .profile-card .sg-action-hint {
+	max-inline-size: 100%;
+	white-space: normal;
+	text-align: center;
+}
+:where(.sg-social-workspace-host) .profile-card .sg-input:disabled {
+	color: var(--label);
+	-webkit-text-fill-color: var(--label);
+	opacity: 1;
+}
+:where(.sg-social-workspace-host) .profile-card .profile-empty {
+	color: var(--secondary);
+}
+:where(.sg-social-workspace-host) .reopen-card {
+	position: fixed;
+	inset: auto var(--sg-space-section) var(--sg-space-section) auto;
+}
+@media (max-width: 760px) {
+	:where(.sg-social-workspace-host) .profile-card {
+		inline-size: calc(100% - 2 * var(--sg-space-sibling));
+		inset: auto 0 var(--sg-space-sibling);
+		margin-inline: auto;
+		border-radius: var(--sg-radius-reading);
+		padding-bottom: env(safe-area-inset-bottom);
+	}
+	:where(.sg-social-workspace-host) .profile-card .avatar-grid {
+		grid-template-columns: repeat(4, minmax(0, 1fr));
+	}
+}
+
+/* The profile App and its reading layer consume the same identity/content/field rules above. */
+:where(.sg-social-workspace-host) .profile-main-body .profile-empty {
+	color: var(--secondary);
+}
+:where(.sg-social-workspace-host) [data-editor-kind="profile"] .editor-body .avatar-grid {
+	margin-block-start: var(--sg-space-sibling);
+}
+:where(.sg-social-workspace-host) [data-editor-kind="profile"] .editor-input:disabled {
+	color: var(--label);
+	-webkit-text-fill-color: var(--label);
+	opacity: 1;
+}

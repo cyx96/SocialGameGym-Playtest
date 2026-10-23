@@ -1,0 +1,413 @@
+/* One compact reading title, body type and bounded action rail across product surfaces. */
+:where(.sg-social-workspace-host) dialog.sg-reading {
+	--sg-dialog-heading: var(--sg-type-title);
+}
+:where(.sg-social-workspace-host) [data-dialog-header] > .sg-reading-head {
+	position: relative;
+	display: grid;
+	grid-template-columns: 44px minmax(0, 1fr) 44px;
+	align-items: center;
+	gap: 0;
+	padding: var(--sg-space-sibling) var(--sg-space-surface) var(--sg-space-related);
+}
+:where(.sg-social-workspace-host) [data-dialog-header] > .sg-reading-head > :is(h2, #editor-title) {
+	grid-column: 2;
+	grid-row: 1;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	margin: 0;
+	width: 100%;
+	min-width: 0;
+	max-width: 100%;
+	font-size: var(--sg-dialog-heading);
+	line-height: var(--sg-leading-interface);
+	font-weight: 550;
+	text-align: center;
+	white-space: normal;
+	overflow-wrap: anywhere;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+:where(.sg-social-workspace-host)
+	[data-dialog-header]
+	> .sg-reading-head
+	> :is([data-close], [data-close-editor]) {
+	grid-column: 3;
+	grid-row: 1;
+	position: static;
+	transform: none;
+	justify-self: end;
+}
+:where(.sg-social-workspace-host) [data-dialog-header] > .sg-reading-head > .editor-hero {
+	display: none;
+}
+:where(.sg-social-workspace-host) .sg-reading-body {
+	scrollbar-gutter: stable;
+	overscroll-behavior: contain;
+	scroll-padding-block: var(--sg-space-sibling);
+}
+:where(.sg-social-workspace-host) .sg-editor-dialog .editor-body {
+	flex: 1;
+	overflow: auto;
+	padding-bottom: var(--sg-space-section);
+}
+:where(.sg-social-workspace-host) .sg-editor-dialog .editor-input {
+	min-inline-size: 0;
+	resize: none;
+	scrollbar-gutter: stable;
+}
+:where(.sg-social-workspace-host) .editor-actions,
+:where(.sg-social-workspace-host) .layer-actions {
+	flex: none;
+	justify-content: flex-end;
+	padding-top: var(--sg-space-sibling);
+}
+:where(.sg-social-workspace-host) .detail-scroll,
+:where(.sg-social-workspace-host) .index-scroll {
+	scrollbar-gutter: stable;
+	scroll-padding-block: var(--sg-space-sibling);
+}
+:where(.sg-social-workspace-host) .compose-field textarea {
+	min-width: 0;
+	scrollbar-gutter: stable;
+}
+:where(.sg-social-workspace-host) .filter {
+	display: flex;
+	align-items: center;
+	gap: var(--sg-space-related);
+}
+
+:where(.sg-social-workspace-host) .profile-avatar-edit {
+	display: block;
+	position: relative;
+	inline-size: var(--avatar-profile);
+	block-size: var(--avatar-profile);
+	margin: 0 0 0 var(--sg-space-sibling);
+	padding: 0;
+	border: 0;
+	background: transparent;
+	border-radius: 50%;
+}
+:where(.sg-social-workspace-host) .profile-avatar-edit > .sg-avatar {
+	--avatar-size: var(--avatar-profile);
+}
+:where(.sg-social-workspace-host) .profile-avatar-edit > .avatar-edit-mark {
+	position: absolute;
+	inset-inline-end: 0;
+	inset-block-end: 0;
+	inline-size: var(--sg-icon-action);
+	block-size: var(--sg-icon-action);
+	background: var(--surface);
+	border-radius: 50%;
+	display: grid;
+	place-items: center;
+	color: var(--ink);
+}
+:where(.sg-social-workspace-host) .avatar-edit-mark svg {
+	inline-size: var(--sg-icon-chevron);
+	block-size: var(--sg-icon-chevron);
+}
+:where(.sg-social-workspace-host) .avatar-grid {
+	display: grid;
+	grid-template-columns: repeat(4, minmax(0, 1fr));
+	gap: var(--sg-space-related);
+	padding-block: var(--sg-space-related);
+}
+:where(.sg-social-workspace-host) .avatar-option {
+	display: grid;
+	place-items: center;
+	background: transparent;
+	border: 0;
+	color: var(--label);
+	padding: var(--sg-space-related);
+	border-radius: var(--sg-radius-control);
+	min-width: 0;
+	min-height: 72px;
+}
+:where(.sg-social-workspace-host) .avatar-option[aria-pressed="true"] {
+	background: var(--wash);
+}
+:where(.sg-social-workspace-host) .avatar-option .sg-avatar {
+	--avatar-size: var(--avatar-profile);
+}
+:where(.sg-social-workspace-host) .person-bio {
+	font-size: var(--sg-type-body);
+	line-height: var(--sg-leading-body);
+	margin-bottom: var(--sg-space-task);
+}
+/* Heading and content have one deliberate level of indentation in every reader. */
+:where(.sg-social-workspace-host) .reading-section {
+	--reading-indent: var(--sg-space-sibling);
+}
+:where(.sg-social-workspace-host) .reading-section + .reading-section {
+	margin-block-start: var(--sg-space-task);
+}
+:where(.sg-social-workspace-host) .reading-section > .section-heading {
+	margin: 0 0 var(--sg-space-sibling);
+	font-size: var(--sg-type-body);
+	font-weight: var(--sg-weight-name);
+}
+:where(.sg-social-workspace-host) .reading-section-body,
+:where(.sg-social-workspace-host) .reading-prose {
+	padding-inline-start: var(--reading-indent, var(--sg-space-sibling));
+	min-inline-size: 0;
+}
+:where(.sg-social-workspace-host) .reading-section-body > .bio,
+:where(.sg-social-workspace-host) .reading-section-body > .person-bio {
+	margin-block-end: 0;
+}
+:where(.sg-social-workspace-host) .player-picker {
+	min-width: 0;
+	margin-bottom: var(--sg-space-section);
+}
+:where(.sg-social-workspace-host) .player-choice-field {
+	display: flex;
+	align-items: center;
+	gap: var(--sg-space-related);
+	min-height: 52px;
+	padding: var(--sg-space-related);
+	border-radius: var(--sg-radius-control);
+	background: var(--sg-control-fill);
+	min-width: 0;
+}
+:where(.sg-social-workspace-host) .player-choice-tokens {
+	display: flex;
+	align-items: center;
+	flex-wrap: wrap;
+	gap: var(--sg-space-related);
+	min-width: 0;
+	flex: 1;
+}
+:where(.sg-social-workspace-host) .player-choice-tokens:empty {
+	display: none;
+}
+:where(.sg-social-workspace-host) .player-choice-trigger {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: var(--sg-space-paragraph);
+	flex: 1;
+	min-width: 0;
+	min-height: 44px;
+	padding-inline: var(--sg-space-related);
+	border: 0;
+	border-radius: var(--sg-radius-control);
+	background: transparent;
+	color: var(--secondary);
+}
+:where(.sg-social-workspace-host) .player-picker[data-has-selection="true"] .player-choice-trigger {
+	flex: 0 0 44px;
+	align-self: flex-start;
+	justify-content: center;
+	padding: 0;
+}
+:where(.sg-social-workspace-host)
+	.player-picker[data-has-selection="true"]
+	.player-choice-placeholder {
+	display: none;
+}
+:where(.sg-social-workspace-host) .player-choice-trigger[aria-expanded="true"] > svg {
+	transform: rotate(180deg);
+}
+:where(.sg-social-workspace-host) .player-choice-token {
+	display: inline-flex;
+	align-items: center;
+	gap: var(--sg-space-related);
+	min-width: 0;
+	max-width: 100%;
+	min-height: 44px;
+	padding-inline-start: var(--sg-space-related);
+	border-radius: var(--sg-radius-control);
+	background: var(--surface);
+	color: var(--label);
+}
+:where(.sg-social-workspace-host) .player-choice-token > .sg-avatar {
+	--avatar-size: 24px;
+	flex: none;
+}
+:where(.sg-social-workspace-host) .player-choice-token-name {
+	min-width: 0;
+	max-width: 10em;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	font-size: var(--sg-text-help);
+}
+:where(.sg-social-workspace-host) .player-choice-token > button {
+	display: grid;
+	place-items: center;
+	flex: none;
+	inline-size: 44px;
+	block-size: 44px;
+	padding: 0;
+	border: 0;
+	border-radius: var(--sg-radius-control);
+	color: var(--secondary);
+	background: transparent;
+}
+:where(.sg-social-workspace-host) .player-choice-token > button > svg {
+	inline-size: 16px;
+	block-size: 16px;
+}
+:where(.sg-social-workspace-host) .player-choice-menu {
+	margin-top: var(--sg-space-related);
+	background: var(--canvas);
+	border-radius: var(--sg-radius-control);
+	padding: var(--sg-space-related);
+}
+:where(.sg-social-workspace-host) .player-choice-search {
+	display: grid;
+	grid-template-columns: 24px minmax(0, 1fr) 44px;
+	align-items: center;
+	gap: var(--sg-space-related);
+	padding-inline: var(--sg-space-related);
+	min-height: 44px;
+}
+:where(.sg-social-workspace-host) .player-choice-search input {
+	grid-column: 2;
+	min-width: 0;
+	width: 100%;
+	border: 0;
+	background: transparent;
+	min-height: 44px;
+	outline-offset: -2px;
+}
+:where(.sg-social-workspace-host) .player-choice-search input::-webkit-search-cancel-button {
+	display: none;
+}
+:where(.sg-social-workspace-host) .player-choice-search button {
+	border: 0;
+	background: transparent;
+	color: var(--secondary);
+	height: 44px;
+	width: 44px;
+	display: grid;
+	place-items: center;
+}
+:where(.sg-social-workspace-host) .player-choice-list {
+	max-height: 10rem;
+	overflow: auto;
+	scrollbar-gutter: stable;
+	padding-right: var(--sg-space-related);
+	overscroll-behavior: contain;
+}
+:where(.sg-social-workspace-host) .player-choice-list [role="option"] {
+	display: flex;
+	align-items: center;
+	gap: var(--sg-space-paragraph);
+	width: 100%;
+	min-height: 48px;
+	padding: var(--sg-space-related);
+	background: transparent;
+	color: var(--label);
+	border: 0;
+	border-radius: var(--sg-radius-action);
+	text-align: left;
+}
+:where(.sg-social-workspace-host)
+	.player-choice-list
+	[role="option"]
+	> span:not(.sg-avatar):not(.player-choice-check) {
+	flex: 1;
+	min-width: 0;
+	white-space: normal;
+	overflow-wrap: anywhere;
+	line-height: var(--sg-leading-interface);
+}
+:where(.sg-social-workspace-host) .player-choice-check {
+	margin-inline-start: auto;
+	flex: 0 0 24px;
+	display: grid;
+	place-items: center;
+	min-block-size: 24px;
+}
+:where(.sg-social-workspace-host) .player-choice-check > svg {
+	inline-size: 20px;
+	block-size: 20px;
+}
+:where(.sg-social-workspace-host) .player-choice-list [aria-selected="true"],
+:where(.sg-social-workspace-host) .player-choice-list [data-active="true"] {
+	background: var(--wash);
+}
+:where(.sg-social-workspace-host) .picker-empty {
+	padding: var(--sg-space-sibling);
+	font-size: var(--sg-text-help);
+	color: var(--secondary);
+}
+@media (max-width: 760px) {
+	:where(.sg-social-workspace-host) .avatar-grid {
+		grid-template-columns: repeat(3, minmax(0, 1fr));
+	}
+}
+
+/* Viewing and editing share three vertical fields and the same text inset. */
+:where(.sg-social-workspace-host) .profile-fields {
+	display: grid;
+	gap: var(--sg-space-task);
+	min-inline-size: 0;
+}
+:where(.sg-social-workspace-host) .profile-fields > .reading-section + .reading-section {
+	margin-block-start: 0;
+}
+:where(.sg-social-workspace-host) .profile-fields > .profile-field > .section-heading,
+:where(.sg-social-workspace-host) .profile-field-heading > .section-heading {
+	display: block;
+	font: var(--sg-weight-name) var(--sg-type-body) / var(--sg-leading-interface) var(--sg-font-ui);
+	margin: 0 0 var(--sg-space-sibling);
+}
+:where(.sg-social-workspace-host) .profile-field-heading {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: var(--sg-space-sibling);
+	min-block-size: var(--sg-target);
+	margin-block-end: var(--sg-space-related);
+}
+:where(.sg-social-workspace-host) .profile-field-heading > .section-heading {
+	margin: 0;
+}
+:where(.sg-social-workspace-host) .profile-fields > .profile-field > .reading-section-body {
+	padding-inline-start: 0;
+}
+:where(.sg-social-workspace-host) .profile-field .profile-value {
+	padding-inline: var(--sg-space-sibling);
+	margin: 0;
+	overflow-wrap: anywhere;
+	font-size: var(--sg-type-body);
+	font-weight: 400;
+	line-height: var(--sg-leading-body);
+}
+:where(.sg-social-workspace-host) .profile-fields .profile-avatar-value {
+	padding-inline-start: var(--sg-space-sibling) !important;
+}
+:where(.sg-social-workspace-host) .profile-fields .profile-avatar-value > .sg-avatar {
+	--avatar-size: var(--avatar-profile);
+}
+:where(.sg-social-workspace-host) .detail-scroll.profile-fields {
+	padding-block-start: var(--sg-space-section);
+}
+:where(.sg-social-workspace-host) .profile-fields + .reading-section {
+	margin-block-start: var(--sg-space-task);
+}
+:where(.sg-social-workspace-host) .profile-fields .editor-input {
+	margin: 0;
+	padding-inline: var(--sg-space-sibling);
+}
+
+/* Read-only actions keep their original area and one helper under the action group. */
+:where(.sg-social-workspace-host) .action-helper {
+	display: block;
+	font-size: var(--sg-type-meta);
+	line-height: var(--sg-leading-interface);
+	color: var(--secondary);
+	text-align: center;
+	white-space: normal;
+	overflow-wrap: anywhere;
+}
+:where(.sg-social-workspace-host) .compose-caption > .action-helper {
+	grid-column: 2;
+	justify-self: stretch;
+	text-align: center;
+	max-inline-size: 100%;
+}

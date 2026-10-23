@@ -1,0 +1,169 @@
+/* Shared desktop composition owner. The frame, task action canvas and launcher content lane
+   have distinct responsibilities; a grid's own right edge never positions the main action. */
+.experience .experience-app-space {
+	overflow: hidden;
+}
+.experience .experience-desktop {
+	box-sizing: border-box;
+	display: grid;
+	grid-template-columns: minmax(0, 1fr);
+	grid-template-rows: auto minmax(min-content, 1fr) auto;
+	align-content: stretch;
+	row-gap: var(--sg-space-task);
+	flex: 1;
+	min-block-size: 0;
+	inline-size: 100%;
+	max-inline-size: none;
+	margin: 0;
+	padding: 0 max(var(--sg-safe-end), calc((100% - var(--sg-task-reading-width)) / 2))
+		max(var(--sg-space-section), env(safe-area-inset-bottom))
+		max(var(--sg-safe-start), calc((100% - var(--sg-task-reading-width)) / 2));
+	overflow: auto;
+	scroll-padding-block: var(--sg-space-section);
+}
+.experience .experience-app-grid {
+	display: grid;
+	grid-template-columns: repeat(3, minmax(0, 1fr));
+	align-content: center;
+	align-self: center;
+	justify-items: center;
+	gap: var(--sg-space-task) var(--sg-space-section);
+	inline-size: 100%;
+	max-inline-size: var(--sg-focus);
+	margin: 0 auto;
+	padding-block: var(--sg-space-task);
+}
+.experience .experience-app-grid > div {
+	display: grid;
+	place-items: center;
+	min-inline-size: 0;
+	inline-size: 100%;
+}
+.experience .experience-desktop .launch-tool {
+	padding: var(--sg-space-related);
+	padding-inline: 0;
+	gap: var(--sg-space-paragraph);
+	min-inline-size: var(--sg-target);
+	inline-size: 100%;
+	max-inline-size: 100%;
+	font-size: var(--sg-type-compact);
+}
+/* Labels stay in their own target; enlarged text never expands into a neighboring App. */
+.experience .experience-desktop .launch-tool > span:nth-child(2) {
+	display: block;
+	min-inline-size: 0;
+	max-inline-size: 100%;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+.experience .experience-desktop .launch-art {
+	inline-size: min(var(--sg-launch-size, 88px), 100%);
+	block-size: auto;
+	aspect-ratio: 1;
+}
+.experience .experience-desktop .launch-art > .tool-tile {
+	inline-size: 100%;
+	block-size: 100%;
+}
+.experience .experience-desktop-actions {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-end;
+	justify-content: flex-end;
+	gap: var(--sg-space-related);
+	inline-size: 100%;
+	min-inline-size: 0;
+	margin: 0;
+	padding: 0;
+}
+.experience .experience-desktop-actions .sg-status-actions {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-end;
+	gap: var(--sg-space-related);
+	inline-size: 100%;
+}
+.experience .experience-desktop-actions > .sg-button,
+.experience .experience-desktop-actions .sg-status-actions > .sg-button {
+	inline-size: auto;
+	min-inline-size: var(--sg-target);
+	max-inline-size: 100%;
+}
+@media (max-width: 760px) {
+	.experience .experience-desktop {
+		row-gap: var(--sg-space-section);
+	}
+	.experience .experience-app-grid {
+		gap: var(--sg-space-section) var(--sg-space-related);
+		padding-block: var(--sg-space-section);
+	}
+	.experience .experience-desktop .launch-tool {
+		font-size: var(--sg-type-context);
+	}
+	.experience .experience-desktop-actions,
+	.experience .experience-desktop-actions .sg-status-actions {
+		align-items: stretch;
+	}
+	.experience .experience-desktop-actions > .sg-button,
+	.experience .experience-desktop-actions .sg-status-actions > .sg-button {
+		inline-size: 100%;
+	}
+}
+@media (max-height: 500px) {
+	.experience .experience-desktop {
+		row-gap: var(--sg-space-sibling);
+	}
+	.experience .experience-app-grid {
+		gap: var(--sg-space-related) var(--sg-space-section);
+		padding-block: var(--sg-space-related);
+	}
+	.experience .experience-desktop .launch-tool {
+		padding: var(--sg-space-related);
+		gap: var(--sg-space-related);
+		font-size: var(--sg-type-context);
+	}
+}
+/* In a short landscape viewport, identity sits beside the unchanged icon.
+   This removes elastic vertical stacking before requiring native scrolling. */
+@media (max-height: 500px) and (min-width: 761px) {
+	.experience .experience-desktop .launch-tool {
+		grid-template-columns: auto minmax(0, 1fr);
+		grid-template-rows: auto auto;
+		align-items: center;
+		justify-items: start;
+		column-gap: var(--sg-space-paragraph);
+		row-gap: 0;
+	}
+	.experience .experience-desktop .launch-tool > .launch-art {
+		grid-column: 1;
+		grid-row: 1 / 3;
+	}
+	.experience .experience-desktop .launch-tool > span:nth-child(2) {
+		grid-column: 2;
+		grid-row: 1;
+		align-self: end;
+	}
+	.experience .experience-desktop .launch-tool > .tool-mode {
+		grid-column: 2;
+		grid-row: 2;
+		align-self: start;
+	}
+	.experience .experience-desktop .launch-tool > .tool-mode:empty {
+		display: none;
+	}
+	.experience .experience-desktop .launch-tool:has(> .tool-mode:empty) > span:nth-child(2) {
+		grid-row: 1 / 3;
+		align-self: center;
+	}
+}
+
+.experience .experience-desktop > .sg-stage-route-host {
+	grid-row: 1;
+}
+.experience .experience-desktop > .experience-app-grid {
+	grid-row: 2;
+}
+.experience .experience-desktop > .experience-desktop-actions {
+	grid-row: 3;
+}

@@ -1,0 +1,71 @@
+@import url("./person-heading.css");
+/* Reusable profile content. The host owns its pane/dialog geometry and scrolling. */
+.profile-card-section + .profile-card-section {
+	margin-block-start: var(--sg-space-task);
+}
+.profile-card-section > h3 {
+	font: var(--sg-weight-name) var(--sg-type-body) / var(--sg-leading-interface) var(--sg-font-ui);
+	margin: 0 0 var(--sg-space-paragraph);
+}
+.profile-card-section > p {
+	font-size: var(--sg-type-body);
+	line-height: var(--sg-leading-body);
+	overflow-wrap: anywhere;
+	margin: 0;
+}
+.profile-card-form {
+	display: grid;
+	gap: var(--sg-space-section);
+	min-inline-size: 0;
+}
+.profile-card-field {
+	display: grid;
+	gap: var(--sg-space-related);
+	min-inline-size: 0;
+}
+.profile-card-field > label {
+	font: var(--sg-weight-name) var(--sg-type-body) / var(--sg-leading-interface) var(--sg-font-ui);
+}
+.profile-card-field > .editor-input {
+	margin: 0;
+	max-inline-size: 100%;
+	padding-inline: var(--sg-space-sibling);
+	resize: none;
+}
+.profile-card-field > textarea {
+	min-block-size: 7rem;
+	max-block-size: none;
+}
+.profile-card-avatar {
+	position: relative;
+	inline-size: var(--avatar-profile);
+	block-size: var(--avatar-profile);
+	padding: 0;
+	border: 0;
+	background: transparent;
+	color: var(--ink);
+	border-radius: 50%;
+	display: block;
+}
+.profile-card-avatar > .sg-avatar {
+	--avatar-size: var(--avatar-profile);
+}
+.profile-card-avatar > .avatar-edit-mark {
+	position: absolute;
+	inset-inline-end: 0;
+	inset-block-end: 0;
+	inline-size: var(--sg-icon-action);
+	block-size: var(--sg-icon-action);
+	display: grid;
+	place-items: center;
+	background: var(--surface);
+	border-radius: 50%;
+}
+.profile-card-avatar > .avatar-edit-mark > svg {
+	inline-size: var(--sg-icon-chevron);
+	block-size: var(--sg-icon-chevron);
+}
+.profile-card-avatar:disabled {
+	color: var(--secondary);
+	cursor: default;
+}

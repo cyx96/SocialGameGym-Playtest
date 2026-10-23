@@ -128,7 +128,7 @@ button {
 	border-radius: var(--sg-radius-control);
 }
 .launch-tool:focus-visible {
-	outline: 2px solid var(--ink);
+	outline: 2px var(--sg-focus-style, none) var(--ink);
 	outline-offset: 2px;
 }
 .launch-tool:hover .tool-tile {

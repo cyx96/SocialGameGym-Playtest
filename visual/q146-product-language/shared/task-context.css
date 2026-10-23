@@ -38,7 +38,9 @@
 	align-self: stretch;
 	display: flex;
 	flex-direction: column;
-	justify-content: safe center;
+	justify-content: flex-start;
+	box-sizing: border-box;
+	padding-block-start: var(--sg-task-context-inset, 0px);
 	align-items: flex-start;
 	text-align: start;
 	gap: 0;
@@ -56,6 +58,10 @@
 .sg-context-task > .sg-scene-actions {
 	grid-area: actions;
 	align-self: end;
+	display: flex;
+	justify-content: flex-end;
+	align-items: flex-end;
+	gap: var(--sg-space-related);
 }
 .sg-context-task[data-scene="decision"] > .content {
 	display: flex;
@@ -97,6 +103,14 @@
 	background: var(--canvas);
 	visibility: hidden;
 }
+/* A promoted App toolbar puts its rail directly on the shell, outside the
+   already-inset task pane. Consume the same reading boundary exactly once. */
+body > .sg-task-context-rail {
+	box-sizing: border-box;
+	inline-size: calc(100% - var(--sg-safe-start) - var(--sg-safe-end));
+	max-inline-size: var(--sg-task-reading-width);
+	margin-inline: auto;
+}
 .sg-task-context-rail[data-sg-context="compact"] {
 	visibility: visible;
 }
@@ -130,6 +144,7 @@
 		padding-block-start: var(--sg-space-sibling);
 	}
 	.sg-context-task > .intro {
+		padding-block-start: 0;
 		display: block;
 		text-align: start;
 		margin-block-end: var(--sg-space-task);
@@ -153,25 +168,6 @@
 			var(--sg-space-sibling)
 		);
 	}
-	/* Short decisions keep the existing reading band and low action rail. */
-	.sg-context-task.sg-task-layout[data-scene="decision"] {
-		flex: 1;
-		display: grid;
-		grid-template-columns: minmax(0, 1fr);
-		grid-template-rows: minmax(1rem, 0.6fr) auto auto minmax(2rem, 1fr) auto;
-		grid-template-areas: "." "context" "interaction" "." "actions";
-		row-gap: var(--sg-space-section);
-	}
-	.sg-context-task[data-scene="decision"] > .intro {
-		margin: 0;
-		align-self: end;
-	}
-	.sg-context-task[data-scene="decision"] > .content {
-		align-self: start;
-	}
-	.sg-context-task[data-scene="decision"] > .sg-scene-actions {
-		margin: 0;
-	}
 }
 @media (max-height: 600px) {
 	.sg-context-task.sg-task-layout {
@@ -187,6 +183,33 @@
 		}
 	}
 }
+/* Short portrait tasks keep related reading together and reserve a stable action rail.
+   Auto margins collapse when content exceeds the available pane. */
+@media (min-height: 601px) {
+	@container (max-width: 46rem) {
+		.sg-context-task.sg-task-layout:is([data-scene="decision"], [data-scene="result"]) {
+			display: flex;
+			flex-direction: column;
+			flex: 1 0 auto;
+			min-block-size: min-content;
+			row-gap: 0;
+			align-items: stretch;
+		}
+		.sg-context-task:is([data-scene="decision"], [data-scene="result"]) > .intro {
+			flex: none;
+			margin-block-start: auto;
+		}
+		.sg-context-task:is([data-scene="decision"], [data-scene="result"]) > .content {
+			flex: none;
+			margin-block-end: auto;
+		}
+		.sg-context-task:is([data-scene="decision"], [data-scene="result"]) > .sg-scene-actions {
+			flex: none;
+			align-self: stretch;
+		}
+	}
+}
+
 /* Message owns its typography; generic paragraph and panel-heading adapters cannot override it. */
 .sg-task-message > .sg-task-copy {
 	min-inline-size: 0;
@@ -312,7 +335,8 @@ body[data-task-scene] > .sg-task-page.sg-page {
 }
 @media (min-height: 601px) {
 	@container (min-width: 46.01rem) {
-		.sg-context-task {
+		.sg-context-task,
+		.sg-summary-page {
 			--sg-task-title: var(--sg-task-title-wide);
 		}
 	}
@@ -333,6 +357,7 @@ body[data-task-scene] > .sg-task-page.sg-page {
 		overflow: visible;
 	}
 	.sg-context-task > .intro {
+		padding-block-start: 0;
 		display: block;
 		margin-block-end: var(--sg-space-section);
 	}

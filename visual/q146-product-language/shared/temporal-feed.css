@@ -1,0 +1,62 @@
+/* Shared latest-first event reading: original source order, one marker per fact, metadata at the right. */
+.temporal-feed {
+	display: grid;
+	gap: var(--sg-space-section);
+}
+.temporal-feed .temporal-entry {
+	display: grid;
+	grid-template-columns: 4px minmax(0, 1fr);
+	column-gap: var(--sg-space-paragraph);
+	align-items: start;
+	min-inline-size: 0;
+}
+.temporal-feed .temporal-marker {
+	inline-size: 4px;
+	block-size: 4px;
+	border-radius: 50%;
+	background: var(--secondary);
+	margin-block-start: calc((var(--sg-type-body) * var(--sg-leading-body) - 4px) / 2);
+}
+.temporal-feed .temporal-content {
+	min-inline-size: 0;
+}
+.temporal-feed .temporal-meta {
+	display: flex;
+	align-items: baseline;
+	justify-content: space-between;
+	gap: var(--sg-space-sibling);
+	margin-bottom: var(--sg-space-related);
+}
+.temporal-feed .temporal-meta .event-title {
+	font-size: var(--sg-text-help);
+	color: var(--secondary);
+	font-weight: 550;
+}
+.temporal-feed .temporal-meta .meta {
+	margin-left: auto;
+	text-align: right;
+}
+.temporal-feed .temporal-body {
+	margin: 0;
+	font-size: var(--sg-type-body);
+	line-height: var(--sg-leading-body);
+	color: var(--label);
+	font-weight: 400;
+	overflow-wrap: anywhere;
+	display: flow-root;
+}
+.temporal-feed .temporal-time {
+	float: inline-end;
+	margin-inline-start: var(--sg-space-sibling);
+	font: inherit;
+	white-space: nowrap;
+}
+.temporal-feed .temporal-time > .meta {
+	vertical-align: baseline;
+}
+.temporal-feed .temporal-body > p {
+	margin: 0;
+}
+.temporal-feed .temporal-body > p + p {
+	margin-block-start: var(--sg-space-related);
+}

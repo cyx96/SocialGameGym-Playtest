@@ -12,6 +12,23 @@ const scroller = document.querySelector(".forum-app"),
 	inner = editor.querySelector(".newpost-inner"),
 	toolbar = document.querySelector(".forum-toolbar"),
 	layer = document.querySelector(".sticky-layer");
+const isReadonly = () => Boolean(window.SessionApp && SessionApp.readonly);
+function readonlyAction(button, input) {
+	if (!isReadonly()) return;
+	input.disabled = true;
+	button.disabled = true;
+	const stack = document.createElement("div"),
+		hint = document.createElement("p");
+	stack.className = "sg-action-stack";
+	stack.style.marginInlineStart = "auto";
+	hint.className = "sg-action-hint";
+	SGGI18n.bind(hint, "asset.actionUnavailable");
+	button.before(stack);
+	stack.append(button, hint);
+}
+readonlyAction(editor.querySelector(".submit-newpost"), field);
+const readonlyEntry = isReadonly() ? SGGButtons.unavailable(hit) : null;
+if (readonlyEntry) readonlyEntry.dataset.morphAction = "";
 let width = 0,
 	navigationMounted = false,
 	frame = 0,
@@ -82,9 +99,15 @@ function sync() {
 	copy.style.opacity = Math.max(0, 1 - raw * 8);
 	copy.style.top = expandedY + 20 + "px";
 	copy.style.transform = `translateY(${-10 * raw}px)`;
-	hit.style.top = y + "px";
+	if (readonlyEntry) {
+		readonlyEntry.style.top = y + "px";
+		readonlyEntry.style.translate = shiftX + "px";
+		readonlyEntry.style.width = w + "px";
+		readonlyEntry.style.paddingBlockStart = `calc(${h}px + var(--sg-space-related))`;
+	}
+	hit.style.top = (readonlyEntry ? 0 : y) + "px";
 	// Keep position independent of the shared button's transient press transform.
-	hit.style.translate = shiftX + "px";
+	hit.style.translate = (readonlyEntry ? 0 : shiftX) + "px";
 	hit.style.width = w + "px";
 	hit.style.height = h + "px";
 	hit.style.borderRadius = 16 + 6 * raw + "px";
@@ -128,10 +151,10 @@ hit.addEventListener("blur", () => releasePress());
 window.addEventListener("blur", () => releasePress());
 function refreshSubmit() {
 	editor.querySelector(".submit-newpost").disabled =
-		!field.value.trim() || (window.SessionApp && SessionApp.context.remaining <= 0);
+		isReadonly() || !field.value.trim() || (window.SessionApp && SessionApp.context.remaining <= 0);
 }
 function persist() {
-	if (window.__SGG_RETIRED__) return true;
+	if (isReadonly() || window.__SGG_RETIRED__) return true;
 	newDraft = field.value;
 	refreshSubmit();
 	try {
@@ -222,6 +245,7 @@ new ResizeObserver(() => {
 	}
 }).observe(inner);
 function openEditor(instant = false) {
+	if (isReadonly()) return;
 	if (newpostState === "open" || newpostState === "opening") {
 		field.focus({ preventScroll: true });
 		return;
@@ -239,7 +263,10 @@ function openEditor(instant = false) {
 	SGGControls.clearError(error, "draft");
 	refreshSubmit();
 	transitionTo(true, instant);
-	field.focus({ preventScroll: true });
+	if (isReadonly()) {
+		editor.tabIndex = -1;
+		editor.focus({ preventScroll: true });
+	} else field.focus({ preventScroll: true });
 	// Keep native scroll/keyboard handling; do not implement custom inertia.
 	if (scroller.scrollTop > 4) scrollToTarget(0, instant);
 }
@@ -270,6 +297,7 @@ hit.onclick = (e) => openEditor(e.detail === 0);
 field.addEventListener("input", persist);
 editor.querySelector(".close-newpost").onclick = (e) => closeEditor(e.detail === 0);
 editor.querySelector(".submit-newpost").onclick = () => {
+	if (isReadonly()) return;
 	if (!field.value.trim() || !persist()) return;
 	if (window.SessionApp) {
 		SessionApp.submit(editor.querySelector(".submit-newpost"), "forum.post", { text: field.value })
@@ -503,6 +531,22 @@ for (const post of ThreadData) {
 		area = editor.querySelector("textarea"),
 		open = article.querySelector(".reply-root"),
 		localError = article.querySelector(".inline-error");
+	const editorSlot = document.createElement("div");
+	editorSlot.className = "inline-editor-slot";
+	editorSlot.hidden = editor.hidden;
+	editor.before(editorSlot);
+	editorSlot.append(editor);
+	function setReplyOpen(value, event) {
+		open.setAttribute("aria-expanded", String(value));
+		return SGGMotion.disclosure(editorSlot, editor, {
+			open: value,
+			event,
+			onComplete: () => {
+				if (value) editor.scrollIntoView({ block: "nearest", behavior: "instant" });
+				schedule();
+			},
+		});
+	}
 	let expanded = stateName === "expanded" && post.id === "p1";
 	function draw(animate = false) {
 		const replies = expanded ? post.replies : post.replies.slice(-2);
@@ -602,8 +646,10 @@ for (const post of ThreadData) {
 			values: { name: post.name, count: post.replies.length },
 		});
 	area.value = threadDrafts[post.id] || "";
+	readonlyAction(editor.querySelector(".send-reply"), area);
+	if (isReadonly()) SGGButtons.unavailable(open);
 	function saveDraft() {
-		if (window.__SGG_RETIRED__) return true;
+		if (isReadonly() || window.__SGG_RETIRED__) return true;
 		threadDrafts[post.id] = area.value;
 		try {
 			if (new URLSearchParams(location.search).get("storage") === "fail") throw Error("blocked");
@@ -621,35 +667,29 @@ for (const post of ThreadData) {
 		open.hidden = true;
 	}
 	open.onclick = (e) => {
+		if (isReadonly()) return;
 		if (!closeNewpostForReply()) return;
 		for (const other of document.querySelectorAll(".inline-editor")) {
 			if (other !== editor) {
-				SGGMotion.cancel(other);
-				other.hidden = true;
-				other
-					.closest(".thread")
-					.querySelector(".reply-root")
-					.setAttribute("aria-expanded", "false");
+				if (!other.hidden) other.querySelector(".close-inline").click();
+				if (!other.hidden && !other.closest("[inert]")) return;
 			}
 		}
-		editor.hidden = false;
-		open.setAttribute("aria-expanded", "true");
-		SGGMotion.cancel(editor);
-		editor.scrollIntoView({ block: "nearest", behavior: "instant" });
-		area.focus({ preventScroll: true });
-		if (e.detail !== 0 && !reduce.matches) SGGMotion.reveal(editor, { role: "state" });
+		setReplyOpen(true, e);
+		if (isReadonly()) {
+			editor.tabIndex = -1;
+			editor.focus({ preventScroll: true });
+		} else area.focus({ preventScroll: true });
 	};
-	editor.querySelector(".close-inline").onclick = () => {
+	editor.querySelector(".close-inline").onclick = (event) => {
 		if (!saveDraft()) return;
-		SGGMotion.cancel(editor);
-		editor.hidden = true;
-		open.setAttribute("aria-expanded", "false");
+		setReplyOpen(false, event);
 		open.focus({ preventScroll: true });
 		open.scrollIntoView({ block: "nearest", behavior: "instant" });
 		schedule();
 	};
 	editor.querySelector(".send-reply").onclick = () => {
-		if (!saveDraft()) return;
+		if (isReadonly() || !saveDraft()) return;
 		if (window.SessionApp) {
 			SessionApp.submit(editor.querySelector(".send-reply"), "forum.post", {
 				text: area.value,

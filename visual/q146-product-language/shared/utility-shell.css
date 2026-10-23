@@ -1,3 +1,5 @@
+@import url("./data-table.css");
+
 /* Utility route adapter: shared roles, data-oriented structures. No private palette or control material. */
 .sg-utility-shell {
 	--text: var(--label);
@@ -185,27 +187,6 @@
 .sg-utility-shell .admin-table-wrap {
 	overflow-x: auto;
 }
-.sg-utility-shell .admin-table {
-	min-inline-size: 480px;
-	inline-size: 100%;
-	border-collapse: collapse;
-	text-align: start;
-	font-size: var(--sg-type-body);
-	font-variant-numeric: tabular-nums;
-}
-.sg-utility-shell .admin-table :is(th, td) {
-	padding: var(--sg-space-sibling);
-	border: 0;
-	vertical-align: top;
-	overflow-wrap: anywhere;
-}
-.sg-utility-shell .admin-table th {
-	font-weight: 550;
-	color: var(--secondary);
-}
-.sg-utility-shell .admin-table tbody tr:nth-child(odd) {
-	background: var(--surface);
-}
 .sg-utility-shell .admin-table time {
 	white-space: nowrap;
 }
@@ -237,7 +218,7 @@
 	margin-block-end: var(--sg-space-sibling);
 }
 .sg-utility-shell :focus-visible {
-	outline: 2px solid var(--ink);
+	outline: 2px var(--sg-focus-style, none) var(--ink);
 	outline-offset: 3px;
 }
 .sg-utility-shell .sr-only,

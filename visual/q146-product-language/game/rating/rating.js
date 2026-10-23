@@ -162,19 +162,15 @@
 		return persist();
 	}
 	readStorage();
-	if (readOnly) {
-		state.edit = null;
-		state.noteOpen = false;
-	}
 	if (params.get("player") && people.some((p) => p.id === params.get("player"))) {
 		state.selected = params.get("player");
 		state.mobileDetail = true;
 	}
-	if (params.get("mode") === "edit" && !readOnly && quota > 0 && state.selected !== self) {
+	if (params.get("mode") === "edit" && (readOnly || quota > 0) && state.selected !== self) {
 		state.edit = state.selected;
 		state.noteOpen = params.get("field") !== "score";
 	}
-	if (readOnly || (!window.SessionApp && quota === 0)) {
+	if (!readOnly && !window.SessionApp && quota === 0) {
 		state.edit = null;
 		state.noteOpen = false;
 	}
@@ -209,7 +205,7 @@
 					description = s.count
 						? SGGI18n.t("asset.ratingDescription", { score, count: s.count })
 						: SGGI18n.t("asset.noRating");
-				return `<button type="button" class="player-row" data-player="${p.id}" aria-current="${state.selected === p.id}" aria-label="${esc(SGGI18n.t("asset.playerRating", { name: p.name, description }))}">${avatar(p.id)}<span class="player-label"><span class="player-name">${esc(p.name)}${p.id === self ? '<span class="you" data-sg-copy="asset.you">你</span>' : ""}</span><span class="player-meta player-rating">${meta}<span class="draft-flag" data-draft-for="${p.id}">${!readOnly && state.drafts[p.id] && hasChange(p.id) ? SGGI18n.t("asset.draft") : ""}</span></span></span><svg class="player-chevron" aria-hidden="true"><use href="#arrow"/></svg></button>`;
+				return `<button type="button" class="player-row" data-sg-press data-player="${p.id}" aria-current="${state.selected === p.id}" aria-label="${esc(SGGI18n.t("asset.playerRating", { name: p.name, description }))}">${avatar(p.id)}<span class="player-label"><span class="player-name">${esc(p.name)}${p.id === self ? '<span class="you" data-sg-copy="asset.you">你</span>' : ""}</span><span class="player-meta player-rating">${meta}<span class="draft-flag" data-draft-for="${p.id}">${!readOnly && state.drafts[p.id] && hasChange(p.id) ? SGGI18n.t("asset.draft") : ""}</span></span></span><svg class="player-chevron" aria-hidden="true"><use href="#arrow"/></svg></button>`;
 			})
 			.join("");
 	}
@@ -229,7 +225,7 @@
 	}
 	function editorMarkup(id) {
 		const d = draftFor(id);
-		return `<form class="editor" id="editor" novalidate><header class="composer-toolbar"><h3>${esc(SGGI18n.t(ownPublished(id) ? "asset.editReview" : "asset.writeReview"))}</h3><button class="icon-button" type="button" id="close-editor" aria-label="收起编辑" data-sg-copy-aria-label="asset.closeEditor">${icon("close")}</button></header><div class="composer-writing"><div class="composer-byline">${avatar(self, 30)}<span>${SGGInlinePerson.html(self, Object.fromEntries(people.map((p) => [p.id, p])), { viewerId: self, selfMarker: true })}</span></div><fieldset class="score-options" aria-label="${esc(SGGI18n.t("asset.ratePerson", { name: person(id).name }))}"><legend class="sr-only" data-sg-copy="asset.ratingRequired">评分，必填</legend>${[1, 2, 3, 4, 5].map((n) => `<label class="score-option${n <= d.score ? " filled" : ""}" data-star="${n}"><input type="radio" name="score" value="${n}"${d.score === n ? " checked" : ""} aria-label="${esc(SGGI18n.t("asset.starChoice", { count: n }))}"><span>${icon("star")}</span></label>`).join("")}</fieldset><label class="sr-only" for="review-text" data-sg-copy="asset.reviewOptional">评价（选填）</label><textarea data-sg-auto-size id="review-text" name="review" rows="3" placeholder="写下你的看法（选填）…" data-sg-copy-placeholder="asset.reviewPlaceholder">${esc(d.text)}</textarea></div><footer class="editor-footer"><p class="quota">${SGGProductLanguage.quota(quota)}</p><button class="primary" id="submit-feedback" type="submit" aria-label="提交反馈" data-sg-copy-aria-label="asset.submitFeedback"${!validDraft(id) ? " disabled" : ""} data-sg-copy="asset.submit">提交</button></footer><p class="editor-timing" data-sg-copy="asset.publicAfterStep">本步结束后，所有玩家可见。</p><p class="submit-error" id="submit-error" role="alert" hidden></p></form>`;
+		return `<form class="editor" id="editor" novalidate><header class="composer-toolbar"><h3>${esc(SGGI18n.t(ownPublished(id) ? "asset.editReview" : "asset.writeReview"))}</h3><button class="icon-button" type="button" id="close-editor" aria-label="收起编辑" data-sg-copy-aria-label="asset.closeEditor">${icon("close")}</button></header><div class="composer-writing"><div class="composer-byline">${avatar(self, 30)}<span>${SGGInlinePerson.html(self, Object.fromEntries(people.map((p) => [p.id, p])), { viewerId: self, selfMarker: true })}</span></div><fieldset class="score-options" aria-label="${esc(SGGI18n.t("asset.ratePerson", { name: person(id).name }))}"><legend class="sr-only" data-sg-copy="asset.ratingRequired">评分，必填</legend>${[1, 2, 3, 4, 5].map((n) => `<label class="score-option${n <= d.score ? " filled" : ""}" data-star="${n}"><input type="radio" name="score" value="${n}"${readOnly ? " disabled" : ""}${d.score === n ? " checked" : ""} aria-label="${esc(SGGI18n.t("asset.starChoice", { count: n }))}"><span>${icon("star")}</span></label>`).join("")}</fieldset><label class="sr-only" for="review-text" data-sg-copy="asset.reviewOptional">评价（选填）</label><textarea data-sg-auto-size id="review-text" name="review" rows="3"${readOnly ? " disabled" : ""} placeholder="写下你的看法（选填）…" data-sg-copy-placeholder="asset.reviewPlaceholder">${esc(d.text)}</textarea></div><footer class="editor-footer">${readOnly ? "" : `<p class="quota">${SGGProductLanguage.quota(quota)}</p>`}<div class="sg-action-stack"><button class="primary" id="submit-feedback" type="submit" aria-label="提交反馈" data-sg-copy-aria-label="asset.submitFeedback"${!validDraft(id) ? " disabled" : ""} data-sg-copy="asset.submit">提交</button>${readOnly ? `<p class="sg-action-hint" data-sg-copy="asset.actionUnavailable">${esc(SGGI18n.t("asset.actionUnavailable"))}</p>` : ""}</div></footer>${readOnly ? "" : `<p class="editor-timing" data-sg-copy="asset.publicAfterStep">本步结束后，所有玩家可见。</p>`}<p class="submit-error" id="submit-error" role="alert" hidden></p></form>`;
 	}
 	function validDraft(id) {
 		const d = draftFor(id);
@@ -247,19 +243,17 @@
 	function myMarkup(id) {
 		if (id === self) return "";
 		const saved = ownPublished(id),
-			isPending = pending?.target === id;
-		if (readOnly) {
-			const awaiting = window.SessionApp
-				? SessionApp.context.reviews.some(
-						(r) => r.author === self && r.target === id && !r.delivered,
-					)
-				: isPending;
-			if (!saved || !awaiting) return "";
-			return `<section class="my-section" id="my-feedback"><div class="my-row"><p class="my-label" data-sg-copy="asset.myFeedback">我的反馈</p><div class="pending-score">${stars(saved.score)}<span class="status" data-sg-copy="asset.pendingPublic">待公开</span></div></div>${saved.text ? `<p class="pending-note">${esc(saved.text)}</p>` : ""}</section>`;
-		}
-		if (isPending || (!window.SessionApp && quota <= 0))
+			isPending = pending?.target === id,
+			awaiting =
+				readOnly &&
+				(window.SessionApp
+					? SessionApp.context.reviews.some(
+							(r) => r.author === self && r.target === id && !r.delivered,
+						)
+					: isPending);
+		if (!readOnly && (isPending || (!window.SessionApp && quota <= 0)))
 			return `<section class="my-section is-pending" id="my-feedback"><div class="my-row"><p class="my-label" data-sg-copy="asset.myFeedback">我的反馈</p>${isPending ? `<div class="pending-score">${stars(pending.score)}<span class="status" data-sg-copy="asset.pendingPublic">待公开</span></div>` : '<span class="readonly-note" data-sg-copy="asset.quotaUsed">本步次数已用完</span>'}</div>${isPending ? `<p class="pending-note">${esc(pending.text)}</p><p class="pending-explainer" data-sg-copy="asset.pendingMean">本步结束后公开，不计入当前均分。</p>` : ""}</section>`;
-		return `<section class="my-section" id="my-feedback"><div class="inline-slot"><div class="compose-launch" style="height:auto"><div class="my-row"><div><p class="my-label" data-sg-copy="asset.myFeedback">我的反馈</p>${saved ? stars(saved.score) : ""}</div><div class="action-group" id="edit-actions"><button class="text-action" type="button" data-edit="score" aria-label="编辑数字评分" data-sg-copy-aria-label="asset.editScore" data-sg-copy="asset.rating">评分</button><button class="text-action" type="button" data-edit="text" aria-label="写文字评价" data-sg-copy-aria-label="asset.writeText" data-sg-copy="asset.review">评价</button></div></div>${saved?.text ? `<p class="pending-note">${esc(saved.text)}</p>` : ""}</div><div class="feedback-shell" hidden><div class="feedback-inner"></div></div></div></section>`;
+		return `<section class="my-section" id="my-feedback"><div class="inline-slot"><div class="compose-launch" style="height:auto"><div class="my-row"><div><p class="my-label" data-sg-copy="asset.myFeedback">我的反馈</p>${saved ? stars(saved.score) : ""}${awaiting ? '<span class="status" data-sg-copy="asset.pendingPublic">待公开</span>' : ""}</div><div class="action-group" id="edit-actions"><button class="text-action" type="button" data-edit="score" aria-label="编辑数字评分" data-sg-copy-aria-label="asset.editScore" data-sg-copy="asset.rating">评分</button><button class="text-action" type="button" data-edit="text" aria-label="写文字评价" data-sg-copy-aria-label="asset.writeText" data-sg-copy="asset.review">评价</button></div></div>${saved?.text ? `<p class="pending-note">${esc(saved.text)}</p>` : ""}</div><div class="feedback-shell" hidden><div class="feedback-inner"></div></div></div></section>`;
 	}
 	function reviewMarkup(id) {
 		const records = publicReviews
@@ -283,6 +277,8 @@
 		list.innerHTML = listMarkup();
 		list.scrollTop = state.listScroll;
 		detail.innerHTML = detailMarkup();
+		if (readOnly)
+			for (const button of detail.querySelectorAll("[data-edit]")) SGGButtons.unavailable(button);
 		const mean = detail.querySelector(".mean");
 		if (mean)
 			mean.replaceChildren(NumberUI.element(summaries[state.selected].mean, { role: "primary" }));
@@ -346,7 +342,8 @@
 		if (editorMotion?.phase === "open") ensureEditorVisible();
 	}
 	function openEditor(field) {
-		if (readOnly || (!window.SessionApp && quota <= 0) || state.selected === self || !editorMotion)
+		if (readOnly) return;
+		if ((!readOnly && !window.SessionApp && quota <= 0) || state.selected === self || !editorMotion)
 			return;
 		if (editorMotion.phase === "closed") editorOrigin = detail.scrollTop;
 		returnField = field;
@@ -367,6 +364,7 @@
 		persist();
 	}
 	function captureDraft() {
+		if (readOnly) return;
 		if (state.edit !== state.selected) return;
 		const checked = document.querySelector('input[name="score"]:checked'),
 			d = draftFor(state.selected);
@@ -429,7 +427,7 @@
 		if (e.pointerType !== "mouse" || !matchMedia("(hover:hover) and (pointer:fine)").matches)
 			return;
 		const label = e.target.closest("[data-star]");
-		if (label) paintStars(Number(label.dataset.star));
+		if (label && !readOnly) paintStars(Number(label.dataset.star));
 	});
 	detail.addEventListener("pointerout", (e) => {
 		if (e.target.closest(".score-options") && !e.relatedTarget?.closest?.(".score-options"))
@@ -446,7 +444,7 @@
 	});
 	detail.addEventListener("submit", (e) => {
 		e.preventDefault();
-		if (e.target.id !== "editor") return;
+		if (e.target.id !== "editor" || readOnly) return;
 		captureDraft();
 		if (!validDraft(state.selected) || storageUnsafe) return;
 		if (window.SessionApp) {

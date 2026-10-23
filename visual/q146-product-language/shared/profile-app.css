@@ -1,3 +1,5 @@
+@import url("./profile-content.css");
+@import url("./person-heading.css");
 /* Profile geometry; typography consumes foundation/product-language roles, not descendant paragraph overrides. */
 body {
 	height: 100dvh;
@@ -69,7 +71,7 @@ body > .sg-page {
 	stroke-linejoin: round;
 }
 .profile-row:focus-visible {
-	outline: 2px solid var(--ink);
+	outline: 2px var(--sg-focus-style, none) var(--ink);
 	outline-offset: 3px;
 	border-radius: 8px;
 }
@@ -111,7 +113,7 @@ body > .sg-page {
 	min-height: 120px;
 }
 .profile-fields :is(input, textarea):focus-visible {
-	outline: 2px solid var(--ink);
+	outline: 2px var(--sg-focus-style, none) var(--ink);
 	outline-offset: 2px;
 }
 #profile-status {

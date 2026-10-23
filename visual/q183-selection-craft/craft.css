@@ -125,7 +125,7 @@
 	scrollbar-color: color-mix(in srgb, var(--ink) 25%, transparent) transparent;
 }
 .card-wrap:focus-visible {
-	outline: 2px solid var(--ink);
+	outline: 2px var(--sg-focus-style, none) var(--ink);
 	outline-offset: 5px;
 	border-radius: 14px;
 }
@@ -184,7 +184,7 @@
 	caret-color: var(--ink);
 }
 .search-head input:focus-visible {
-	outline: 2px solid var(--ink);
+	outline: 2px var(--sg-focus-style, none) var(--ink);
 	outline-offset: 3px;
 	border-radius: 4px;
 }

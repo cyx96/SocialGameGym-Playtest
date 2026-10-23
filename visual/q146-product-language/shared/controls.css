@@ -89,7 +89,7 @@
 	font-weight: 550;
 }
 .sg-field .sg-choice input:focus-visible + .option-label {
-	outline: 2px solid var(--ink);
+	outline: 2px var(--sg-focus-style, none) var(--ink);
 	outline-offset: 3px;
 }
 .sg-field .sg-choice input:disabled + .option-label {
@@ -180,7 +180,7 @@
 	border-color: var(--sg-control-danger) !important;
 }
 .sg-number:has(> input:focus-visible) {
-	outline: 2px solid var(--ink);
+	outline: 2px var(--sg-focus-style, none) var(--ink);
 	outline-offset: -2px;
 }
 .sg-number input:focus-visible {
@@ -189,9 +189,6 @@
 /* Compound controls touch scrollport edges: each keyboard target keeps its ring inside. */
 .sg-number > button.sg-button[data-sg-button]:focus-visible {
 	outline-offset: -2px;
-}
-html[data-sg-motion-input="pointer"] .sg-number:has(> input:focus-visible) {
-	outline: 0;
 }
 .sg-field :is(input.sg-input, select.sg-input, textarea.sg-input) {
 	box-sizing: border-box;
@@ -221,7 +218,7 @@ html[data-sg-motion-input="pointer"] .sg-number:has(> input:focus-visible) {
 	opacity: 1;
 }
 .sg-input:focus-visible {
-	outline: 2px solid var(--ink);
+	outline: 2px var(--sg-focus-style, none) var(--ink);
 	outline-offset: 3px;
 }
 .sg-input[aria-invalid="true"] {
@@ -301,16 +298,16 @@ textarea.sg-text-control[data-sg-field-appearance="standalone"] {
 	min-height: 128px;
 }
 .sg-text-control:focus-visible {
-	outline: 2px solid var(--ink);
+	outline: 2px var(--sg-focus-style, none) var(--ink);
 	outline-offset: 3px;
 }
 .sg-text-control[data-sg-field-appearance="embedded"]:focus-visible {
-	outline: 2px solid var(--ink);
+	outline: 2px var(--sg-focus-style, none) var(--ink);
 	outline-offset: -2px;
 	border-radius: 8px;
 }
 :is(.input-frame, .profile-fields .field-row):has(.sg-text-control:focus-visible) {
-	outline: 2px solid var(--ink);
+	outline: 2px var(--sg-focus-style, none) var(--ink);
 	outline-offset: 3px;
 	border-radius: 12px;
 }
@@ -384,7 +381,7 @@ select:not([multiple]) {
 	color: var(--label);
 }
 select:not([multiple]):focus-visible {
-	outline: 2px solid var(--ink);
+	outline: 2px var(--sg-focus-style, none) var(--ink);
 	outline-offset: 3px;
 }
 
@@ -400,13 +397,6 @@ select:not([multiple]):focus-visible {
 :is(.input-frame, .first-message, .profile-fields input, .profile-fields textarea) {
 	background: var(--sg-control-fill);
 	border-radius: var(--sg-control-radius);
-}
-html[data-sg-motion-input="pointer"] :is(input, textarea, select):focus-visible {
-	outline: 0;
-}
-html[data-sg-motion-input="pointer"]
-	:is(.input-frame, .profile-fields .field-row):has(.sg-text-control:focus-visible) {
-	outline: 0;
 }
 
 .sg-disclosure {
@@ -428,7 +418,7 @@ html[data-sg-motion-input="pointer"]
 	content: none;
 }
 .sg-disclosure:focus-visible {
-	outline: 2px solid var(--ink);
+	outline: 2px var(--sg-focus-style, none) var(--ink);
 	outline-offset: 3px;
 	border-radius: var(--sg-radius-control);
 }
@@ -550,4 +540,15 @@ textarea.sg-text-control[data-sg-auto-size] {
 	overflow: hidden;
 	clip-path: inset(50%);
 	white-space: nowrap;
+}
+
+/* A seven-option short choice cannot fit seven touch targets on a phone.
+   Balance it into four plus three instead of leaving one isolated final value. */
+@container (max-width: 30rem) {
+	.sg-field .sg-choice.short-options:has(> .option:nth-child(7)):not(:has(> .option:nth-child(8))) {
+		grid-template-columns: repeat(
+				auto-fit,
+				minmax(max(var(--sg-target), calc((100% - 3 * var(--sg-control-gap)) / 4)), 1fr)
+			);
+	}
 }

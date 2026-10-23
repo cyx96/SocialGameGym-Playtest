@@ -33,7 +33,7 @@ button[aria-pressed="true"] {
 	font-weight: 550;
 }
 button:focus-visible {
-	outline: 2px solid var(--sg-invocation-ink);
+	outline: 2px var(--sg-focus-style, none) var(--sg-invocation-ink);
 	outline-offset: 2px;
 }
 button:hover {

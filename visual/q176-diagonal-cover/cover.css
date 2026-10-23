@@ -165,7 +165,7 @@ body {
 	text-underline-offset: 4px;
 }
 .variant a:focus-visible {
-	outline: 2px solid #585f0c;
+	outline: 2px var(--sg-focus-style, none) #585f0c;
 	outline-offset: 4px;
 }
 .topbar {

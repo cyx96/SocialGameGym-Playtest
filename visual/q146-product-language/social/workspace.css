@@ -1,0 +1,891 @@
+/* Approved social workspace geometry. Foundation, controls and reading motion retain their shared owners. */
+:where(.sg-social-workspace-host) * {
+	box-sizing: border-box;
+}
+.sg-social-workspace-host {
+	color: var(--label);
+	background: var(--canvas);
+}
+.sg-social-workspace-host {
+	margin: 0;
+	height: 100%;
+	min-height: 0;
+	overflow: hidden;
+	display: flex;
+	flex-direction: column;
+	font: 400 var(--sg-type-body) / var(--sg-leading-body) var(--sg-font-ui);
+}
+:where(.sg-social-workspace-host) button,
+:where(.sg-social-workspace-host) input,
+:where(.sg-social-workspace-host) textarea,
+:where(.sg-social-workspace-host) select {
+	font: inherit;
+}
+:where(.sg-social-workspace-host) button {
+	cursor: pointer;
+}
+:where(.sg-social-workspace-host) button,
+:where(.sg-social-workspace-host) a,
+:where(.sg-social-workspace-host) input,
+:where(.sg-social-workspace-host) textarea {
+	-webkit-tap-highlight-color: transparent;
+}
+:where(.sg-social-workspace-host) button:focus-visible,
+:where(.sg-social-workspace-host) a:focus-visible,
+:where(.sg-social-workspace-host) textarea:focus-visible,
+:where(.sg-social-workspace-host) input:focus-visible {
+	outline: 2px var(--sg-focus-style, none) var(--ink);
+	outline-offset: 3px;
+}
+:where(.sg-social-workspace-host) [hidden] {
+	display: none !important;
+}
+:where(.sg-social-workspace-host) h1,
+:where(.sg-social-workspace-host) h2,
+:where(.sg-social-workspace-host) h3,
+:where(.sg-social-workspace-host) p {
+	margin: 0;
+}
+:where(.sg-social-workspace-host) svg {
+	width: var(--sg-icon-action);
+	height: var(--sg-icon-action);
+	fill: none;
+	stroke: currentColor;
+	stroke-width: var(--sg-icon-stroke);
+	stroke-linecap: round;
+	stroke-linejoin: round;
+	flex: none;
+}
+:where(.sg-social-workspace-host) .product-context {
+	display: flex;
+	align-items: baseline;
+	gap: var(--sg-space-paragraph);
+	flex-wrap: wrap;
+	font-size: var(--sg-type-context);
+}
+:where(.sg-social-workspace-host) .product-context .phase {
+	margin-left: var(--sg-space-paragraph);
+	font-weight: var(--sg-weight-name);
+}
+:where(.sg-social-workspace-host) .muted,
+:where(.sg-social-workspace-host) .meta {
+	color: var(--secondary);
+}
+:where(.sg-social-workspace-host) .meta {
+	font-size: var(--sg-type-meta);
+	line-height: var(--sg-leading-interface);
+}
+:where(.sg-social-workspace-host) .global-tools {
+	margin-left: auto;
+	display: flex;
+	align-items: center;
+	gap: var(--sg-space-related);
+}
+:where(.sg-social-workspace-host) .app-navigation {
+	padding: 0;
+	min-height: var(--sg-toolbar-height);
+	display: grid;
+	align-items: center;
+	flex: none;
+}
+:where(.sg-social-workspace-host) .app-navigation h1 {
+	font-size: var(--sg-type-title);
+	line-height: var(--sg-leading-interface);
+	font-weight: 600;
+}
+:where(.sg-social-workspace-host) .app-navigation .back {
+	justify-self: start;
+}
+:where(.sg-social-workspace-host) .app-navigation .app-action {
+	justify-self: end;
+	inline-size: var(--sg-nav-target);
+	display: grid;
+	justify-items: center;
+}
+:where(.sg-social-workspace-host) .social-workspace {
+	--index-width: 19rem;
+	--pane-inset: var(--sg-space-task);
+	--index-row-size: 6.5rem;
+	width: min(var(--sg-work), calc(100% - var(--sg-safe-start) - var(--sg-safe-end)));
+	margin: var(--sg-space-section) auto var(--sg-space-task);
+	flex: 1;
+	min-height: 0;
+	display: grid;
+	grid-template-columns: var(--index-width) minmax(0, 1fr);
+	gap: var(--sg-space-task);
+}
+:where(.sg-social-workspace-host) .index-pane {
+	min-width: 0;
+	min-height: 0;
+	display: flex;
+	flex-direction: column;
+}
+:where(.sg-social-workspace-host) .index-toolbar {
+	min-height: calc(var(--avatar-profile) + 2 * var(--sg-space-section));
+	display: flex;
+	align-items: center;
+	padding: var(--sg-space-section) 0;
+	flex: none;
+}
+:where(.sg-social-workspace-host) .index-scroll {
+	overflow: auto;
+	min-height: 0;
+	padding: 2px 0;
+	scrollbar-width: thin;
+	overscroll-behavior: contain;
+}
+:where(.sg-social-workspace-host) .object-row {
+	width: 100%;
+	block-size: var(--index-row-size);
+	background: transparent;
+	color: var(--label);
+	border: 0;
+	border-radius: var(--sg-radius-surface);
+	padding: var(--sg-space-sibling);
+	display: flex;
+	align-items: center;
+	gap: var(--sg-space-paragraph);
+	text-align: left;
+	flex: none;
+}
+:where(.sg-social-workspace-host) .object-row + .object-row {
+	margin-top: var(--sg-space-related);
+}
+:where(.sg-social-workspace-host) .object-row[aria-current="true"] {
+	background: var(--wash);
+}
+:where(.sg-social-workspace-host) .object-row:focus-visible {
+	outline-offset: -2px;
+}
+:where(.sg-social-workspace-host) .row-copy {
+	min-width: 0;
+	flex: 1;
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+}
+:where(.sg-social-workspace-host) .row-top {
+	display: flex;
+	align-items: center;
+	gap: var(--sg-space-related);
+	min-width: 0;
+}
+:where(.sg-social-workspace-host) .row-name {
+	font-size: var(--sg-text-name);
+	font-weight: var(--sg-weight-name);
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	min-width: 0;
+}
+:where(.sg-social-workspace-host) .row-preview {
+	display: block;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	color: var(--secondary);
+	font-size: var(--sg-text-help);
+	line-height: 1.6;
+}
+:where(.sg-social-workspace-host) .row-meta {
+	display: block;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+:where(.sg-social-workspace-host) .row-count {
+	margin-left: auto;
+	flex: none;
+	min-width: 22px;
+	min-height: 22px;
+	border-radius: 50%;
+	background: var(--ink);
+	color: var(--surface);
+	text-align: center;
+	font-size: var(--sg-type-meta);
+	line-height: 22px;
+}
+:where(.sg-social-workspace-host) .search-empty {
+	padding: var(--sg-space-section) var(--sg-space-sibling);
+}
+:where(.sg-social-workspace-host) .search-empty p {
+	color: var(--secondary);
+	margin-bottom: var(--sg-space-related);
+}
+:where(.sg-social-workspace-host) .detail-pane {
+	background: var(--surface);
+	border-radius: var(--sg-radius-surface);
+	min-width: 0;
+	min-height: 0;
+	display: flex;
+	flex-direction: column;
+	overflow: hidden;
+}
+:where(.sg-social-workspace-host) .detail-heading.profile-identity {
+	--sg-person-heading-avatar: var(--avatar-profile);
+	flex: none;
+	min-height: calc(var(--avatar-profile) + 2 * var(--sg-space-section));
+	padding: var(--sg-space-section) var(--pane-inset);
+	margin: 0;
+}
+:where(.sg-social-workspace-host) .detail-heading .sg-button {
+	flex: none;
+}
+:where(.sg-social-workspace-host) .detail-scroll {
+	padding: 0 var(--pane-inset) var(--sg-space-task);
+	min-height: 0;
+	overflow-y: auto;
+	overscroll-behavior: contain;
+	scrollbar-width: thin;
+}
+:where(.sg-social-workspace-host) .bio {
+	max-width: 34em;
+	margin-bottom: var(--sg-space-task);
+}
+:where(.sg-social-workspace-host) .section-heading {
+	font-size: var(--sg-type-body);
+	font-weight: var(--sg-weight-name);
+	margin-bottom: var(--sg-space-sibling);
+}
+:where(.sg-social-workspace-host) .activity-list {
+	display: grid;
+	gap: var(--sg-space-task);
+}
+:where(.sg-social-workspace-host) .event-meta {
+	display: flex;
+	align-items: center;
+	gap: var(--sg-space-related);
+	margin-bottom: var(--sg-space-related);
+	flex-wrap: wrap;
+}
+:where(.sg-social-workspace-host) .event-title {
+	font-weight: var(--sg-weight-name);
+}
+:where(.sg-social-workspace-host) .event-copy {
+	margin-top: 4px;
+}
+:where(.sg-social-workspace-host) .person-inline {
+	display: inline;
+	color: var(--ink);
+	text-decoration: none;
+	white-space: nowrap;
+}
+:where(.sg-social-workspace-host) .person-inline .sg-avatar {
+	width: 1em;
+	height: 1em;
+	vertical-align: var(--sg-inline-avatar-baseline);
+	margin-left: var(--sg-person-inline-gap);
+}
+:where(.sg-social-workspace-host) .byline {
+	display: flex;
+	gap: var(--sg-space-related);
+	align-items: baseline;
+	flex-wrap: wrap;
+	margin-bottom: 4px;
+}
+:where(.sg-social-workspace-host) .byline strong {
+	font-size: var(--sg-text-author);
+	font-weight: var(--sg-weight-name);
+}
+:where(.sg-social-workspace-host) .byline .receipt {
+	margin-left: auto;
+	text-align: right;
+}
+:where(.sg-social-workspace-host) .post-copy {
+	font-size: var(--sg-type-body);
+	line-height: var(--sg-leading-body);
+}
+:where(.sg-social-workspace-host) .post-copy p,
+:where(.sg-social-workspace-host) .reply-content p,
+:where(.sg-social-workspace-host) .message-copy p,
+:where(.sg-social-workspace-host) .review-copy p {
+	overflow-wrap: anywhere;
+	white-space: pre-wrap;
+}
+:where(.sg-social-workspace-host) .reply-heading {
+	display: flex;
+	align-items: baseline;
+	gap: var(--sg-space-related);
+	margin: var(--sg-space-task) 0 var(--sg-space-sibling);
+}
+:where(.sg-social-workspace-host) .reply-heading h3 {
+	font-size: var(--sg-type-body);
+	font-weight: var(--sg-weight-name);
+}
+:where(.sg-social-workspace-host) .reply {
+	display: grid;
+	grid-template-columns: var(--avatar-message) minmax(0, 1fr);
+	gap: var(--sg-space-paragraph);
+	margin-top: var(--sg-space-section);
+}
+:where(.sg-social-workspace-host) .reply-content {
+	min-width: 0;
+}
+:where(.sg-social-workspace-host) .detail-compose {
+	padding: var(--sg-space-sibling) var(--pane-inset) var(--sg-space-section);
+	flex: none;
+	margin-top: auto;
+}
+:where(.sg-social-workspace-host) .compose-body {
+	display: grid;
+	grid-template-columns: minmax(0, 1fr) 5rem;
+	gap: var(--sg-space-related);
+	align-items: start;
+}
+:where(.sg-social-workspace-host) .compose-body textarea {
+	border: 0;
+	border-radius: var(--sg-radius-control);
+	background: var(--sg-control-fill);
+	color: var(--label);
+	resize: none;
+	width: 100%;
+	padding: var(--sg-space-paragraph) var(--sg-space-sibling);
+	line-height: var(--sg-leading-interface);
+	min-height: 48px;
+	max-height: 140px;
+}
+:where(.sg-social-workspace-host) textarea::placeholder {
+	color: var(--secondary);
+	opacity: 1;
+}
+:where(.sg-social-workspace-host) .submit-stack {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	text-align: center;
+	gap: var(--sg-space-related);
+	min-width: 0;
+}
+:where(.sg-social-workspace-host) .action-quota {
+	white-space: nowrap;
+	text-align: center;
+}
+:where(.sg-social-workspace-host) .messages-flow {
+	display: flex;
+	flex-direction: column;
+	gap: var(--sg-space-section);
+}
+:where(.sg-social-workspace-host) .message {
+	max-width: 92%;
+	display: flex;
+	align-items: start;
+	gap: var(--sg-space-paragraph);
+}
+:where(.sg-social-workspace-host) .message-copy {
+	min-width: 0;
+}
+:where(.sg-social-workspace-host) .bubble {
+	padding: var(--sg-space-paragraph) var(--sg-space-sibling);
+	background: var(--canvas);
+	border-radius: var(--sg-radius-surface);
+	margin-top: 4px;
+}
+:where(.sg-social-workspace-host) .message.self {
+	margin-left: auto;
+	max-width: 86%;
+}
+:where(.sg-social-workspace-host) .message.self .bubble {
+	background: var(--wash);
+}
+:where(.sg-social-workspace-host) .message-receipt {
+	margin-top: 4px;
+}
+:where(.sg-social-workspace-host) .message.self .message-receipt {
+	text-align: right;
+}
+:where(.sg-social-workspace-host) .rating-distribution {
+	padding-bottom: var(--sg-space-task);
+	max-width: 100%;
+}
+:where(.sg-social-workspace-host) .rating-overview {
+	display: flex;
+	align-items: baseline;
+	gap: var(--sg-space-paragraph);
+	margin-bottom: var(--sg-space-section);
+}
+:where(.sg-social-workspace-host) .rating-number {
+	font-size: var(--sg-type-metric);
+	line-height: 1.2;
+	font-weight: var(--sg-weight-value);
+}
+:where(.sg-social-workspace-host) .rating-number small {
+	font-size: var(--sg-type-body);
+	font-weight: 400;
+	color: var(--secondary);
+	margin-left: 6px;
+}
+:where(.sg-social-workspace-host) .distribution-rows {
+	display: grid;
+	gap: var(--sg-space-related);
+}
+:where(.sg-social-workspace-host) .distribution-row {
+	display: grid;
+	grid-template-columns: 3rem minmax(0, 1fr) 2rem;
+	align-items: center;
+	gap: var(--sg-space-paragraph);
+	min-height: 24px;
+}
+:where(.sg-social-workspace-host) .distribution-label {
+	display: flex;
+	align-items: center;
+	gap: 6px;
+	font-size: var(--sg-text-help);
+	color: var(--secondary);
+}
+:where(.sg-social-workspace-host) .distribution-label svg {
+	width: 14px;
+	height: 14px;
+}
+:where(.sg-social-workspace-host) .distribution-track {
+	height: 6px;
+	background: var(--canvas);
+	border-radius: 99px;
+	overflow: hidden;
+}
+:where(.sg-social-workspace-host) .distribution-track > span {
+	display: block;
+	height: 100%;
+	background: var(--ink);
+	border-radius: inherit;
+}
+:where(.sg-social-workspace-host) .distribution-count {
+	text-align: right;
+}
+:where(.sg-social-workspace-host) .review-record + .review-record {
+	margin-top: var(--sg-space-section);
+}
+:where(.sg-social-workspace-host) .review-heading {
+	display: flex;
+	align-items: center;
+	gap: var(--sg-space-paragraph);
+	justify-content: space-between;
+	flex-wrap: wrap;
+}
+:where(.sg-social-workspace-host) .review-heading strong {
+	font-size: var(--sg-text-author);
+	font-weight: var(--sg-weight-name);
+}
+:where(.sg-social-workspace-host) .review-heading .receipt {
+	margin-left: auto;
+	text-align: right;
+}
+:where(.sg-social-workspace-host) .review-author {
+	display: flex;
+	align-items: center;
+	gap: var(--sg-space-paragraph);
+}
+:where(.sg-social-workspace-host) .review-copy {
+	padding-left: calc(var(--avatar-message) + var(--sg-space-paragraph));
+	margin-top: var(--sg-space-related);
+}
+:where(.sg-social-workspace-host) .review-stars {
+	display: flex;
+	gap: 3px;
+	line-height: 1;
+	margin-bottom: var(--sg-space-related);
+}
+:where(.sg-social-workspace-host) .mini-star svg {
+	width: 14px;
+	height: 14px;
+	display: block;
+	color: var(--ink);
+}
+:where(.sg-social-workspace-host) .mini-star.filled svg {
+	fill: var(--ink);
+}
+:where(.sg-social-workspace-host) .pending-reviews {
+	margin-bottom: var(--sg-space-task);
+}
+:where(.sg-social-workspace-host) .sg-editor-dialog {
+	color: var(--label);
+	background: var(--surface);
+	width: min(35rem, calc(100% - 48px));
+}
+:where(.sg-social-workspace-host) .sg-editor-dialog form {
+	display: flex;
+	flex-direction: column;
+	min-height: 0;
+}
+:where(.sg-social-workspace-host) .sg-editor-dialog > .sg-reading-head {
+	align-items: center;
+	flex: none;
+}
+:where(.sg-social-workspace-host) .sg-editor-dialog .editor-body {
+	padding-top: var(--sg-space-related);
+	padding-bottom: var(--sg-space-section);
+	overflow: auto;
+	min-height: 0;
+}
+:where(.sg-social-workspace-host) .editor-avatar {
+	margin-bottom: var(--sg-space-section);
+}
+:where(.sg-social-workspace-host) .field-label,
+:where(.sg-social-workspace-host) .rating-field legend {
+	display: block;
+	font-size: var(--sg-text-help);
+	font-weight: var(--sg-weight-name);
+	margin-bottom: var(--sg-space-related);
+}
+:where(.sg-social-workspace-host) .editor-input {
+	display: block;
+	width: 100%;
+	border: 0;
+	border-radius: var(--sg-radius-control);
+	background: var(--sg-control-fill);
+	padding: var(--sg-space-paragraph) var(--sg-space-sibling);
+	color: var(--label);
+	font-size: var(--sg-type-input);
+	line-height: var(--sg-leading-body);
+	min-height: 48px;
+}
+:where(.sg-social-workspace-host) .editor-input + label {
+	margin-top: var(--sg-space-section);
+}
+:where(.sg-social-workspace-host) textarea.editor-input {
+	resize: vertical;
+	max-height: 40dvh;
+}
+:where(.sg-social-workspace-host) .editor-actions {
+	padding: var(--sg-space-related) var(--sg-space-surface) var(--sg-space-section);
+	display: flex;
+	justify-content: flex-end;
+	flex: none;
+}
+:where(.sg-social-workspace-host) .editor-actions .submit-stack {
+	min-width: 104px;
+}
+:where(.sg-social-workspace-host) .rating-field {
+	padding: 0;
+	margin: 0 0 var(--sg-space-section);
+	border: 0;
+}
+:where(.sg-social-workspace-host) .stars {
+	display: flex;
+	gap: var(--sg-space-related);
+}
+:where(.sg-social-workspace-host) .star-option {
+	position: relative;
+	width: 44px;
+	height: 44px;
+	display: grid;
+	place-items: center;
+	border-radius: var(--sg-radius-action);
+	cursor: pointer;
+}
+:where(.sg-social-workspace-host) .star-option input {
+	position: absolute;
+	inset: 0;
+	margin: 0;
+	opacity: 0;
+	cursor: pointer;
+}
+:where(.sg-social-workspace-host) .star-option > span {
+	pointer-events: none;
+	color: var(--ink);
+	display: block;
+}
+:where(.sg-social-workspace-host) .star-option svg {
+	width: 28px;
+	height: 28px;
+	display: block;
+}
+:where(.sg-social-workspace-host)
+	.stars:has(input:checked)
+	.star-option:has(input:checked)
+	> span
+	svg,
+:where(.sg-social-workspace-host)
+	.stars:has(input:checked)
+	.star-option:has(~ .star-option input:checked)
+	> span
+	svg {
+	fill: var(--ink);
+}
+:where(.sg-social-workspace-host) .star-option:has(input:focus-visible) {
+	outline: 2px var(--sg-focus-style, none) var(--ink);
+	outline-offset: 2px;
+}
+:where(.sg-social-workspace-host) .readable {
+	max-width: 36em;
+}
+@media (hover: hover) {
+	:where(.sg-social-workspace-host) .object-row:not([aria-current="true"]):hover {
+		background: color-mix(in srgb, var(--wash) 45%, var(--canvas));
+	}
+	:where(.sg-social-workspace-host) .filter:not([aria-pressed="true"]):hover {
+		color: var(--ink);
+		background: var(--surface);
+	}
+}
+@media (max-width: 1050px) {
+	:where(.sg-social-workspace-host) .social-workspace {
+		--index-width: 16rem;
+		--pane-inset: var(--sg-space-section);
+		gap: var(--sg-space-section);
+	}
+}
+@media (max-width: 760px) {
+	:where(.sg-social-workspace-host) .product-context {
+		gap: var(--sg-space-related);
+		width: 100%;
+		order: 3;
+	}
+	:where(.sg-social-workspace-host) .sg-product-bar {
+		column-gap: var(--sg-space-related);
+	}
+	:where(.sg-social-workspace-host) .social-workspace {
+		display: flex;
+		margin-block: var(--sg-space-sibling);
+	}
+	:where(.sg-social-workspace-host) .index-pane,
+	:where(.sg-social-workspace-host) .detail-pane {
+		width: 100%;
+	}
+	:where(.sg-social-workspace-host) .social-workspace[data-mobile-view="list"] .detail-pane {
+		display: none;
+	}
+	:where(.sg-social-workspace-host) .social-workspace[data-mobile-view="detail"] .index-pane {
+		display: none;
+	}
+	:where(.sg-social-workspace-host) .detail-heading.profile-identity {
+		padding-inline: var(--sg-space-section);
+	}
+	:where(.sg-social-workspace-host) .detail-scroll,
+	:where(.sg-social-workspace-host) .detail-compose {
+		padding-inline: var(--sg-space-section);
+	}
+	:where(.sg-social-workspace-host) .app-navigation .back {
+		margin-left: 0;
+	}
+	:where(.sg-social-workspace-host) .message {
+		max-width: 100%;
+	}
+	:where(.sg-social-workspace-host) .compose-body {
+		grid-template-columns: minmax(0, 1fr) 4.5rem;
+	}
+	:where(.sg-social-workspace-host) .review-heading .receipt {
+		margin-left: calc(var(--avatar-message) + var(--sg-space-paragraph));
+		text-align: left;
+	}
+	:where(.sg-social-workspace-host) .sg-editor-dialog {
+		max-height: calc(100dvh - 32px);
+		width: calc(100% - 32px);
+		margin: auto;
+	}
+	:where(.sg-social-workspace-host) .sg-editor-dialog form {
+		overflow: hidden;
+	}
+	:where(.sg-social-workspace-host) .review-copy {
+		padding-left: 0;
+	}
+}
+/* Keep keyboard focus on actual controls, without a native pointer ring around the whole reading. */
+:where(.sg-social-workspace-host) .sg-editor-dialog:focus {
+	outline: none;
+}
+:where(.sg-social-workspace-host) .sg-editor-dialog .editor-body {
+	padding-inline: var(--sg-space-surface);
+}
+:where(.sg-social-workspace-host) .sg-editor-dialog form {
+	flex: 1;
+	overflow: hidden;
+}
+:where(.sg-social-workspace-host) .rating-distribution {
+	padding-bottom: 0;
+	margin-bottom: var(--sg-space-task);
+}
+/* User-confirmed record metadata: right edge of its owner; private-message groups retain bubble alignment. */
+:where(.sg-social-workspace-host) .event-meta > .meta {
+	margin-inline-start: auto;
+	text-align: right;
+}
+:where(.sg-social-workspace-host) .row-meta {
+	text-align: right;
+}
+@media (max-width: 760px) {
+	:where(.sg-social-workspace-host) .review-heading .receipt {
+		margin-left: auto;
+		text-align: right;
+	}
+}
+/* Private messages use the user's chosen time sections, with author groups inside each section. */
+:where(.sg-social-workspace-host) .message-section {
+	min-width: 0;
+}
+:where(.sg-social-workspace-host) .step-label {
+	text-align: center;
+	margin: var(--sg-space-related) 0 var(--sg-space-section);
+}
+:where(.sg-social-workspace-host) .message-section-flow {
+	display: flex;
+	flex-direction: column;
+	gap: var(--sg-space-section);
+}
+@media (max-height: 600px) and (min-width: 761px) {
+	:where(.sg-social-workspace-host) .social-workspace {
+		margin-top: var(--sg-space-related);
+		margin-bottom: var(--sg-space-sibling);
+	}
+	:where(.sg-social-workspace-host) .detail-heading.profile-identity {
+		--sg-person-heading-avatar: var(--avatar-row);
+		min-height: calc(var(--sg-target) + 2 * var(--sg-space-sibling));
+		padding-block: var(--sg-space-paragraph);
+	}
+	:where(.sg-social-workspace-host) .reply-heading {
+		margin-top: var(--sg-space-sibling);
+		margin-bottom: var(--sg-space-related);
+	}
+	:where(.sg-social-workspace-host) .reply {
+		margin-top: var(--sg-space-related);
+	}
+	:where(.sg-social-workspace-host) .detail-compose {
+		padding-block: var(--sg-space-related);
+	}
+}
+/* Retain the original connected composer and its neutral canvas colour. */
+:where(.sg-social-workspace-host) .detail-compose {
+	--sg-compose-action-width: calc(7 * var(--sg-type-meta));
+}
+:where(.sg-social-workspace-host) .compose-field {
+	display: grid;
+	grid-template-columns: minmax(0, 1fr) var(--sg-compose-action-width);
+	align-items: end;
+	gap: var(--sg-space-related);
+	background: var(--canvas);
+	border-radius: var(--sg-radius-control);
+	padding: 8px 8px 8px var(--sg-space-sibling);
+}
+:where(.sg-social-workspace-host) .compose-field textarea {
+	border: 0;
+	background: transparent;
+	color: var(--label);
+	resize: none;
+	width: 100%;
+	padding: 9px 0;
+	line-height: var(--sg-leading-interface);
+	min-height: 44px;
+	max-height: 140px;
+}
+:where(.sg-social-workspace-host) .compose-field > button {
+	justify-self: center;
+}
+:where(.sg-social-workspace-host) .compose-caption {
+	display: grid;
+	grid-template-columns: minmax(0, 1fr) var(--sg-compose-action-width);
+	column-gap: var(--sg-space-related);
+	padding-right: 8px;
+	margin-top: var(--sg-space-related);
+}
+:where(.sg-social-workspace-host) .compose-caption .action-quota {
+	grid-column: 2;
+	justify-self: stretch;
+	white-space: normal;
+	text-align: center;
+	max-inline-size: 100%;
+}
+
+:where(.sg-social-workspace-host) .activity-action {
+	font-size: var(--sg-text-help);
+	line-height: var(--sg-leading-copy);
+	color: var(--secondary);
+	overflow-wrap: anywhere;
+}
+
+/* Index tools share the detail identity row; on phones the index is its own compact view. */
+
+@media (max-width: 760px) {
+	:where(.sg-social-workspace-host) .index-toolbar {
+		min-height: var(--sg-target);
+		padding: 0;
+		margin-block-end: var(--sg-space-sibling);
+	}
+}
+
+@media (max-height: 600px) and (min-width: 761px) {
+	:where(.sg-social-workspace-host) .index-toolbar {
+		min-height: calc(var(--sg-target) + 2 * var(--sg-space-sibling));
+		padding-block: var(--sg-space-paragraph);
+	}
+}
+
+:where(.sg-social-workspace-host) .message-author {
+	display: block;
+	font-size: var(--sg-text-author);
+	font-weight: var(--sg-weight-name);
+	line-height: var(--sg-leading-interface);
+	color: var(--label);
+}
+
+/* A disabled writing entry retains the navigation's button row; its reason owns a second row. */
+:where(.sg-social-workspace-host) .app-navigation:has(.app-action > .sg-action-stack) {
+	grid-template-rows: minmax(var(--sg-target), auto) auto;
+	row-gap: var(--sg-space-related);
+	padding-block: max(0px, calc((var(--sg-toolbar-height) - var(--sg-target)) / 2));
+}
+:where(.sg-social-workspace-host)
+	.app-navigation:has(.app-action > .sg-action-stack)
+	> :is(.sg-button, h1) {
+	grid-row: 1;
+	align-self: center;
+}
+:where(.sg-social-workspace-host)
+	.app-navigation:has(.app-action > .sg-action-stack)
+	> .app-action {
+	grid-row: 1 / span 2;
+	align-self: stretch;
+	display: grid;
+	grid-template-rows: subgrid;
+}
+:where(.sg-social-workspace-host) .app-action > .sg-action-stack {
+	inline-size: 100%;
+	display: grid;
+	grid-template-rows: subgrid;
+	grid-row: 1 / span 2;
+}
+
+/* Native React bindings preserve the approved host geometry. */
+:where(.sg-social-workspace-host) .app-navigation h1 {
+	white-space: nowrap;
+	outline: none;
+}
+:where(.sg-social-workspace-host) .detail-empty {
+	padding: var(--sg-space-section) var(--pane-inset);
+}
+:where(.sg-social-workspace-host) .workspace-failure {
+	width: min(var(--sg-work), calc(100% - var(--sg-safe-start) - var(--sg-safe-end)));
+	margin: var(--sg-space-related) auto;
+	color: var(--secondary);
+}
+:where(.sg-social-workspace-host) .workspace-failure .sg-button {
+	margin-inline-start: auto;
+	display: flex;
+}
+:where(.sg-social-workspace-host) .sg-avatar-host {
+	flex: none;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+}
+.sg-social-workspace-host[data-profile-peek="true"] {
+	height: auto;
+	overflow: visible;
+	background: transparent;
+}
+:where(.sg-social-workspace-host[data-profile-peek="true"]) .social-workspace {
+	display: block;
+	width: 100%;
+	margin: 0;
+	min-height: 0;
+}
+:where(.sg-social-workspace-host[data-profile-peek="true"]) .detail-pane {
+	display: flex;
+	overflow: visible;
+	background: transparent;
+}
+:where(.sg-social-workspace-host[data-profile-peek="true"]) .detail-heading.profile-identity {
+	padding: 0 0 var(--sg-space-section);
+}
+:where(.sg-social-workspace-host[data-profile-peek="true"]) .detail-scroll {
+	overflow: visible;
+	padding: 0;
+}

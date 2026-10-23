@@ -11,13 +11,7 @@
 		const badge = SGGButtons.badge(art, count);
 		badge?.classList.add("tool-unread");
 		const paint = () => {
-			if (hint)
-				hint.textContent =
-					mode === "read"
-						? modeLabel || SGGI18n.t("asset.readOnly")
-						: mode === "write"
-							? SGGI18n.t("asset.canAct")
-							: "";
+			if (hint) hint.textContent = mode === "read" ? SGGI18n.t("asset.readOnly") : "";
 			button.setAttribute(
 				"aria-label",
 				SGGI18n.t("asset.openApp", { label: SGGI18n.systemCopy(label) }) +

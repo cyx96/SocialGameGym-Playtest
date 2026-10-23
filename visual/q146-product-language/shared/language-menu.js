@@ -54,9 +54,13 @@
 		function update() {
 			for (const option of options)
 				option.setAttribute("aria-checked", String(option.dataset.locale === I.locale));
-			trigger.title = I.t("locale.selected", {
-				name: I.definition.locales.find((l) => l.id === I.locale)?.name || I.locale,
-			});
+			trigger.removeAttribute("title");
+			trigger.setAttribute(
+				"aria-description",
+				I.t("locale.selected", {
+					name: I.definition.locales.find((l) => l.id === I.locale)?.name || I.locale,
+				}),
+			);
 			menu.setAttribute("aria-label", I.t("locale.menu"));
 		}
 		function close(returnFocus = false) {
@@ -116,10 +120,8 @@
 		window.addEventListener("blur", () => close());
 		I.subscribe(update);
 		wrapper.append(trigger, menu, live);
-		// The welcome is deliberately only an invitation. Mount the utility when the
-		// catalog takes over, and move this same control into a native modal's header.
-		// A body sibling of showModal() would be inert and unreachable by keyboard.
-		const modalOrder = [];
+		// One stable product-header utility. Native modals make the underlying page
+		// inert; they do not acquire a second entry or move the global control.
 		function place() {
 			const surface = document.documentElement.dataset.sgLanguageSurface;
 			if (surface === "welcome" || surface === "pending") {
@@ -128,19 +130,8 @@
 				delete document.documentElement.dataset.sgLanguageControl;
 				return;
 			}
-			for (let i = modalOrder.length - 1; i >= 0; i--)
-				if (!modalOrder[i].isConnected || !modalOrder[i].matches(":modal")) modalOrder.splice(i, 1);
-			for (const dialog of document.querySelectorAll("dialog[open]"))
-				if (dialog.matches(":modal") && !modalOrder.includes(dialog)) modalOrder.push(dialog);
-			const modal = modalOrder.at(-1),
-				header = modal?.querySelector(".sg-reading-head, .search-head, header"),
-				host = header || modal || document.body;
-			if (wrapper.parentNode !== host) {
-				close();
-				if (header) header.insertBefore(wrapper, header.lastElementChild);
-				else host.append(wrapper);
-			}
-			wrapper.toggleAttribute("data-in-modal", !!modal);
+			if (document.querySelector("dialog:modal")) close();
+			if (wrapper.parentNode !== document.body) document.body.append(wrapper);
 			document.documentElement.dataset.sgLanguageControl = "";
 		}
 		document.addEventListener("sgg:languagesurfacechange", place);

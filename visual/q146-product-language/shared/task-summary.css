@@ -1,13 +1,43 @@
+@import url("./data-table.css");
+
 /* Quiet result / waiting composition; no authority over outcomes or ranking. */
 .sg-summary-page.sg-task-layout {
+	--sg-task-stacked: 0;
 	flex: 1;
 	inline-size: 100%;
 	min-block-size: min-content;
 	padding-block: var(--sg-space-task) max(var(--sg-space-section), env(safe-area-inset-bottom));
 }
-.sg-summary-page .intro {
-	display: grid;
+.sg-summary-page > .intro {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	box-sizing: border-box;
+	padding-block-start: var(--sg-task-context-inset, 0px);
 	gap: var(--sg-space-paragraph);
+}
+.sg-summary-page > .sg-scene-actions {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: flex-end;
+	align-items: center;
+	gap: var(--sg-space-sibling);
+}
+@container (max-width: 46rem) {
+	.sg-summary-page.sg-task-layout {
+		--sg-task-stacked: 1;
+	}
+	.sg-summary-page > .intro {
+		padding-block-start: 0;
+	}
+}
+@media (max-height: 600px) {
+	.sg-summary-page.sg-task-layout {
+		--sg-task-stacked: 1;
+	}
+	.sg-summary-page > .intro {
+		padding-block-start: 0;
+	}
 }
 .sg-summary-page .intro > h1 {
 	margin: 0;
@@ -17,7 +47,7 @@
 .sg-summary-page .intro > .description {
 	margin: 0;
 	color: var(--secondary);
-	font: 400 var(--sg-text-help) / var(--sg-leading-body) var(--sg-font-ui);
+	font: 400 var(--sg-text-task-support) / var(--sg-leading-body) var(--sg-font-ui);
 }
 .sg-summary-page .content {
 	display: grid;
@@ -47,10 +77,35 @@
 	}
 }
 
-/* Short state content uses focus without moving its parent's App navigation. */
+/* Brief states use the same portrait canvas rhythm as short decisions.
+   Rich summaries retain their own document structure. */
+@media (min-height: 601px) {
+	@container (max-width: 46rem) {
+		.sg-state-layout.sg-summary-page.sg-task-layout:not(:has(> .content > *)) {
+			display: flex;
+			flex-direction: column;
+			row-gap: var(--sg-space-task);
+			align-items: stretch;
+		}
+		.sg-state-layout.sg-summary-page.sg-task-layout:not(:has(> .content > *)) > .intro {
+			flex: none;
+			align-self: stretch;
+			margin-block: auto;
+		}
+		.sg-state-layout.sg-summary-page.sg-task-layout:not(:has(> .content > *)) > .content:empty {
+			display: none;
+		}
+		.sg-state-layout.sg-summary-page.sg-task-layout:not(:has(> .content > *)) > .sg-scene-actions {
+			flex: none;
+			align-self: stretch;
+		}
+	}
+}
+
+/* State uses the same task reading grid without moving its parent's App navigation. */
 .sg-inset-pane > .sg-summary-page {
 	inline-size: calc(100% - 2 * var(--sg-pane-inset));
-	max-inline-size: var(--sg-focus);
+	max-inline-size: var(--sg-task-reading-width);
 	margin-inline: auto;
 }
 .sg-summary-score {
@@ -154,69 +209,6 @@
 /* A task's authorized supporting facts remain a distinct reading group before its controls. */
 .sg-context-task > .content > .sg-result-facts + .sg-field {
 	margin-block-start: var(--sg-space-section);
-}
-
-/* Comparable task observations are body rows, not result metrics. */
-.sg-comparison-region {
-	inline-size: 100%;
-	min-inline-size: 0;
-	max-block-size: min(22rem, 48svh);
-	overflow: auto;
-	overscroll-behavior: contain;
-	margin-block: var(--sg-space-section);
-}
-.sg-comparison-region:focus-visible {
-	outline: 2px solid var(--ink);
-	outline-offset: 3px;
-}
-.sg-task-reference > .sg-comparison-region:first-child {
-	margin-block-start: 0;
-}
-.sg-task-reference > .sg-comparison-region:last-child {
-	margin-block-end: 0;
-}
-.sg-comparison-region > .sg-comparison {
-	min-inline-size: calc(var(--sg-comparison-columns, 4) * 4.5rem);
-	margin-block: 0;
-}
-.sg-comparison {
-	inline-size: 100%;
-	table-layout: fixed;
-	border-collapse: collapse;
-	margin-block: var(--sg-space-section);
-	color: var(--label);
-	font: 400 var(--sg-type-body) / var(--sg-leading-body) var(--sg-font-ui);
-}
-.sg-comparison caption {
-	text-align: start;
-	font-weight: 550;
-	padding-block-end: var(--sg-space-related);
-}
-.sg-comparison :is(th, td) {
-	text-align: start;
-	vertical-align: top;
-	overflow-wrap: anywhere;
-	padding: var(--sg-space-related) var(--sg-space-related) var(--sg-space-related) 0;
-	font-weight: 400;
-}
-.sg-comparison th {
-	color: var(--secondary);
-}
-.sg-comparison [data-numeric] {
-	text-align: end;
-	font-variant-numeric: lining-nums tabular-nums;
-}
-.sg-comparison :is(th, td):last-child {
-	padding-inline-end: 0;
-}
-.sg-comparison .sg-task-value {
-	font-weight: 400;
-}
-.sg-comparison tbody tr:nth-child(even) {
-	background: var(--surface);
-}
-.sg-comparison .sg-person-inline {
-	max-inline-size: 100%;
 }
 
 /* Keep account facts separated from the current chooser or input. */

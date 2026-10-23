@@ -1,7 +1,7 @@
 @import url("./foundation.css");
 /* SocialGameGym button language v1. Theme roles are supplied by the game UI package. */
 :root {
-	--sg-button-ink:var(--ink);--sg-button-secondary:var(--secondary);--sg-button-surface:var(--surface,#fff);--sg-button-wash:var(--wash,color-mix(in srgb,var(--sg-button-ink) 12%,white));--sg-button-height:48px;--sg-button-compact:44px;--sg-button-radius:999px;--sg-button-ease:var(--sg-ease);--sg-button-press:var(--sg-motion-press);--sg-button-release:var(--sg-motion-release);--sg-button-state:var(--sg-motion-state);--sg-button-selection:180ms;--sg-button-selection-radius:var(--sg-radius-action)
+	--sg-button-ink:var(--ink);--sg-button-secondary:var(--secondary);--sg-button-surface:var(--surface,#fff);--sg-button-wash:var(--wash,color-mix(in srgb,var(--sg-button-ink) 12%,white));--sg-button-height:48px;--sg-button-compact:44px;--sg-button-radius:999px;--sg-button-ease:var(--sg-ease);--sg-button-press:var(--sg-motion-press);--sg-button-release:var(--sg-motion-release);--sg-button-state:var(--sg-motion-state);--sg-button-selection:var(--sg-motion-selection);--sg-button-selection-radius:var(--sg-radius-action)
 }
 button.sg-button[data-sg-button],
 a.sg-button[data-sg-button] {
@@ -10,6 +10,11 @@ a.sg-button[data-sg-button] {
 	--sg-button-secondary: var(--secondary, var(--sg-brand-secondary));
 	--sg-button-surface: var(--surface, #fff);
 	--sg-button-wash: var(--wash, color-mix(in srgb, var(--sg-button-ink) 12%, white));
+	--sg-button-disabled-fill: color-mix(
+		in srgb,
+		var(--sg-button-secondary) 7%,
+		var(--sg-button-surface)
+	);
 	position: relative;
 	box-sizing: border-box;
 	display: inline-flex;
@@ -98,7 +103,7 @@ button.sg-button[data-sg-button].sg-pressed {
 	fill: none;
 }
 .sg-button[data-sg-button]:focus-visible {
-	outline: 2px solid var(--sg-button-ink);
+	outline: 2px var(--sg-focus-style, none) var(--sg-button-ink);
 	outline-offset: 3px;
 }
 .sg-button[data-sg-button]:disabled,
@@ -110,13 +115,15 @@ button.sg-button[data-sg-button].sg-pressed {
 	background: transparent;
 	filter: none;
 }
-.sg-button[data-sg-button][data-sg-role="primary"]:disabled,
-.sg-button[data-sg-button][data-sg-role="primary"][aria-disabled="true"],
-.sg-button[data-sg-button][data-sg-role="icon-primary"]:disabled,
-.sg-button[data-sg-button][data-sg-role="soft"]:disabled {
-	background: var(--sg-button-wash);
+.sg-button[data-sg-button]:is(
+	[data-sg-role="primary"],
+	[data-sg-role="icon-primary"],
+	[data-sg-role="soft"]
+):is(:disabled, [aria-disabled="true"]) {
+	background: var(--sg-button-disabled-fill);
 	color: var(--sg-button-secondary);
 }
+
 .sg-button[data-sg-button][aria-busy="true"] {
 	background: transparent;
 	color: var(--sg-button-ink);
@@ -224,7 +231,7 @@ button.sg-button[data-sg-button].sg-pressed {
 	color: var(--sg-button-ink);
 }
 .sg-choice input:focus-visible + .option-label {
-	outline: 2px solid var(--sg-button-ink);
+	outline: 2px var(--sg-focus-style, none) var(--sg-button-ink);
 	outline-offset: 3px;
 }
 .sg-segmented {
@@ -295,6 +302,18 @@ button.sg-button[data-sg-button].sg-pressed {
 .sg-button[data-sg-button][data-sg-motion="disclosure"][aria-expanded="true"] > svg {
 	transform: rotate(180deg);
 }
+[data-sg-press] {
+	transform: scale(1);
+	transition: transform var(--sg-motion-release) var(--sg-ease);
+}
+[data-sg-press].sg-pressed {
+	transform: scale(var(--sg-press-scale, 0.97));
+	transition-duration: var(--sg-motion-press);
+}
+[data-sg-press][data-sg-instant],
+[data-sg-press][data-sg-input="keyboard"],
+[data-sg-motion-input="keyboard"] [data-sg-press],
+.sg-button[data-sg-button][data-sg-instant],
 [data-sg-motion-input="keyboard"] .sg-button[data-sg-button],
 [data-sg-motion-input="keyboard"] .sg-button[data-sg-button] > svg,
 .sg-button[data-sg-button][data-sg-input="keyboard"],
@@ -313,31 +332,10 @@ button.sg-button[data-sg-button].sg-pressed {
 		stroke-dashoffset: 0;
 	}
 }
-.sg-tooltip {
-	position: fixed;
-	inset: auto;
-	margin: 0;
-	border: 0;
-	max-width: min(240px, calc(100vw - 16px));
-	padding: 7px 10px;
-	border-radius: 8px;
-	background: var(--ink, #1d6940);
-	color: var(--sg-button-surface);
-	font:
-		var(--sg-type-meta) / 1.5 -apple-system,
-		BlinkMacSystemFont,
-		"PingFang SC",
-		sans-serif;
-	pointer-events: none;
-	box-shadow: none;
-	white-space: normal;
-	text-align: center;
-	z-index: 9999;
-}
-.sg-tooltip[hidden] {
-	display: none !important;
-}
 @media (prefers-reduced-motion: reduce) {
+	[data-sg-press] {
+		transition: none;
+	}
 	.sg-button[data-sg-button][data-sg-motion="disclosure"] > svg {
 		transition: none;
 	}
@@ -404,7 +402,7 @@ button.sg-button[data-sg-button][role="menuitem"] .type-mark {
 	}
 }
 .sg-button[data-sg-button][data-sg-role="danger"]:disabled {
-	background: var(--sg-button-wash);
+	background: var(--sg-button-disabled-fill);
 	color: var(--sg-button-secondary);
 }
 
@@ -453,4 +451,45 @@ button.sg-button[data-sg-button][role="menuitem"] .type-mark {
 }
 .sg-unread[hidden] {
 	display: none !important;
+}
+
+/* The action and its helper share one center axis; the parent positions the whole group. */
+.sg-action-stack {
+	display: inline-grid;
+	justify-items: center;
+	gap: var(--sg-space-related);
+	min-inline-size: 0;
+	max-inline-size: 100%;
+}
+.sg-action-stack > button {
+	margin-inline: 0;
+}
+.sg-action-stack > button:not([data-sg-role="icon"]):not([data-sg-role="icon-primary"]) {
+	justify-self: stretch;
+}
+.sg-action-hint {
+	margin: 0;
+	font: 400 var(--sg-text-help) / var(--sg-leading-interface) var(--sg-font-ui);
+	color: var(--secondary);
+	text-align: center;
+	min-inline-size: 0;
+	max-inline-size: 100%;
+	overflow-wrap: anywhere;
+}
+@media (max-width: 760px) {
+	.sg-action-stack[data-action-layout="task"] {
+		inline-size: 100%;
+		justify-items: stretch;
+	}
+	.sg-action-stack[data-action-layout="task"] > .sg-button {
+		inline-size: 100%;
+	}
+}
+
+/* Paired Submit/Submitted labels reserve the longer localized state without moving the action. */
+.sg-button[data-sg-button].sg-submission-action {
+	min-inline-size: calc(3em + 3rem);
+}
+:lang(en) .sg-button[data-sg-button].sg-submission-action {
+	min-inline-size: calc(9ch + 3rem);
 }

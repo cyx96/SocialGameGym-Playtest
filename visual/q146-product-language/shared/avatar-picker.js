@@ -57,11 +57,12 @@
 			render();
 			R.open(dialog, { event });
 			trigger.setAttribute("aria-expanded", "true");
-			(
-				options.querySelector("[aria-pressed=true]") ||
-				options.querySelector("button") ||
-				close
-			).focus({ preventScroll: true });
+			if (dialog.dataset.keyboardOpen === "true")
+				(
+					options.querySelector("[aria-pressed=true]") ||
+					options.querySelector("button") ||
+					close
+				).focus({ preventScroll: true });
 		};
 		close.onclick = (event) => R.close(dialog, { instant: window.SGGMotion?.instant(event) });
 		const closed = () => {

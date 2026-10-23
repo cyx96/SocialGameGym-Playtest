@@ -53,7 +53,7 @@ a:focus-visible,
 input:focus-visible,
 summary:focus-visible,
 select:focus-visible {
-	outline: 2px solid var(--ink);
+	outline: 2px var(--sg-focus-style, none) var(--ink);
 	outline-offset: 4px;
 }
 .person {
@@ -177,7 +177,7 @@ select:focus-visible {
 	font-weight: 550;
 }
 .option input:focus-visible + .option-label {
-	outline: 2px solid var(--ink);
+	outline: 2px var(--sg-focus-style, none) var(--ink);
 	outline-offset: 4px;
 }
 .short-options .option {
@@ -649,7 +649,7 @@ dialog[open] {
 	cursor: default;
 }
 .editable-row:has(input:focus-visible) {
-	outline: 2px solid var(--ink);
+	outline: 2px var(--sg-focus-style, none) var(--ink);
 	outline-offset: 2px;
 }
 .line-text {

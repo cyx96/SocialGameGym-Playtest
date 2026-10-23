@@ -137,7 +137,7 @@ textarea {
 	line-height: inherit;
 	overflow-wrap: anywhere;
 }
-.sg-person-inline .sg-avatar {
+.sg-person-mention.sg-person-inline .sg-avatar {
 	--avatar-size: var(--sg-inline-avatar-size);
 	display: inline-grid;
 	inline-size: var(--avatar-size);
@@ -181,7 +181,7 @@ button.sg-person-link {
 	-webkit-tap-highlight-color: transparent;
 }
 button.sg-person-link:focus-visible {
-	outline: 2px solid var(--ink);
+	outline: 2px var(--sg-focus-style, none) var(--ink);
 	outline-offset: 2px;
 }
 @media (hover: hover) and (pointer: fine) {

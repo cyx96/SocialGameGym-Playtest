@@ -14,7 +14,13 @@
 				throw Error("Result binding does not permit placement");
 			if (spec.title !== undefined && spec.title !== message.primary)
 				throw Error("Result title cannot override shared status");
-			spec = { ...spec, title: message.primary };
+			spec = {
+				...spec,
+				title: message.primary,
+				actions: [
+					{ id: "return-desktop", label: SGGI18n.t("ui.game.returnDesktop"), role: "primary" },
+				],
+			};
 		}
 		const requestedTheme = new URLSearchParams(location.search).get("theme");
 		SGGThemes.apply(SGGThemes.get(requestedTheme) ? requestedTheme : spec.theme);
@@ -102,7 +108,9 @@
 		function sync() {
 			for (const [definition, button] of actions)
 				button.disabled = Boolean(
-					spec.readonly || definition.disabled || (definition.role === "primary" && !valid()),
+					(spec.readonly && spec.purpose !== "result") ||
+						definition.disabled ||
+						(definition.role === "primary" && !valid()),
 				);
 		}
 		function field(def, parent) {
@@ -183,12 +191,22 @@
 			actions.push([definition, button]);
 			button.onclick = () => {
 				if (button.disabled) return;
+				if (spec.purpose === "result" && definition.id === "return-desktop") {
+					host.dispatchEvent(
+						new CustomEvent("sgg:navigate", {
+							detail: { direction: "back", target: "desktop" },
+							bubbles: true,
+						}),
+					);
+					return;
+				}
 				const detail = { id: definition.id, values: { ...values } };
 				if (onAction) onAction(detail);
 				else host.dispatchEvent(new CustomEvent("sgg:action", { detail, bubbles: true }));
 			};
 			footer.append(button);
 		}
+		if (!fields.children.length) fields.remove();
 		const scene = SGGLayout.task({
 			context: intro,
 			interaction: content,

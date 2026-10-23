@@ -5,6 +5,7 @@
 		reduced = matchMedia("(prefers-reduced-motion:reduce)"),
 		active = new Map(),
 		origins = new Map(),
+		disclosures = new Map(),
 		listeners = new Set();
 	let exposed = true;
 	const instant = (event) =>
@@ -45,7 +46,101 @@
 	}
 	function settle() {
 		for (const node of active.keys()) cancel(node);
+		for (const state of disclosures.values()) state.finish();
 		for (const fn of listeners) fn();
+	}
+	// Registered local-height exception. The inner content keeps its native size.
+	function disclosure(slot, content, { open, event, immediate = false, onComplete = () => {} }) {
+		const previous = disclosures.get(slot),
+			from = slot.hidden ? 0 : slot.getBoundingClientRect().height,
+			original = previous?.original || { height: slot.style.height, overflow: slot.style.overflow };
+		cancel(slot);
+		slot.hidden = content.hidden = false;
+		slot.inert = !open;
+		slot.style.height = "auto";
+		slot.style.overflow = "hidden";
+		const target = open ? slot.scrollHeight : 0;
+		slot.style.height = target + "px";
+		const state = { original, finish };
+		disclosures.set(slot, state);
+		function finish() {
+			if (disclosures.get(slot) !== state) return;
+			disclosures.delete(slot);
+			cancel(slot);
+			slot.hidden = content.hidden = !open;
+			slot.inert = !open;
+			slot.style.height = original.height;
+			slot.style.overflow = original.overflow;
+			onComplete();
+		}
+		const animation = run(slot, [{ height: from + "px" }, { height: target + "px" }], {
+			role: open ? "expand" : "collapse",
+			event,
+			immediate,
+		});
+		if (animation) animation.finished.then(finish, finish);
+		else finish();
+		return { finish };
+	}
+	// A rare, fixed invitation; update one text node, never the whole page per frame.
+	function typewrite(
+		node,
+		{ text = node.textContent, onComplete = () => {}, onUpdate = () => {} } = {},
+	) {
+		const full = String(text),
+			parts =
+				typeof Intl.Segmenter === "function"
+					? Array.from(
+							new Intl.Segmenter(undefined, { granularity: "grapheme" }).segment(full),
+							(p) => p.segment,
+						)
+					: Array.from(full),
+			css = getComputedStyle(root),
+			delay = parseFloat(css.getPropertyValue("--sg-motion-invitation-delay")) || 0,
+			duration = parseFloat(css.getPropertyValue("--sg-motion-invitation")) || 0;
+		let timer,
+			stopped = false;
+		function finish() {
+			if (stopped) return;
+			stopped = true;
+			clearTimeout(timer);
+			listeners.delete(finish);
+			node.textContent = full;
+			onUpdate();
+			onComplete();
+		}
+		const cancel = () => {
+			stopped = true;
+			clearTimeout(timer);
+			listeners.delete(finish);
+		};
+		if (instant() || document.hidden || !exposed || !duration || !parts.length) finish();
+		else {
+			node.textContent = "";
+			listeners.add(finish);
+			const start = performance.now() + delay;
+			let shown = 0;
+			function tick() {
+				if (!node.isConnected) return cancel();
+				const count = Math.min(
+					parts.length,
+					Math.max(0, Math.floor(((performance.now() - start) / duration) * parts.length)),
+				);
+				if (count !== shown) {
+					shown = count;
+					node.textContent = parts.slice(0, count).join("");
+					onUpdate();
+				}
+				if (count === parts.length) finish();
+				else
+					timer = setTimeout(
+						tick,
+						Math.max(0, start + (duration * (count + 1)) / parts.length - performance.now()),
+					);
+			}
+			timer = setTimeout(tick, delay + duration / parts.length);
+		}
+		return { finish, cancel };
 	}
 	function run(node, frames, { role = "enter", immediate = false, event, fill = "none" } = {}) {
 		if (!node?.isConnected) return null;
@@ -218,6 +313,8 @@
 		scene,
 		app,
 		gateway,
+		typewrite,
+		disclosure,
 		onSettle(fn) {
 			listeners.add(fn);
 			return () => listeners.delete(fn);

@@ -24,6 +24,7 @@
 	--sg-type-body: 1rem;
 	--sg-type-description: var(--sg-type-body);
 	--sg-type-title: 1.1875rem;
+	--sg-type-app-navigation: 1.375rem;
 	--sg-type-meta: 0.8125rem;
 	--sg-type-context: 0.875rem;
 	--sg-type-value: 1.125rem;
@@ -75,6 +76,8 @@
 	--sg-backdrop: color-mix(in srgb, var(--label, #1f2320) 14%, transparent);
 	/* First-entry spatial explanation; ordinary App navigation keeps its shorter roles. */
 	--sg-motion-gateway: 900ms;
+	--sg-motion-invitation: 800ms;
+	--sg-motion-invitation-delay: 240ms;
 	--sg-ease-gateway: cubic-bezier(0.77, 0, 0.175, 1);
 	--sg-motion-app-open: 560ms;
 	--sg-motion-app-close: 460ms;
@@ -83,6 +86,7 @@
 	--sg-motion-enter: 160ms;
 	--sg-motion-exit: 120ms;
 	--sg-motion-state: 140ms;
+	--sg-motion-selection: 180ms;
 	--sg-motion-press: 80ms;
 	--sg-motion-release: 160ms;
 	--sg-ease: cubic-bezier(0.23, 1, 0.32, 1);
@@ -116,4 +120,50 @@ body {
 	--sg-leading-copy: 1.6;
 	--sg-leading-body: 1.6;
 	--sg-leading-description: 1.6;
+}
+
+/* Focus is functional state, not an edge frame. Pointer/autofocus stay quiet.
+   The mark is inherited through embedded documents/shadow hosts and never changes layout. */
+:root {
+	--sg-focus-style: none;
+}
+:root[data-sg-focus-input="pointer"] {
+	--sg-focus-mark-image: none;
+	--sg-focus-mark-opacity: 0;
+}
+:root[data-sg-focus-input="keyboard"] {
+	--sg-focus-mark-image: linear-gradient(currentColor, currentColor);
+	--sg-focus-mark-opacity: 1;
+}
+:where(:focus) {
+	outline: none;
+}
+:is(
+	button,
+	a,
+	summary,
+	select,
+	[role="button"],
+	[role="option"],
+	[role="menuitem"],
+	[role="menuitemradio"],
+	[tabindex]:not([tabindex="-1"])
+):not(input, textarea):focus-visible,
+:is(.sg-choice, .option, .score-option, .star-option, .sg-switch):has(input:focus-visible)
+	> :is(.option-label, .sg-switch-track, span) {
+	/* Only this small navigation cue wins component background shorthand; fills remain untouched. */
+	background-image: var(--sg-focus-mark-image, none) !important;
+	background-size: var(--sg-space-sibling) 2px !important;
+	background-position: center calc(100% - 4px) !important;
+	background-repeat: no-repeat !important;
+}
+/* A forced system contrast palette is the explicit exception: preserve its native focus boundary. */
+@media (forced-colors: active) {
+	:root {
+		--sg-focus-style: solid;
+	}
+	:focus-visible {
+		outline: 2px solid Highlight;
+		outline-offset: -2px;
+	}
 }

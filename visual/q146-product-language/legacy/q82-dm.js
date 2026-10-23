@@ -23,6 +23,7 @@ const query = new URLSearchParams(location.search),
 	key = window.SessionApp
 		? SessionApp.scope + ":dm-draft"
 		: "sgg-q82-dm-room-trust4-player01-social1-v1:" + (state || "live");
+const isReadonly = () => Boolean(window.SessionApp && SessionApp.readonly);
 let saved = {};
 try {
 	saved = JSON.parse(localStorage.getItem(key) || "{}");
@@ -173,6 +174,7 @@ function write() {
 	}
 }
 function cache() {
+	if (isReadonly()) return;
 	if (selected) {
 		drafts[selected] = input.value;
 		positions[selected] = messages.scrollTop;
@@ -191,7 +193,7 @@ function resizeInput() {
 			Math.max(parseFloat(style.minHeight), input.scrollHeight),
 		) + "px";
 	const pendingTarget = window.SessionApp && String(selected).startsWith("pending:");
-	input.disabled = !!pendingTarget;
+	input.disabled = !!pendingTarget || isReadonly();
 	send.disabled =
 		!!pendingTarget ||
 		!input.value.trim() ||
@@ -309,16 +311,18 @@ function syncView() {
 				: "asset.backDesktop",
 		{ attr: "aria-label" },
 	);
-	const readonly = Boolean(window.SessionApp && SessionApp.readonly);
 	// A narrow empty list needs its creation action in the App toolbar; the wide
 	// workspace offers the same action beside its empty-state message instead.
-	newButton.hidden = creating || readonly || (!mobile.matches && conversations.length === 0);
+	newButton.hidden = !isReadonly() && (creating || (!mobile.matches && conversations.length === 0));
 	workspace.classList.toggle("empty-workspace", conversations.length === 0);
 	SGGI18n.bind(
 		empty.querySelector("p"),
 		conversations.length ? "asset.chooseConversation" : "asset.noConversation",
 	);
-	empty.querySelector("button").hidden = conversations.length > 0 || readonly || mobile.matches;
+	empty.querySelector("button").hidden = isReadonly() || conversations.length > 0 || mobile.matches;
+	const emptyAction = empty.querySelector("button");
+	if (emptyAction.parentElement.classList.contains("sg-action-stack"))
+		emptyAction.parentElement.hidden = emptyAction.hidden;
 }
 function selectConversation(id, instant = false, initial = false) {
 	if (creating) {
@@ -386,6 +390,7 @@ for (const c of conversations) {
 	SGGI18n.bindAllAnnotated(button);
 }
 input.addEventListener("input", () => {
+	if (isReadonly()) return;
 	resizeInput();
 	cache();
 	write();
@@ -411,7 +416,7 @@ list.addEventListener(
 	{ passive: true },
 );
 send.onclick = () => {
-	if (!input.value.trim() || !saveCurrent()) return;
+	if (isReadonly() || !input.value.trim() || !saveCurrent()) return;
 	if (window.SessionApp) {
 		SessionApp.submit(send, "dm.send", { conversation: selected, text: input.value })
 			.then(() => {
@@ -494,11 +499,15 @@ function renderRoster() {
 		Players.filter((p) => ids.has(p.id))
 			.map(
 				(p) =>
-					`<span class="recipient-chip" data-id="${p.id}">${SGGIdentity.avatar(p.id, "reply")}<span>${escapeText(p.name)}</span><button type="button" data-remove="${p.id}" aria-label="${escapeText(SGGI18n.t("asset.removeMember", { name: p.name }))}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m7 7 10 10M17 7 7 17"/></svg></button></span>`,
+					`<span class="recipient-chip" data-id="${p.id}">${SGGIdentity.avatar(p.id, "reply")}<span>${escapeText(p.name)}</span><button type="button" data-sg-press data-remove="${p.id}" aria-label="${escapeText(SGGI18n.t("asset.removeMember", { name: p.name }))}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m7 7 10 10M17 7 7 17"/></svg></button></span>`,
 			)
 			.join("");
-	for (const box of creator.querySelectorAll("[data-player]"))
+	for (const box of creator.querySelectorAll("[data-player]")) {
 		box.checked = ids.has(box.dataset.player);
+		box.disabled = isReadonly();
+	}
+	for (const button of creator.querySelectorAll("[data-remove]")) button.disabled = isReadonly();
+	firstMessage.disabled = isReadonly();
 	createSubmit.disabled =
 		!ids.size ||
 		!firstMessage.value.trim() ||
@@ -535,11 +544,13 @@ function setMembersOpen(value, instant = false) {
 	if (instant || reduce.matches) memberWrap.offsetHeight;
 }
 function saveCreateDraft() {
+	if (isReadonly()) return true;
 	createDraft.text = firstMessage.value;
 	createDraft.scroll = creator.querySelector(".create-body").scrollTop;
 	return write();
 }
 function openCreate(instant = false) {
+	if (isReadonly()) return false;
 	if (creating) return true;
 	if (selected && !saveCurrent()) return false;
 	creating = true;
@@ -593,6 +604,10 @@ creator.addEventListener("keydown", (e) => {
 memberChoices.addEventListener("change", (e) => {
 	const box = e.target.closest("[data-player]");
 	if (!box) return;
+	if (isReadonly()) {
+		renderRoster();
+		return;
+	}
 	const values = new Set(createDraft.members);
 	if (box.checked) values.add(box.value);
 	else values.delete(box.value);
@@ -602,7 +617,7 @@ memberChoices.addEventListener("change", (e) => {
 });
 creator.querySelector(".recipient-chips").addEventListener("click", (e) => {
 	const remove = e.target.closest("[data-remove]");
-	if (!remove) return;
+	if (!remove || isReadonly()) return;
 	createDraft.members = createDraft.members.filter((id) => id !== remove.dataset.remove);
 	renderRoster();
 	saveCreateDraft();
@@ -613,11 +628,13 @@ creator.querySelector(".edit-members").onclick = (e) => {
 };
 firstMessage.addEventListener("focus", () => setMembersOpen(false, SGGMotion.instant()));
 firstMessage.addEventListener("input", () => {
+	if (isReadonly()) return;
 	createDraft.text = firstMessage.value;
 	renderRoster();
 	saveCreateDraft();
 });
 createSubmit.onclick = () => {
+	if (isReadonly()) return;
 	if (!createDraft.members.length || !firstMessage.value.trim() || !saveCreateDraft()) return;
 	if (window.SessionApp) {
 		SessionApp.submit(createSubmit, "dm.send", {
@@ -651,6 +668,27 @@ if (state === "new-ready" && !saved.createDraft) {
 	createDraft.text = "我们先把各自的考虑说清楚，再决定下一步。";
 }
 if (["new", "new-ready"].includes(state) || saved.creating) openCreate(true);
+
+function readonlyAction(button, previousHint) {
+	const stack = document.createElement("div"),
+		hint = document.createElement("p");
+	stack.className = "sg-action-stack";
+	stack.style.marginInlineStart = "auto";
+	hint.className = "sg-action-hint";
+	SGGI18n.bind(hint, "asset.actionUnavailable");
+	button.before(stack);
+	stack.append(button, hint);
+	button.disabled = true;
+	if (previousHint) previousHint.hidden = true;
+}
+if (isReadonly()) {
+	SGGButtons.unavailable(newButton);
+	SGGButtons.unavailable(empty.querySelector("button"));
+	readonlyAction(send, document.querySelector(".compose-meta"));
+	readonlyAction(createSubmit, document.querySelector(".create-budget"));
+	input.disabled = true;
+	firstMessage.disabled = true;
+}
 
 // Locale changes update presentation only; compose drafts and pending submissions keep their DOM.
 SGGI18n.bindAllAnnotated(document);

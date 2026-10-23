@@ -139,7 +139,7 @@
 	background: var(--ink);
 }
 .sg-switch > input:focus-visible + .sg-switch-track {
-	outline: 2px solid var(--ink);
+	outline: 2px var(--sg-focus-style, none) var(--ink);
 	outline-offset: 3px;
 }
 .sg-config-sr {
