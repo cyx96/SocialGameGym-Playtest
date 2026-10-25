@@ -1,7 +1,7 @@
 /* The global utility owns one fixed end slot; contextual header tools precede it. */
 .sg-language-control {
 	position: fixed;
-	inset-block-start: 1rem;
+	inset-block-start: var(--sg-language-control-top, 1rem);
 	inset-inline-end: max(var(--sg-safe-end, 2.5rem), calc((100vw - var(--sg-frame, 70rem)) / 2));
 	/* Above embedded/standalone header tracks; native modal top layers still own focus. */
 	z-index: 210;
@@ -84,4 +84,9 @@ html[data-sg-language-control]
 /* Utility headers have one centered row, unlike the two-row player header. */
 body:has(.sg-utility-shell) > .sg-language-control {
 	inset-block-start: calc((var(--sg-header-height) - var(--sg-target)) / 2);
+}
+
+/* The actual product utility row owns the vertical axis after intrinsic reflow. */
+.sg-language-control[data-sg-language-aligned] {
+	inset-block-start: var(--sg-language-control-top);
 }

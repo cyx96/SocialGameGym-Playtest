@@ -428,14 +428,12 @@ button.sg-button[data-sg-button][role="menuitem"] .type-mark {
 }
 
 /* One counter material for App launchers and the return-to-desktop affordance. */
-.sg-unread {
-	position: absolute;
-	inset-block-start: -5px;
-	inset-inline-end: -5px;
+.sg-unread,
+.sg-button-badge {
 	display: grid;
 	place-items: center;
 	min-inline-size: 22px;
-	block-size: 22px;
+	block-size: max(22px, calc(1em + 6px));
 	padding-inline: 5px;
 	box-sizing: border-box;
 	border-radius: 99px;
@@ -445,9 +443,42 @@ button.sg-button[data-sg-button][role="menuitem"] .type-mark {
 	font-variant-numeric: tabular-nums;
 	pointer-events: none;
 }
+.sg-unread {
+	position: absolute;
+	inset-block-start: -5px;
+	inset-inline-end: -5px;
+}
 .sg-button > .sg-unread {
 	inset-block-start: 0;
 	inset-inline-end: 0;
+}
+/* A count is content, so enlarged text can grow the compact action's width.
+   Normal-size counters still fit the established 44px action. */
+.sg-button[data-sg-button]:is([data-sg-role="icon"], [data-sg-role="icon-primary"]):has(
+	> .sg-unread:not([hidden])
+) {
+	display: inline-grid;
+	grid-template-columns: minmax(44px, max-content);
+	--sg-nav-action-inline: max-content;
+	inline-size: max-content;
+	gap: 0;
+}
+.sg-button[data-sg-button]:is([data-sg-role="icon"], [data-sg-role="icon-primary"]):has(
+		> .sg-unread:not([hidden])
+	)
+	> :is(.experience-button-content, .sg-button-label, svg, .sg-unread) {
+	grid-area: 1 / 1;
+	justify-self: var(--sg-counter-align, center);
+}
+.sg-button[data-sg-button]:is([data-sg-role="icon"], [data-sg-role="icon-primary"]) > .sg-unread {
+	position: relative;
+	inset: auto;
+	align-self: start;
+	--sg-counter-align: end;
+	justify-self: end;
+	/* At normal text size the open outer corner clears both the glyph and header.
+	   Larger counts move upward as the taller toolbar provides room. */
+	translate: max(0px, calc(48px - 2em)) calc(6px - 1em);
 }
 .sg-unread[hidden] {
 	display: none !important;
@@ -492,4 +523,42 @@ button.sg-button[data-sg-button][role="menuitem"] .type-mark {
 }
 :lang(en) .sg-button[data-sg-button].sg-submission-action {
 	min-inline-size: calc(9ch + 3rem);
+}
+
+/* One actual-request activity mark for wide/circular actions and initial reads. */
+.sg-activity-indicator {
+	display: inline-grid;
+	place-items: center;
+	inline-size: 20px;
+	block-size: 20px;
+	flex: none;
+	vertical-align: middle;
+}
+.sg-activity-indicator > svg {
+	inline-size: 20px;
+	block-size: 20px;
+	fill: none;
+	stroke: currentColor;
+	animation: sg-button-spin 700ms linear infinite;
+}
+[data-sg-activity-paused] .sg-activity-indicator > svg,
+[inert] .sg-activity-indicator > svg,
+[hidden] .sg-activity-indicator > svg {
+	animation-play-state: paused;
+}
+[data-sg-motion-input="keyboard"] .sg-activity-indicator > svg {
+	animation: none;
+}
+@media (prefers-reduced-motion: reduce) {
+	.sg-activity-indicator > svg {
+		animation: none;
+	}
+}
+
+/* Counter width belongs to its label; the icon's circular paper remains 44px. */
+.sg-button[data-sg-button]:is([data-sg-role="icon"], [data-sg-role="icon-primary"]):has(
+	> .sg-unread:not([hidden])
+) > :is(.sg-paper-depth, .sg-paper-grain, .sg-paper-fold) {
+	inline-size: 44px;
+	margin-inline: auto;
 }

@@ -42,6 +42,25 @@
 .sg-field .choice-options {
 	gap: var(--sg-control-gap);
 }
+.sg-choice[data-choice-layout="text"] {
+	display: flex;
+	flex-wrap: wrap;
+	gap: var(--sg-control-gap);
+}
+.sg-field .sg-choice[data-choice-layout="text"] > .option {
+	min-inline-size: min-content;
+}
+.sg-choice[data-choice-layout="text"] .option-label {
+	overflow-wrap: normal;
+}
+.sg-choice[data-choice-layout="numeric"] {
+	display: grid;
+	grid-template-columns: repeat(
+			auto-fit,
+			minmax(max(var(--sg-target), calc((100% - 6 * var(--sg-control-gap)) / 7)), 1fr)
+		);
+	gap: var(--sg-control-gap);
+}
 .sg-field .sg-choice .option {
 	min-width: 0;
 	flex: 1 1 140px;
@@ -71,6 +90,9 @@
 	transition:
 		background-color var(--sg-motion-state) ease,
 		color var(--sg-motion-state) ease;
+}
+.sg-field .sg-choice[data-choice-layout="text"] .option-label {
+	overflow-wrap: normal;
 }
 .sg-field .sg-choice input {
 	position: absolute;

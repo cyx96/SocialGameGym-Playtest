@@ -108,6 +108,11 @@
 	max-inline-size: var(--sg-task-reading-width);
 	margin-inline: auto;
 }
+/* Short lifecycle states share one focus lane for both reading and recovery.
+   Rich game outcomes keep their task's independent information/action rails. */
+.sg-state-layout.sg-summary-page.sg-task-layout {
+	max-inline-size: var(--sg-focus);
+}
 .sg-summary-score {
 	display: grid;
 	gap: var(--sg-space-related);
@@ -141,7 +146,7 @@
 	margin: 0;
 	display: grid;
 	align-items: baseline;
-	grid-template-columns: minmax(0, max-content) minmax(0, 1fr);
+	grid-template-columns: minmax(0, 1fr) minmax(min-content, max-content);
 	column-gap: var(--sg-space-section);
 	row-gap: var(--sg-space-related);
 	min-inline-size: 0;
@@ -159,7 +164,7 @@
 	margin: 0;
 	text-align: start;
 	font: var(--sg-weight-value) var(--sg-type-value) / var(--sg-leading-interface) var(--sg-font-ui);
-	overflow-wrap: anywhere;
+	overflow-wrap: normal;
 	font-variant-numeric: tabular-nums;
 	min-inline-size: 0;
 	max-inline-size: 14rem;
@@ -207,11 +212,11 @@
 	}
 }
 /* A task's authorized supporting facts remain a distinct reading group before its controls. */
-.sg-context-task > .content > .sg-result-facts + .sg-field {
+.sg-context-task > .content > :is(.sg-result-facts, .sg-task-facts) + .sg-field {
 	margin-block-start: var(--sg-space-section);
 }
 
 /* Keep account facts separated from the current chooser or input. */
-.sg-context-task > .content > .sg-result-facts:not(:first-child) {
+.sg-context-task > .content > :is(.sg-result-facts, .sg-task-facts):not(:first-child) {
 	margin-block-start: var(--sg-space-section);
 }

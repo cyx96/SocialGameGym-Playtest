@@ -122,6 +122,42 @@
 		wrapper.append(trigger, menu, live);
 		// One stable product-header utility. Native modals make the underlying page
 		// inert; they do not acquire a second entry or move the global control.
+
+		let utilityRow = null,
+			alignmentFrame = 0;
+		function align() {
+			alignmentFrame = 0;
+			const row = [
+				...document.querySelectorAll(
+					".sg-product-bar > .sg-header-actions, .catalog-header > nav, .sg-utility-shell > .topbar > nav",
+				),
+			].find((node) => node.checkVisibility({ checkVisibilityCSS: true }));
+			if (row !== utilityRow) {
+				if (utilityRow) rowSize.unobserve(utilityRow);
+				utilityRow = row || null;
+				if (utilityRow) rowSize.observe(utilityRow);
+			}
+			if (!row || !wrapper.isConnected) {
+				delete wrapper.dataset.sgLanguageAligned;
+				wrapper.style.removeProperty("--sg-language-control-top");
+				return;
+			}
+			const bounds = row.getBoundingClientRect();
+			wrapper.style.setProperty(
+				"--sg-language-control-top",
+				`${bounds.top + (bounds.height - trigger.offsetHeight) / 2}px`,
+			);
+			wrapper.dataset.sgLanguageAligned = "";
+		}
+		function scheduleAlignment() {
+			if (!alignmentFrame) alignmentFrame = requestAnimationFrame(align);
+		}
+		const rowSize = new ResizeObserver(scheduleAlignment);
+		window.addEventListener("resize", scheduleAlignment, { passive: true });
+		new MutationObserver(scheduleAlignment).observe(document.documentElement, {
+			attributes: true,
+			attributeFilter: ["style", "class", "lang"],
+		});
 		function place() {
 			const surface = document.documentElement.dataset.sgLanguageSurface;
 			if (surface === "welcome" || surface === "pending") {
@@ -133,6 +169,7 @@
 			if (document.querySelector("dialog:modal")) close();
 			if (wrapper.parentNode !== document.body) document.body.append(wrapper);
 			document.documentElement.dataset.sgLanguageControl = "";
+			scheduleAlignment();
 		}
 		document.addEventListener("sgg:languagesurfacechange", place);
 		new MutationObserver((records) => {
@@ -144,8 +181,10 @@
 							(node) =>
 								node.nodeType === 1 &&
 								(node.contains(wrapper) ||
-									node.matches("dialog") ||
-									node.querySelector("dialog[open]")),
+									node.matches("dialog, .sg-product-bar, .catalog-header, .sg-utility-shell") ||
+									node.querySelector(
+										"dialog[open], .sg-product-bar, .catalog-header, .sg-utility-shell",
+									)),
 						),
 				)
 			)

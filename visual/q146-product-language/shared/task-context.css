@@ -2,6 +2,12 @@
 .sg-context-task {
 	--sg-task-stacked: 0;
 }
+:where(.sg-context-task, .sg-task-context-rail, .sg-inset-pane) {
+	--sg-context-rail-size: max(
+		var(--sg-target),
+		calc(var(--sg-text-name) * var(--sg-leading-interface))
+	);
+}
 .sg-context-task > .intro {
 	min-inline-size: 0;
 }
@@ -17,7 +23,7 @@
 	color: var(--secondary);
 	font: 400 var(--sg-text-task-support) / var(--sg-leading-body) var(--sg-font-ui);
 	overflow-wrap: anywhere;
-	text-wrap: pretty;
+	text-wrap: balance;
 }
 /* Content is a two-part canvas at wide widths; only the operations pane scrolls. */
 .sg-context-task.sg-task-layout {
@@ -71,6 +77,23 @@
 .sg-context-task .sg-field {
 	scroll-margin-block: var(--sg-space-sibling);
 }
+/* A chooser and its dependent inputs are separate operation groups, including
+   fields whose shared numeric control renders through a React host element. */
+.sg-task-controls {
+	display: flex;
+	flex-direction: column;
+	gap: var(--sg-space-section);
+	min-inline-size: 0;
+}
+.sg-task-controls .sg-field {
+	margin-block: 0;
+}
+.sg-task-controls:empty {
+	display: none;
+}
+.sg-context-task > .content > .sg-task-controls:not(:first-child) {
+	margin-block-start: var(--sg-space-section);
+}
 .sg-toolbar.sg-task-toolbar,
 .sg-pane-toolbar.sg-task-toolbar {
 	position: sticky;
@@ -96,8 +119,8 @@
 	inset-block-start: var(--sg-task-nav-height, var(--sg-toolbar-height));
 	z-index: 3;
 	flex: none;
-	block-size: var(--sg-target);
-	margin-block-end: calc(-1 * var(--sg-target));
+	block-size: var(--sg-context-rail-size);
+	margin-block-end: calc(-1 * var(--sg-context-rail-size));
 	display: flex;
 	align-items: center;
 	background: var(--canvas);
@@ -164,7 +187,7 @@ body > .sg-task-context-rail {
 	.sg-context-task .sg-status-message {
 		scroll-margin-block-start: calc(
 			var(--sg-task-nav-height, var(--sg-toolbar-height)) +
-			var(--sg-target) +
+			var(--sg-context-rail-size) +
 			var(--sg-space-sibling)
 		);
 	}
@@ -267,6 +290,12 @@ body > .sg-task-context-rail {
 .sg-task-context-slot [data-task-primary] > :is(span, button) {
 	min-inline-size: 0;
 }
+.sg-task-context-slot .sg-task-context-fragment {
+	flex: 0 1 auto;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: pre;
+}
 .sg-task-context-slot .sg-person-inline[data-person-order="at-name-avatar"] {
 	display: inline-flex;
 	align-items: baseline;
@@ -285,6 +314,12 @@ body > .sg-task-context-rail {
 .sg-task-context-slot .sg-person-inline .sg-avatar {
 	flex: none;
 	align-self: center;
+}
+.sg-task-context-slot [data-task-primary] > .sg-person-compact {
+	flex: 0 1 auto;
+	min-inline-size: min(100%, 8ch);
+	max-inline-size: 60%;
+	align-items: center;
 }
 
 /* Result is the same context + task canvas; supporting facts do not become a second hero. */
@@ -370,5 +405,61 @@ body[data-task-scene] > .sg-task-page.sg-page {
 	}
 	.sg-context-task > .sg-scene-actions {
 		margin-block-start: var(--sg-space-section);
+	}
+}
+
+/* Keep size containment off the scroll owner: WebKit loses its hidden scroll offset.
+   Supporting facts own a non-scrolling container at the same column width. */
+.sg-task-facts {
+	min-inline-size: 0;
+	container-type: inline-size;
+}
+
+/* A native App retains one reachable navigation rail on short canvases.
+   Standalone tasks keep natural-flow navigation; neither repeats compact context. */
+@media (max-height: 600px) {
+	.sg-toolbar.sg-task-toolbar {
+		position: relative;
+		inset-block-start: auto;
+	}
+	.sg-task-context-rail {
+		display: none;
+	}
+	.sg-context-task :is(.sg-field, .sg-status-message) {
+		scroll-margin-block-start: var(--sg-space-sibling);
+	}
+}
+
+/* Native stacked tasks reserve sticky obstruction at the scroll owner.
+   Inputs and local errors retain space, not a second copy of the header. */
+.sg-inset-pane[data-sg-task-stacked="true"] {
+	--sg-task-scroll-clearance: calc(
+		var(--sg-task-nav-height, var(--sg-toolbar-height)) +
+		var(--sg-context-rail-size)
+	);
+	--sg-task-reveal-clearance: var(--sg-task-scroll-clearance);
+	scroll-padding-block-start: var(--sg-task-reveal-clearance);
+}
+.sg-inset-pane[data-sg-task-stacked="true"]:has(
+	> :is(.sg-pane-toolbar, .sg-task-context-rail):focus-within
+) {
+	--sg-task-reveal-clearance: 0px;
+}
+/* Sticky controls are already visible outside the content's safe scroll box.
+   Translate its reveal box, preserving its size, instead of scrolling the page. */
+.sg-inset-pane[data-sg-task-stacked="true"]
+	> :is(.sg-pane-toolbar, .sg-task-context-rail)
+	:is(.sg-button, .sg-person-link) {
+	scroll-margin-block-start: calc(-1 * var(--sg-task-reveal-clearance));
+	scroll-margin-block-end: var(--sg-task-reveal-clearance);
+}
+.sg-inset-pane[data-sg-task-stacked="true"]
+	> .sg-context-task
+	:is(.sg-field, .sg-status-message, input, textarea, select, [role="alert"]) {
+	scroll-margin-block: var(--sg-space-related);
+}
+@media (max-height: 600px) {
+	.sg-inset-pane[data-sg-task-stacked="true"] {
+		--sg-task-scroll-clearance: var(--sg-task-nav-height, var(--sg-toolbar-height));
 	}
 }

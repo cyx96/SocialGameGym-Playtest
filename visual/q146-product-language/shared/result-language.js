@@ -34,9 +34,10 @@
 		);
 		message.rankAllowed = binding?.rankMeaningful === true;
 		if (result?.score !== undefined)
-			message.support = definition.support.selfScore.map((part) =>
+			message.support = definition.support.selfScore.map((part, index, parts) =>
 				typeof part === "string"
-					? SGGI18n.systemCopy(part)
+					? SGGI18n.systemCopy(part) +
+						(SGGI18n.locale === "en" && parts[index + 1]?.field ? " " : "")
 					: { number: result[part.field], unit: SGGI18n.systemCopy(part.unit) },
 			);
 		return message;

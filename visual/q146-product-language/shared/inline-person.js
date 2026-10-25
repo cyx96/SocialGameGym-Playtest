@@ -28,6 +28,7 @@
 			avatar = settings.avatars,
 			order = settings.order,
 			live = true,
+			compact = false,
 		} = {},
 	) {
 		const value = resolve(id, identities);
@@ -57,7 +58,10 @@
 				name = element("span", "sg-person-visible-name", value.name),
 				image = SGGAvatar.node({ preset: value.avatar || "default", size: "message", person: id });
 			at.setAttribute("aria-hidden", "true");
-			if (order === "at-name-avatar") {
+			if (compact) {
+				n.classList.add("sg-person-compact");
+				n.append(at, name, image);
+			} else if (order === "at-name-avatar") {
 				const text = element("span", "sg-person-text");
 				const graphemes =
 					typeof Intl.Segmenter === "function"

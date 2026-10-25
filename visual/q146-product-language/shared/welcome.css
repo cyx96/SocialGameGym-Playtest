@@ -40,7 +40,9 @@
 }
 .sg-welcome-group {
 	min-width: 0;
-	width: min(100%, var(--sg-focus));
+	width: max-content;
+	min-width: min(100%, var(--sg-focus));
+	max-width: 100%;
 	position: relative;
 }
 .sg-welcome-prompt {

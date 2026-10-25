@@ -23,8 +23,9 @@
 	gap: var(--sg-space-related);
 	min-inline-size: 0;
 }
-.profile-card-field > label {
+.profile-card-field > .field-label {
 	font: var(--sg-weight-name) var(--sg-type-body) / var(--sg-leading-interface) var(--sg-font-ui);
+	margin: 0;
 }
 .profile-card-field > .editor-input {
 	margin: 0;

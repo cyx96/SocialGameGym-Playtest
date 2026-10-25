@@ -140,8 +140,7 @@
 			flip.dataset.sgButton = "";
 			flip.dataset.sgRole = "icon";
 			I.bind(flip, "catalog.flip", { attr: "aria-label" });
-			flip.innerHTML =
-				'<svg viewBox="0 0 24 24"><path d="M7 7h11v11M18 7l-4-4M18 7l-4 4M6 17l4 4M6 17l4-4M6 17V6"/></svg>';
+			flip.append(SGGIcons.create("flip"));
 			flip.onclick = (e) => {
 				e.stopPropagation();
 				if (!clickBlocked) flipCard();
@@ -247,6 +246,7 @@
 			targets.nav > 0.5
 				? themes.find((t) => t.id === a.games[mod(Math.round(a.pos), a.games.length)].category)
 				: a.theme;
+		document.documentElement.dataset.sgTheme = theme.id;
 		for (const [k, v] of Object.entries({
 			ink: theme.colors.ink,
 			wash: theme.colors.wash,

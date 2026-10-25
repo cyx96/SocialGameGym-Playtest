@@ -33,6 +33,8 @@
 	font-weight: 550;
 }
 .temporal-feed .temporal-meta .meta {
+	font: 400 var(--sg-type-meta) / var(--sg-leading-interface) var(--sg-font-ui);
+	color: var(--secondary);
 	margin-left: auto;
 	text-align: right;
 }

@@ -184,6 +184,28 @@ button.sg-person-link:focus-visible {
 	outline: 2px var(--sg-focus-style, none) var(--ink);
 	outline-offset: 2px;
 }
+/* Bounded identity slots preserve the authorized name and trailing avatar without wrapping. */
+.sg-person-compact-host {
+	display: inline-flex;
+	min-inline-size: 0;
+	max-inline-size: 100%;
+}
+.sg-person-mention.sg-person-compact {
+	display: inline-flex;
+	align-items: center;
+	min-inline-size: 0;
+	max-inline-size: 100%;
+	white-space: nowrap;
+}
+.sg-person-compact > .sg-person-visible-name {
+	min-inline-size: 0;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+.sg-person-compact > :is(.sg-person-at, .sg-avatar) {
+	flex: none;
+}
 @media (hover: hover) and (pointer: fine) {
 	button.sg-person-link:hover .sg-person-text,
 	button.sg-person-link:hover .sg-person-tail > .sg-person-visible-name {

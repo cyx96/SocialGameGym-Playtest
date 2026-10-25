@@ -108,3 +108,9 @@
 .sg-questionnaire .sg-field > legend > span:last-child {
 	text-wrap: balance;
 }
+
+/* A stacked task changes the outer rails, not the questionnaire's internal rhythm. */
+.sg-questionnaire.sg-context-task > .sg-questionnaire-form {
+	display: flex;
+	flex-direction: column;
+}

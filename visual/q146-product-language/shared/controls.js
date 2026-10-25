@@ -204,7 +204,10 @@
 		if (field.maxLength != null) input.maxLength = field.maxLength;
 		input.disabled = Boolean(field.disabled);
 		input.addEventListener("input", () => onChange(input.value));
-		box.append(label, input);
+		const paper = el("span");
+		paper.setAttribute("data-sg-paper-field", "");
+		paper.append(input);
+		box.append(label, paper);
 		watch(box, field, (current) => {
 			label.textContent = labelText(current);
 			if (current.placeholderKey) input.placeholder = SGGI18n.t(current.placeholderKey);

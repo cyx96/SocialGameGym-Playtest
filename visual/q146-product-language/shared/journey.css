@@ -1,9 +1,10 @@
 @import url("./data-table.css");
 
 .sg-reading {
+	position: fixed;
 	--sg-reading-entry-transform: translateY(6px);
 	--sg-reading-exit-transform: translateY(6px);
-	--sg-reading-exit-opacity: 0;
+	--sg-reading-exit-opacity: 1;
 	padding: 0;
 	border: 0;
 	inset: 0;
@@ -15,8 +16,22 @@
 	max-height: calc(100dvh - 40px);
 	background: var(--surface, #fff);
 	color: var(--label, #1f2320);
-	overflow: hidden;
+	overflow: visible;
+	isolation: isolate;
+	box-shadow: none;
+}
+.sg-reading::before,
+.sg-reading::after {
+	content: "";
+	position: absolute;
+	inset: 0;
+	border-radius: inherit;
+	pointer-events: none;
+	z-index: -1;
 	box-shadow: var(--sg-shadow-dialog);
+}
+.sg-reading::after {
+	opacity: 0;
 }
 .sg-reading::backdrop {
 	background: var(--sg-backdrop);
@@ -50,6 +65,8 @@
 }
 .sg-reading > .sg-reading-body {
 	min-height: 0;
+	min-inline-size: 0;
+	grid-template-columns: minmax(0, 1fr);
 	padding: 8px 24px 26px;
 	max-height: calc(100dvh - 150px);
 	overflow: auto;
@@ -113,7 +130,7 @@ body[data-journey-surface="rating"] {
 	padding: 12px 24px 16px;
 }
 body:has(#deck) {
-	font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", sans-serif;
+	font-family: var(--sg-font-ui);
 }
 #communication-help:empty {
 	display: none;
@@ -171,6 +188,30 @@ body:has(#deck) {
 		to {
 			opacity: 1;
 			transform: translateY(0);
+		}
+	}
+	.sg-reading[open]:not([data-keyboard-open="true"]):not([data-closing="true"])::before {
+		animation: sg-paper-shadow-contact var(--sg-motion-enter) var(--sg-ease);
+	}
+	.sg-reading[open]:not([data-keyboard-open="true"]):not([data-closing="true"])::after {
+		animation: sg-paper-shadow-settle var(--sg-motion-enter) var(--sg-ease);
+	}
+	@keyframes sg-paper-shadow-contact {
+		from {
+			opacity: 0.55;
+		}
+		to {
+			opacity: 1;
+		}
+	}
+	@keyframes sg-paper-shadow-settle {
+		from {
+			opacity: 0.5;
+			transform: translateY(4px) scaleY(1.035);
+		}
+		to {
+			opacity: 0;
+			transform: translateY(0) scale(1);
 		}
 	}
 }

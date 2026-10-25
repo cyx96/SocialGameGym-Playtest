@@ -48,14 +48,18 @@
 				}
 				indicator.hidden = false;
 				const g = group.getBoundingClientRect(),
-					r = selected.getBoundingClientRect();
+					r = selected.getBoundingClientRect(),
+					scaleX = g.width / group.offsetWidth,
+					scaleY = g.height / group.offsetHeight;
+				if (!scaleX || !scaleY) return;
 				instant =
 					instant ||
 					reduce.matches ||
 					window.SGGMotion?.instant() ||
 					selected.dataset.sgInput === "keyboard";
 				if (instant) group.dataset.sgInstant = "";
-				indicator.style.clipPath = `inset(${r.top - g.top}px ${g.right - r.right}px ${g.bottom - r.bottom}px ${r.left - g.left}px round ${getComputedStyle(group).getPropertyValue("--sg-button-selection-radius").trim() || "10px"})`;
+				// DOM rectangles include ancestor App-flight scale; CSS insets use local units.
+				indicator.style.clipPath = `inset(${(r.top - g.top) / scaleY}px ${(g.right - r.right) / scaleX}px ${(g.bottom - r.bottom) / scaleY}px ${(r.left - g.left) / scaleX}px round ${getComputedStyle(group).getPropertyValue("--sg-button-selection-radius").trim() || "10px"})`;
 				if (instant && !reduce.matches) requestAnimationFrame(() => delete group.dataset.sgInstant);
 			}
 			const resize = new ResizeObserver(() => update(true));
@@ -164,6 +168,10 @@
 			if (b && block(b)) {
 				event.preventDefault();
 				event.stopImmediatePropagation();
+			} else if (b?.tagName === "BUTTON" && event.pointerType === "mouse") {
+				// WebKit does not focus mouse-clicked buttons. Establish the real source before
+				// the handler opens a native dialog, so its own return-focus chain remains valid.
+				b.focus({ preventScroll: true });
 			}
 		},
 		true,
@@ -171,19 +179,20 @@
 	function busy(button, value) {
 		if (value) {
 			if (button.getAttribute("aria-busy") === "true") return;
-			button.dataset.sgWasDisabled = String(button.getAttribute("aria-disabled") === "true");
 			const label = document.createElement("span");
 			label.className = "sg-button-label";
-			while (button.firstChild) label.append(button.firstChild);
+			for (const node of [...button.childNodes]) {
+				if (
+					!(node instanceof Element) ||
+					!node.matches(".sg-paper-depth,.sg-paper-grain,.sg-paper-fold")
+				)
+					label.append(node);
+			}
 			button.append(label);
-			const spinner = document.createElement("span");
-			spinner.className = "sg-button-spinner";
-			spinner.setAttribute("aria-hidden", "true");
-			spinner.innerHTML =
-				'<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8" opacity=".3"/><path d="M12 4a8 8 0 0 1 8 8"/></svg>';
+			const spinner = activity();
+			spinner.classList.add("sg-button-spinner");
 			button.append(spinner);
 			button.setAttribute("aria-busy", "true");
-			button.setAttribute("aria-disabled", "true");
 			button.classList.remove("sg-pressed");
 		} else {
 			if (button.getAttribute("aria-busy") !== "true") return;
@@ -191,8 +200,6 @@
 			button.querySelector(":scope > .sg-button-spinner")?.remove();
 			if (label) label.replaceWith(...label.childNodes);
 			button.removeAttribute("aria-busy");
-			if (button.dataset.sgWasDisabled !== "true") button.removeAttribute("aria-disabled");
-			delete button.dataset.sgWasDisabled;
 		}
 	}
 	function create({
@@ -274,6 +281,9 @@
 		for (const group of document.querySelectorAll("[data-sg-segmented]"))
 			groups.get(group)?.update(true);
 	});
+	function badgeText(value) {
+		return value > 99 ? "99+" : String(value);
+	}
 	/** Presentation only: callers provide an authorized unread-content count. */
 	function badge(host, value) {
 		const count = Number.isSafeInteger(value) && value > 0 ? value : 0;
@@ -290,7 +300,7 @@
 			previous = Number(node.dataset.count || 0);
 		if (!node.classList.contains("sg-unread")) node.classList.add("sg-unread");
 		if (node.dataset.count !== String(count)) node.dataset.count = String(count);
-		const text = count > 99 ? "99+" : String(count);
+		const text = badgeText(count);
 		if (node.textContent !== text) node.textContent = text;
 		node.hidden = count === 0;
 		if (initialized && count > previous && node.getClientRects().length)
@@ -343,14 +353,29 @@
 		stack.hidden = button.hidden;
 		return stack;
 	}
+	function activity() {
+		const n = document.createElement("span");
+		n.className = "sg-activity-indicator";
+		n.setAttribute("aria-hidden", "true");
+		n.innerHTML =
+			'<svg viewBox="2 2 20 20" stroke-width="1.7"><circle cx="12" cy="12" r="8" opacity=".3"/><path d="M12 4a8 8 0 0 1 8 8"/></svg>';
+		return n;
+	}
+	function settleActivity() {
+		document.documentElement.toggleAttribute("data-sg-activity-paused", document.hidden);
+	}
+	document.addEventListener("visibilitychange", settleActivity);
+	settleActivity();
 	window.SGGButtons = Object.freeze({
-		version: "1.4.0",
+		version: "1.5.0",
+		activity,
 		enhance,
 		busy,
 		create,
 		iconize,
 		feedback,
 		badge,
+		badgeText,
 		unavailable,
 	});
 	enhance();

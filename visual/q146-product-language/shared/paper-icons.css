@@ -1,0 +1,63 @@
+/* Material responds to semantic foreground; ordinary icon geometry never changes its meaning. */
+svg.sg-paper-icon,
+.sg-button[data-sg-button] svg.sg-paper-icon,
+.sg-stage-marker > svg.sg-paper-icon,
+.sg-select > svg.sg-paper-icon,
+.sg-number svg.sg-paper-icon {
+	--sg-icon-face-light: color-mix(in srgb, currentColor 76%, white);
+	--sg-icon-face-fold: color-mix(in srgb, currentColor 88%, white);
+	--sg-icon-paper-shadow: color-mix(in srgb, var(--ink, currentColor) 76%, black);
+	stroke: none;
+	fill: none;
+	overflow: visible;
+}
+.sg-select > svg.sg-paper-icon.sg-select-chevron,
+.sg-select-chevron > svg.sg-paper-icon,
+.config-scroll summary > svg.sg-paper-icon,
+.sg-number > button svg.sg-paper-icon {
+	stroke: none;
+}
+.sg-icon-response {
+	opacity: 0;
+	transition: opacity var(--sg-motion-exit) var(--sg-ease);
+}
+[data-paper-active] .sg-icon-response {
+	opacity: 1;
+	transition-duration: var(--sg-motion-press);
+}
+.sg-icon-response-light {
+	opacity: var(--sg-paper-icon-light, 0);
+}
+.sg-icon-response-shade {
+	opacity: var(--sg-paper-icon-shade, 0);
+}
+.sg-paper-instant .sg-icon-response,
+html[data-sg-motion-input="keyboard"] .sg-icon-response {
+	transition: none;
+}
+@media (prefers-reduced-motion: reduce) {
+	.sg-icon-response {
+		transition: none;
+	}
+}
+svg.sg-paper-icon > .sg-icon-flat {
+	display: none;
+}
+svg.sg-paper-icon[data-optical="flat"] > .sg-icon-paper {
+	display: none;
+}
+svg.sg-paper-icon[data-optical="flat"] > .sg-icon-flat {
+	display: initial;
+}
+.experience .experience-icon svg.sg-paper-icon {
+	stroke: none;
+	fill: none;
+}
+@media (forced-colors: active) {
+	svg.sg-paper-icon > .sg-icon-paper {
+		display: none;
+	}
+	svg.sg-paper-icon > .sg-icon-flat {
+		display: initial;
+	}
+}

@@ -2,6 +2,7 @@
 
 /* Utility route adapter: shared roles, data-oriented structures. No private palette or control material. */
 .sg-utility-shell {
+	container-type: inline-size;
 	--text: var(--label);
 	--muted: var(--secondary);
 	--page: var(--canvas);
@@ -27,7 +28,8 @@
 	background: var(--surface);
 }
 .sg-utility-shell .topbar .brand {
-	font: var(--sg-weight-brand) var(--sg-type-brand) / var(--sg-leading-interface) var(--sg-font-ui);
+	font:
+		var(--sg-weight-brand) var(--sg-type-brand) / var(--sg-leading-interface) var(--sg-font-logo);
 	letter-spacing: -0.025em;
 	color: var(--ink);
 	text-decoration: none;
@@ -263,7 +265,6 @@
 	flex-direction: column;
 }
 .sg-utility-shell > .work-surface:has(> .sg-state-layout) {
-	container-type: inline-size;
 	flex: 1;
 	display: flex;
 	margin-block: 0;

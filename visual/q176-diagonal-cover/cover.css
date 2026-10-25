@@ -111,7 +111,7 @@ body {
 	gap: 3cqw;
 }
 .theme {
-	font-family: "Songti SC", "STSong", serif;
+	font-family: var(--sg-font-art);
 	font-size: 10.8cqw;
 	line-height: 1.25;
 	font-weight: 600;

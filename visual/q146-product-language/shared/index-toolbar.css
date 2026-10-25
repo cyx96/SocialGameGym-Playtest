@@ -1,6 +1,7 @@
 /* Shared index search/filter track. Host owns placement, data, query and focus policy. */
 @import url("./foundation.css");
 .search-tools {
+	--index-filter-padding: var(--index-filter-padding);
 	--index-filter-cell: calc((100% - 2 * var(--sg-space-related)) / 3);
 	position: relative;
 	width: 100%;
@@ -22,7 +23,8 @@
 	z-index: 2;
 	pointer-events: none;
 }
-.search-backdrop {
+.search-backdrop,
+.search-backdrop[data-sg-paper-field] {
 	position: absolute;
 	inset: 0;
 	z-index: -1;
@@ -106,6 +108,14 @@
 	background: var(--wash);
 	font-weight: 550;
 }
+.index-filters.sg-segmented > .sg-button.filter {
+	padding: var(--sg-space-related);
+	border-radius: var(--sg-radius-control);
+	background: transparent;
+}
+.index-filters.sg-segmented > .sg-selection {
+	background: var(--wash);
+}
 .search-tools[data-open="true"] .index-filters {
 	opacity: 0;
 	transform: translateX(calc(100% + var(--sg-space-related)));
@@ -123,7 +133,9 @@
 	grid-column: 3;
 	grid-row: 1;
 }
-.filter-label {
+.filter-label,
+.filter > .experience-button-content {
+	display: block;
 	min-inline-size: 0;
 	overflow: hidden;
 	text-overflow: ellipsis;
@@ -132,4 +144,59 @@
 .filter .filter-count {
 	margin-inline-start: 0;
 	font-variant-numeric: tabular-nums;
+}
+
+/* Intrinsic narrow/large-text fallback: direct search + equal visible filters. */
+.search-tools {
+	--index-filter-wrapped-padding: 4px;
+}
+.index-toolbar:has(.search-tools[data-wrap-filters="true"]) {
+	min-height: 0;
+	height: auto;
+	padding: 0;
+}
+.search-tools[data-wrap-filters="true"] {
+	height: auto;
+	flex: none;
+	border-radius: 0;
+	overflow: visible;
+	display: grid;
+	grid-template-rows: auto auto;
+	gap: var(--sg-space-related);
+}
+.search-tools[data-wrap-filters="true"] .search-surface {
+	position: relative;
+	inset: auto;
+	min-height: max(var(--sg-button-compact), calc(var(--sg-type-input) * 1.5 + 8px));
+	grid-template-columns: var(--sg-button-compact) minmax(0, 1fr) var(--sg-button-compact);
+}
+.search-tools[data-wrap-filters="true"][data-open="false"] .search-surface {
+	grid-template-columns: var(--sg-button-compact) minmax(0, 1fr) var(--sg-button-compact);
+}
+.search-tools[data-wrap-filters="true"][data-open="false"] input {
+	opacity: 1;
+	visibility: visible;
+	pointer-events: auto;
+}
+.search-tools[data-wrap-filters="true"] .search-surface input {
+	height: auto;
+	min-height: max(var(--sg-button-compact), calc(var(--sg-type-input) * 1.5 + 8px));
+}
+.search-tools[data-wrap-filters="true"] .index-filters {
+	position: relative;
+	inset: auto;
+	overflow: visible;
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+	gap: var(--sg-space-related);
+	opacity: 1;
+	transform: none;
+	pointer-events: auto;
+}
+.search-tools[data-wrap-filters="true"] .index-filters .sg-button.filter {
+	height: auto;
+	min-height: max(var(--sg-button-compact), calc(var(--sg-text-help) * 1.5 + 8px));
+	padding: var(--index-filter-wrapped-padding);
+}
+.search-tools[data-wrap-filters="true"][data-stack-filters="true"] .index-filters {
+	grid-template-columns: minmax(0, 1fr);
 }

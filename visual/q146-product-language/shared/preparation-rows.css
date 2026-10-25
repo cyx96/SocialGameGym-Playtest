@@ -8,14 +8,16 @@
 	padding: 0;
 }
 .preparation-seat {
-	display: grid;
-	grid-template-columns: var(--sg-target) minmax(0, 1fr) auto;
+	display: flex;
+	flex-wrap: wrap;
 	align-items: center;
 	gap: var(--sg-space-paragraph);
 	min-inline-size: 0;
 	min-block-size: 88px;
 }
 .seat-copy {
+	flex: 1 0 8ch;
+	max-inline-size: calc(100% - var(--sg-target) - var(--sg-space-paragraph));
 	display: grid;
 	min-inline-size: 0;
 	gap: var(--sg-space-related);
@@ -23,7 +25,9 @@
 .seat-copy strong {
 	font-size: var(--sg-type-body);
 	font-weight: 550;
-	overflow-wrap: anywhere;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
 }
 .seat-copy strong small {
 	font-weight: 400;
@@ -84,6 +88,7 @@
 	color: var(--ink);
 }
 .seat-actions {
+	margin-inline-start: auto;
 	display: flex;
 	align-items: center;
 	gap: 0;

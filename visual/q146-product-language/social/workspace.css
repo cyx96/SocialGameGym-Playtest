@@ -7,9 +7,12 @@
 	background: var(--canvas);
 }
 .sg-social-workspace-host {
+	container-type: inline-size;
+	container-name: sg-social;
 	margin: 0;
 	height: 100%;
 	min-height: 0;
+	min-inline-size: 0;
 	overflow: hidden;
 	display: flex;
 	flex-direction: column;
@@ -103,6 +106,7 @@
 	justify-items: center;
 }
 :where(.sg-social-workspace-host) .social-workspace {
+	--sg-workspace-stacked: 0;
 	--index-width: 19rem;
 	--pane-inset: var(--sg-space-task);
 	--index-row-size: 6.5rem;
@@ -196,14 +200,6 @@
 :where(.sg-social-workspace-host) .row-count {
 	margin-left: auto;
 	flex: none;
-	min-width: 22px;
-	min-height: 22px;
-	border-radius: 50%;
-	background: var(--ink);
-	color: var(--surface);
-	text-align: center;
-	font-size: var(--sg-type-meta);
-	line-height: 22px;
 }
 :where(.sg-social-workspace-host) .search-empty {
 	padding: var(--sg-space-section) var(--sg-space-sibling);
@@ -511,9 +507,8 @@
 	flex: none;
 }
 :where(.sg-social-workspace-host) .sg-editor-dialog .editor-body {
-	padding-top: var(--sg-space-related);
-	padding-bottom: var(--sg-space-section);
-	overflow: auto;
+	padding: 0;
+	overflow: visible;
 	min-height: 0;
 }
 :where(.sg-social-workspace-host) .editor-avatar {
@@ -522,8 +517,7 @@
 :where(.sg-social-workspace-host) .field-label,
 :where(.sg-social-workspace-host) .rating-field legend {
 	display: block;
-	font-size: var(--sg-text-help);
-	font-weight: var(--sg-weight-name);
+	font: var(--sg-weight-name) var(--sg-type-body) / var(--sg-leading-interface) var(--sg-font-ui);
 	margin-bottom: var(--sg-space-related);
 }
 :where(.sg-social-workspace-host) .editor-input {
@@ -555,13 +549,15 @@
 	min-width: 104px;
 }
 :where(.sg-social-workspace-host) .rating-field {
+	min-inline-size: 0;
 	padding: 0;
 	margin: 0 0 var(--sg-space-section);
 	border: 0;
 }
 :where(.sg-social-workspace-host) .stars {
-	display: flex;
-	gap: var(--sg-space-related);
+	display: grid;
+	grid-template-columns: repeat(5, 44px);
+	gap: clamp(0px, calc((100% - 220px) / 4), var(--sg-space-related));
 }
 :where(.sg-social-workspace-host) .star-option {
 	position: relative;
@@ -634,6 +630,7 @@
 		column-gap: var(--sg-space-related);
 	}
 	:where(.sg-social-workspace-host) .social-workspace {
+		--pane-inset: min(var(--sg-space-section), var(--sg-safe-start));
 		display: flex;
 		margin-block: var(--sg-space-sibling);
 	}
@@ -648,11 +645,11 @@
 		display: none;
 	}
 	:where(.sg-social-workspace-host) .detail-heading.profile-identity {
-		padding-inline: var(--sg-space-section);
+		padding-inline: var(--pane-inset);
 	}
 	:where(.sg-social-workspace-host) .detail-scroll,
 	:where(.sg-social-workspace-host) .detail-compose {
-		padding-inline: var(--sg-space-section);
+		padding-inline: var(--pane-inset);
 	}
 	:where(.sg-social-workspace-host) .app-navigation .back {
 		margin-left: 0;
@@ -673,7 +670,7 @@
 		margin: auto;
 	}
 	:where(.sg-social-workspace-host) .sg-editor-dialog form {
-		overflow: hidden;
+		overflow: visible;
 	}
 	:where(.sg-social-workspace-host) .review-copy {
 		padding-left: 0;
@@ -684,11 +681,11 @@
 	outline: none;
 }
 :where(.sg-social-workspace-host) .sg-editor-dialog .editor-body {
-	padding-inline: var(--sg-space-surface);
+	padding-inline: 0;
 }
 :where(.sg-social-workspace-host) .sg-editor-dialog form {
-	flex: 1;
-	overflow: hidden;
+	flex: none;
+	overflow: visible;
 }
 :where(.sg-social-workspace-host) .rating-distribution {
 	padding-bottom: 0;
@@ -743,12 +740,9 @@
 	}
 }
 /* Retain the original connected composer and its neutral canvas colour. */
-:where(.sg-social-workspace-host) .detail-compose {
-	--sg-compose-action-width: calc(7 * var(--sg-type-meta));
-}
 :where(.sg-social-workspace-host) .compose-field {
 	display: grid;
-	grid-template-columns: minmax(0, 1fr) var(--sg-compose-action-width);
+	grid-template-columns: minmax(0, 1fr) auto;
 	align-items: end;
 	gap: var(--sg-space-related);
 	background: var(--canvas);
@@ -763,25 +757,21 @@
 	width: 100%;
 	padding: 9px 0;
 	line-height: var(--sg-leading-interface);
-	min-height: 44px;
-	max-height: 140px;
+	min-height: max(44px, calc(1lh + 18px));
+	max-height: min(6lh, 32dvh);
+}
+:where(.sg-social-workspace-host) .detail-pane:has(.detail-compose) {
+	overflow-y: auto;
+}
+:where(.sg-social-workspace-host) .detail-pane:has(.detail-compose) > .detail-scroll {
+	min-block-size: min(8rem, 25dvh);
 }
 :where(.sg-social-workspace-host) .compose-field > button {
 	justify-self: center;
 }
-:where(.sg-social-workspace-host) .compose-caption {
-	display: grid;
-	grid-template-columns: minmax(0, 1fr) var(--sg-compose-action-width);
-	column-gap: var(--sg-space-related);
-	padding-right: 8px;
-	margin-top: var(--sg-space-related);
-}
-:where(.sg-social-workspace-host) .compose-caption .action-quota {
-	grid-column: 2;
-	justify-self: stretch;
-	white-space: normal;
-	text-align: center;
-	max-inline-size: 100%;
+:where(.sg-social-workspace-host) .compose-local-status {
+	margin-block-start: var(--sg-space-related);
+	color: var(--secondary);
 }
 
 :where(.sg-social-workspace-host) .activity-action {
@@ -814,33 +804,6 @@
 	font-weight: var(--sg-weight-name);
 	line-height: var(--sg-leading-interface);
 	color: var(--label);
-}
-
-/* A disabled writing entry retains the navigation's button row; its reason owns a second row. */
-:where(.sg-social-workspace-host) .app-navigation:has(.app-action > .sg-action-stack) {
-	grid-template-rows: minmax(var(--sg-target), auto) auto;
-	row-gap: var(--sg-space-related);
-	padding-block: max(0px, calc((var(--sg-toolbar-height) - var(--sg-target)) / 2));
-}
-:where(.sg-social-workspace-host)
-	.app-navigation:has(.app-action > .sg-action-stack)
-	> :is(.sg-button, h1) {
-	grid-row: 1;
-	align-self: center;
-}
-:where(.sg-social-workspace-host)
-	.app-navigation:has(.app-action > .sg-action-stack)
-	> .app-action {
-	grid-row: 1 / span 2;
-	align-self: stretch;
-	display: grid;
-	grid-template-rows: subgrid;
-}
-:where(.sg-social-workspace-host) .app-action > .sg-action-stack {
-	inline-size: 100%;
-	display: grid;
-	grid-template-rows: subgrid;
-	grid-row: 1 / span 2;
 }
 
 /* Native React bindings preserve the approved host geometry. */
@@ -888,4 +851,53 @@
 :where(.sg-social-workspace-host[data-profile-peek="true"]) .detail-scroll {
 	overflow: visible;
 	padding: 0;
+}
+
+/* Reading width, including enlarged type, chooses the same one-pane layout.
+   The navigation reads this CSS state rather than guessing from device width. */
+@container sg-social (max-width: 47.5rem) {
+	:where(.sg-social-workspace-host) .social-workspace {
+		--sg-workspace-stacked: 1;
+		--pane-inset: min(var(--sg-space-section), var(--sg-safe-start));
+		display: flex;
+		margin-block: var(--sg-space-sibling);
+	}
+	:where(.sg-social-workspace-host) .index-pane,
+	:where(.sg-social-workspace-host) .detail-pane {
+		width: 100%;
+	}
+	:where(.sg-social-workspace-host) .social-workspace[data-mobile-view="list"] .detail-pane,
+	:where(.sg-social-workspace-host) .social-workspace[data-mobile-view="detail"] .index-pane {
+		display: none;
+	}
+	:where(.sg-social-workspace-host) .index-toolbar {
+		min-height: var(--sg-target);
+		padding: 0;
+		margin-block-end: var(--sg-space-sibling);
+	}
+	:where(.sg-social-workspace-host) .message {
+		max-width: 100%;
+	}
+}
+
+/* A short, stacked workspace has one continuous scroll owner. Keeping a fixed
+   identity or search strip inside this tiny viewport can cover every row/field. */
+@container sg-social (max-width: 47.5rem) {
+	@media (max-height: 480px) {
+		:where(.sg-social-workspace-host) .social-workspace {
+			overflow-y: auto;
+		}
+		:where(.sg-social-workspace-host) .index-pane,
+		:where(.sg-social-workspace-host) .detail-pane {
+			flex: none;
+			overflow: visible;
+		}
+		:where(.sg-social-workspace-host) .index-scroll,
+		:where(.sg-social-workspace-host) .detail-scroll,
+		:where(.sg-social-workspace-host) .detail-pane:has(.detail-compose) > .detail-scroll {
+			flex: none;
+			min-block-size: 0;
+			overflow: visible;
+		}
+	}
 }

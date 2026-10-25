@@ -38,6 +38,20 @@
 #stage {
 	height: calc(100dvh - 76px - env(safe-area-inset-top));
 }
+.catalog-header .brand {
+	font:
+		var(--sg-weight-brand) var(--sg-type-brand-compact) / var(--sg-leading-interface)
+		var(--sg-font-logo);
+	letter-spacing: -0.025em;
+	min-inline-size: 0;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+.catalog-header nav {
+	flex: none;
+}
+
 .card-reading {
 	position: absolute;
 	bottom: 26px;

@@ -13,9 +13,7 @@
 :where(.sg-social-workspace-host) [data-dialog-header] > .sg-reading-head > :is(h2, #editor-title) {
 	grid-column: 2;
 	grid-row: 1;
-	display: flex;
-	align-items: center;
-	justify-content: center;
+	display: block;
 	margin: 0;
 	width: 100%;
 	min-width: 0;
@@ -24,18 +22,32 @@
 	line-height: var(--sg-leading-interface);
 	font-weight: 550;
 	text-align: center;
-	white-space: normal;
-	overflow-wrap: anywhere;
+	white-space: nowrap;
+	overflow-wrap: normal;
 	overflow: hidden;
 	text-overflow: ellipsis;
+}
+:where(.sg-social-workspace-host) .sg-reading-task-subject {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	justify-content: center;
+	gap: var(--sg-space-related);
+	min-inline-size: 0;
+	max-inline-size: 100%;
+}
+:where(.sg-social-workspace-host) .sg-reading-task-subject > .sg-reading-task {
+	flex: none;
+	white-space: nowrap;
 }
 :where(.sg-social-workspace-host)
 	[data-dialog-header]
 	> .sg-reading-head
 	> :is([data-close], [data-close-editor]) {
+	align-self: start;
 	grid-column: 3;
 	grid-row: 1;
-	position: static;
+	position: relative;
 	transform: none;
 	justify-self: end;
 }
@@ -48,14 +60,18 @@
 	scroll-padding-block: var(--sg-space-sibling);
 }
 :where(.sg-social-workspace-host) .sg-editor-dialog .editor-body {
-	flex: 1;
-	overflow: auto;
-	padding-bottom: var(--sg-space-section);
+	flex: none;
+	overflow: visible;
+	padding: 0;
 }
 :where(.sg-social-workspace-host) .sg-editor-dialog .editor-input {
 	min-inline-size: 0;
 	resize: none;
 	scrollbar-gutter: stable;
+}
+:where(.sg-social-workspace-host) .sg-editor-dialog textarea.editor-input {
+	min-block-size: 48px;
+	max-block-size: min(40dvh, var(--sg-editor-field-limit, 40dvh));
 }
 :where(.sg-social-workspace-host) .editor-actions,
 :where(.sg-social-workspace-host) .layer-actions {
@@ -163,10 +179,11 @@
 }
 :where(.sg-social-workspace-host) .player-choice-field {
 	display: flex;
+	flex-wrap: wrap;
 	align-items: center;
-	gap: var(--sg-space-related);
+	gap: 8px;
 	min-height: 52px;
-	padding: var(--sg-space-related);
+	padding: 8px;
 	border-radius: var(--sg-radius-control);
 	background: var(--sg-control-fill);
 	min-width: 0;
@@ -177,7 +194,8 @@
 	flex-wrap: wrap;
 	gap: var(--sg-space-related);
 	min-width: 0;
-	flex: 1;
+	min-inline-size: min(100%, 12ch);
+	flex: 1 1 12ch;
 }
 :where(.sg-social-workspace-host) .player-choice-tokens:empty {
 	display: none;
@@ -207,17 +225,30 @@
 	.player-choice-placeholder {
 	display: none;
 }
-:where(.sg-social-workspace-host) .player-choice-trigger[aria-expanded="true"] > svg {
+:where(.sg-social-workspace-host) .player-choice-trigger > .experience-icon {
+	transform: rotate(0);
+	transition: transform var(--sg-motion-release) var(--sg-ease);
+}
+:where(.sg-social-workspace-host) .player-choice-trigger[aria-expanded="true"] > .experience-icon {
 	transform: rotate(180deg);
 }
+[data-sg-motion-input="keyboard"] .player-choice-trigger > .experience-icon {
+	transition: none;
+}
+@media (prefers-reduced-motion: reduce) {
+	.player-choice-trigger > .experience-icon {
+		transition: none;
+	}
+}
 :where(.sg-social-workspace-host) .player-choice-token {
+	flex: 0 1 auto;
 	display: inline-flex;
 	align-items: center;
-	gap: var(--sg-space-related);
+	gap: 8px;
 	min-width: 0;
 	max-width: 100%;
 	min-height: 44px;
-	padding-inline-start: var(--sg-space-related);
+	padding-inline-start: 8px;
 	border-radius: var(--sg-radius-control);
 	background: var(--surface);
 	color: var(--label);
@@ -227,6 +258,7 @@
 	flex: none;
 }
 :where(.sg-social-workspace-host) .player-choice-token-name {
+	flex: 0 1 auto;
 	min-width: 0;
 	max-width: 10em;
 	overflow: hidden;
@@ -410,4 +442,124 @@
 	justify-self: stretch;
 	text-align: center;
 	max-inline-size: 100%;
+}
+
+/* Semantic recipient groups use the same borderless field surface as other editors. */
+:where(.sg-social-workspace-host) fieldset.editor-field {
+	min-inline-size: 0;
+	margin: 0 0 var(--sg-space-section);
+	padding: 0;
+	border: 0;
+}
+:where(.sg-social-workspace-host) fieldset.editor-field > legend {
+	padding: 0;
+	margin-bottom: var(--sg-space-related);
+}
+
+/* Profile editing is one bounded flow: avatar, display name, then biography. */
+:where(.sg-social-workspace-host) .sg-profile-editor {
+	--sg-profile-editor-block: 540px;
+	block-size: min(var(--sg-profile-editor-block), calc(100dvh - 48px));
+}
+:where(.sg-social-workspace-host) .sg-profile-editor > .sg-reading-body {
+	flex: 1;
+	display: block;
+	max-block-size: none;
+	padding: var(--sg-space-sibling) var(--sg-space-surface) 0;
+}
+:where(.sg-social-workspace-host) .sg-profile-editor .editor-body {
+	overflow: visible;
+	padding: 0;
+}
+:where(.sg-social-workspace-host) .sg-profile-editor .profile-avatar-edit {
+	margin-inline: auto;
+}
+:where(.sg-social-workspace-host) .sg-profile-editor .avatar-grid {
+	grid-template-columns: repeat(auto-fit, minmax(52px, 1fr));
+	margin-block-start: var(--sg-space-sibling);
+}
+:where(.sg-social-workspace-host) .sg-profile-editor .avatar-option[data-sg-button] {
+	position: relative;
+	inline-size: 100%;
+	block-size: 60px;
+	min-block-size: 60px;
+	padding: 4px;
+}
+:where(.sg-social-workspace-host) .sg-profile-editor .avatar-option .sg-avatar {
+	--avatar-size: var(--avatar-row);
+}
+:where(.sg-social-workspace-host) .avatar-selected-mark {
+	position: absolute;
+	inset-inline-end: 3px;
+	inset-block-end: 3px;
+	display: grid;
+	place-items: center;
+	inline-size: 16px;
+	block-size: 16px;
+	border-radius: 50%;
+	background: var(--surface);
+	color: var(--ink);
+}
+:where(.sg-social-workspace-host) .avatar-selected-mark > svg {
+	inline-size: 12px;
+	block-size: 12px;
+}
+@media (max-width: 760px) {
+	:where(.sg-social-workspace-host) .sg-profile-editor {
+		block-size: min(var(--sg-profile-editor-block), calc(100dvh - 24px));
+	}
+	:where(.sg-social-workspace-host) .sg-profile-editor > .sg-reading-body {
+		padding-inline: 20px;
+	}
+}
+@media (max-height: 500px) {
+	:where(.sg-social-workspace-host) .sg-profile-editor {
+		block-size: calc(100dvh - 32px);
+	}
+}
+
+:where(.sg-social-workspace-host) .sg-profile-editor .sg-reading-head > h2 {
+	white-space: normal;
+	text-overflow: clip;
+}
+
+/* The Reading body is the one scroll owner; forms only organize their fields. */
+:where(.sg-social-workspace-host) .sg-editor-dialog > .sg-reading-body {
+	display: block;
+	flex: 1 1 auto;
+}
+
+/* One complete native writing line survives enlarged type. */
+:where(.sg-social-workspace-host) .sg-editor-dialog textarea.editor-input {
+	min-block-size: max(48px, calc(1lh + 22px));
+}
+
+/* When height is scarce, one form scrolls as a whole instead of pinching its
+   reading window between a large heading and fixed actions. */
+@media (max-height: 480px) {
+	:where(.sg-social-workspace-host) .sg-editor-dialog[open] {
+		display: block;
+		overflow-y: auto;
+		scroll-padding-block: var(--sg-space-sibling);
+	}
+	:where(.sg-social-workspace-host) .sg-editor-dialog > .sg-reading-body {
+		max-block-size: none;
+		overflow: visible;
+	}
+}
+:where(.sg-social-workspace-host) .sg-editor-dialog[open][data-keyboard-open="true"] {
+	display: block;
+	overflow-y: auto;
+	scroll-padding-block: var(--sg-space-sibling);
+}
+:where(.sg-social-workspace-host)
+	.sg-editor-dialog[open][data-keyboard-open="true"]
+	> .sg-reading-body {
+	max-block-size: none;
+	overflow: visible;
+}
+
+/* The field paper owns the fill; native text remains on the same sheet. */
+:where(.sg-social-workspace-host) [data-sg-paper-field] > .editor-input {
+	background: transparent;
 }

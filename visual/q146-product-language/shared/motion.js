@@ -142,7 +142,11 @@
 		}
 		return { finish, cancel };
 	}
-	function run(node, frames, { role = "enter", immediate = false, event, fill = "none" } = {}) {
+	function run(
+		node,
+		frames,
+		{ role = "enter", immediate = false, event, fill = "none", timing } = {},
+	) {
 		if (!node?.isConnected) return null;
 		const previous = active.get(node),
 			current = previous ? getComputedStyle(node) : null,
@@ -152,7 +156,10 @@
 			from.clipPath = current.clipPath === "none" ? frames[0].clipPath : current.clipPath;
 		cancel(node);
 		if (immediate || instant(event) || document.hidden || !exposed) return null;
-		const a = node.animate(from ? [from, frames.at(-1)] : frames, { ...options(role), fill });
+		const a = node.animate(from ? [from, frames.at(-1)] : frames, {
+			...(timing ?? options(role)),
+			fill,
+		});
 		active.set(node, a);
 		a.finished
 			.catch(() => {})
@@ -172,7 +179,7 @@
 			{ role: direction === "replace" ? "state" : "enter", ...config },
 		);
 	}
-	function app(node, desktop, { opening, anchor, bounds, desktopBounds: home, source }) {
+	function app(node, desktop, { opening, anchor, bounds, desktopBounds: home, source, timing }) {
 		const x = anchor.x + anchor.width / 2,
 			y = anchor.y + anchor.height / 2,
 			scale = Math.min(anchor.width / bounds.width, anchor.height / bounds.height);
@@ -191,10 +198,12 @@
 			run(node, opening ? [near, rest] : [rest, near], {
 				role: opening ? "app-open" : "app-close",
 				fill: "both",
+				timing,
 			}),
 			run(desktop, opening ? [homeRest, receded] : [receded, homeRest], {
 				role: opening ? "app-open" : "app-close",
 				fill: "both",
+				timing,
 			}),
 		].filter(Boolean);
 		const pane = animations[0];

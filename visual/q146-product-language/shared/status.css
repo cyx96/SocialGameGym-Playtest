@@ -101,3 +101,19 @@
 .sg-phase-notice[data-reading="focus"] {
 	max-inline-size: var(--sg-focus);
 }
+
+.sg-state-primary {
+	display: inline-flex;
+	align-items: center;
+	gap: var(--sg-space-related);
+	max-inline-size: 100%;
+}
+.sg-reading-activity {
+	display: inline-flex;
+	align-items: center;
+	vertical-align: middle;
+	flex: none;
+}
+.sg-status-message > .sg-reading-activity {
+	margin-inline-end: var(--sg-space-related);
+}

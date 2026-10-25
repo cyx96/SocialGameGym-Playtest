@@ -100,8 +100,31 @@
 				content = primary.cloneNode(true);
 			clone.className = "sg-task-primary";
 			clone.dataset.taskPrimary = "";
-			clone.append(...content.childNodes);
+			for (const child of [...content.childNodes]) {
+				if (child.nodeType === Node.TEXT_NODE && child.textContent.trim()) {
+					const fragment = document.createElement("span");
+					fragment.className = "sg-task-context-fragment";
+					fragment.append(child);
+					clone.append(fragment);
+				} else if (
+					child.nodeType === Node.TEXT_NODE &&
+					clone.lastElementChild?.classList.contains("sg-task-context-fragment")
+				) {
+					clone.lastElementChild.append(child);
+				} else clone.append(child);
+			}
 			for (const node of clone.querySelectorAll("[id]")) node.removeAttribute("id");
+			for (const person of clone.querySelectorAll(".sg-person-inline:not(.sg-person-compact)")) {
+				const at = person.querySelector(".sg-person-at"),
+					avatar = person.querySelector(".sg-avatar"),
+					name = person.dataset.sgPersonName;
+				if (!at || !avatar || !name) continue;
+				const label = document.createElement("span");
+				label.className = "sg-person-visible-name";
+				label.textContent = name;
+				person.classList.add("sg-person-compact");
+				person.replaceChildren(at, label, avatar);
+			}
 			slot.replaceChildren(clone);
 			slot.removeAttribute("title");
 		}
@@ -110,22 +133,34 @@
 			if (closed) return;
 			const stacked = getComputedStyle(source).getPropertyValue("--sg-task-stacked").trim() === "1",
 				visible = pane.checkVisibility({ checkVisibilityCSS: true });
-			pane.dataset.sgTaskStacked = String(stacked);
+			if (pane.dataset.sgTaskStacked !== String(stacked))
+				pane.dataset.sgTaskStacked = String(stacked);
 			if (!toolbar) return;
-			if (visible)
-				pane.style.setProperty(
-					"--sg-task-nav-height",
-					toolbar.getBoundingClientRect().height + "px",
-				);
+			if (visible) {
+				// A flight scales painted bounds, never the navigation's layout length.
+				const style = getComputedStyle(toolbar),
+					height =
+						parseFloat(style.height) +
+						(style.boxSizing === "border-box"
+							? 0
+							: parseFloat(style.paddingTop) +
+								parseFloat(style.paddingBottom) +
+								parseFloat(style.borderTopWidth) +
+								parseFloat(style.borderBottomWidth)) +
+						"px";
+				if (pane.style.getPropertyValue("--sg-task-nav-height") !== height)
+					pane.style.setProperty("--sg-task-nav-height", height);
+			}
 			const compact =
 				stacked &&
 				visible &&
 				primary.getBoundingClientRect().bottom <= toolbar.getBoundingClientRect().bottom;
 			const previous = toolbar.dataset.sgContext;
-			toolbar.dataset.sgContext = compact ? "compact" : "expanded";
+			const state = compact ? "compact" : "expanded";
+			if (previous !== state) toolbar.dataset.sgContext = state;
 			if (rail) {
-				rail.dataset.sgContext = toolbar.dataset.sgContext;
-				rail.inert = !compact;
+				if (rail.dataset.sgContext !== state) rail.dataset.sgContext = state;
+				if (rail.inert !== !compact) rail.inert = !compact;
 			}
 			if (compact && previous !== "compact")
 				window.SGGMotion?.run(slot, [{ opacity: 0 }, { opacity: 1 }], { role: "state" });

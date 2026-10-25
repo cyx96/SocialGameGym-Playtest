@@ -1,0 +1,212 @@
+/* Generated font assets. Ordinary text is solid currentColor; only the wordmark uses color layers. */
+@font-face {
+	font-family: "SGG Paper UI";
+	src: url("../fonts/SGGPaperUI-Text.woff2") format("woff2");
+	font-weight: 100 500;
+	font-style: normal;
+	font-display: swap;
+}
+@font-face {
+	font-family: "SGG Paper UI";
+	src: url("../fonts/SGGPaperUI-Display.woff2") format("woff2");
+	font-weight: 501 900;
+	font-style: normal;
+	font-display: swap;
+}
+@font-face {
+	font-family: "SGG Paper Logo";
+	src: url("../fonts/SGGPaperLogo.woff2") format("woff2");
+	font-weight: 100 900;
+	font-style: normal;
+	font-display: swap;
+}
+:root {
+	--sg-logo-palette: --sg-logo-trust;
+}
+.brand,
+.sg-welcome-command,
+.sg-paper-logo {
+	font-family: var(--sg-font-logo);
+	font-palette: var(--sg-logo-palette);
+	font-synthesis: none;
+}
+@font-palette-values --sg-logo-coordination {
+	font-family: "SGG Paper Logo";
+	base-palette: 0;
+}
+@font-palette-values --sg-logo-coordination-reverse {
+	font-family: "SGG Paper Logo";
+	base-palette: 1;
+}
+[data-sg-theme="coordination"] {
+	--sg-logo-palette: --sg-logo-coordination;
+}
+[data-sg-theme="coordination"][data-sg-paper-inverse="true"],
+[data-sg-theme="coordination"] [data-sg-paper-inverse="true"] {
+	--sg-logo-palette: --sg-logo-coordination-reverse;
+}
+@font-palette-values --sg-logo-information {
+	font-family: "SGG Paper Logo";
+	base-palette: 2;
+}
+@font-palette-values --sg-logo-information-reverse {
+	font-family: "SGG Paper Logo";
+	base-palette: 3;
+}
+[data-sg-theme="information"] {
+	--sg-logo-palette: --sg-logo-information;
+}
+[data-sg-theme="information"][data-sg-paper-inverse="true"],
+[data-sg-theme="information"] [data-sg-paper-inverse="true"] {
+	--sg-logo-palette: --sg-logo-information-reverse;
+}
+@font-palette-values --sg-logo-creation {
+	font-family: "SGG Paper Logo";
+	base-palette: 4;
+}
+@font-palette-values --sg-logo-creation-reverse {
+	font-family: "SGG Paper Logo";
+	base-palette: 5;
+}
+[data-sg-theme="creation"] {
+	--sg-logo-palette: --sg-logo-creation;
+}
+[data-sg-theme="creation"][data-sg-paper-inverse="true"],
+[data-sg-theme="creation"] [data-sg-paper-inverse="true"] {
+	--sg-logo-palette: --sg-logo-creation-reverse;
+}
+@font-palette-values --sg-logo-cooperation {
+	font-family: "SGG Paper Logo";
+	base-palette: 6;
+}
+@font-palette-values --sg-logo-cooperation-reverse {
+	font-family: "SGG Paper Logo";
+	base-palette: 7;
+}
+[data-sg-theme="cooperation"] {
+	--sg-logo-palette: --sg-logo-cooperation;
+}
+[data-sg-theme="cooperation"][data-sg-paper-inverse="true"],
+[data-sg-theme="cooperation"] [data-sg-paper-inverse="true"] {
+	--sg-logo-palette: --sg-logo-cooperation-reverse;
+}
+@font-palette-values --sg-logo-trust {
+	font-family: "SGG Paper Logo";
+	base-palette: 8;
+}
+@font-palette-values --sg-logo-trust-reverse {
+	font-family: "SGG Paper Logo";
+	base-palette: 9;
+}
+[data-sg-theme="trust"] {
+	--sg-logo-palette: --sg-logo-trust;
+}
+[data-sg-theme="trust"][data-sg-paper-inverse="true"],
+[data-sg-theme="trust"] [data-sg-paper-inverse="true"] {
+	--sg-logo-palette: --sg-logo-trust-reverse;
+}
+@font-palette-values --sg-logo-allocation {
+	font-family: "SGG Paper Logo";
+	base-palette: 10;
+}
+@font-palette-values --sg-logo-allocation-reverse {
+	font-family: "SGG Paper Logo";
+	base-palette: 11;
+}
+[data-sg-theme="allocation"] {
+	--sg-logo-palette: --sg-logo-allocation;
+}
+[data-sg-theme="allocation"][data-sg-paper-inverse="true"],
+[data-sg-theme="allocation"] [data-sg-paper-inverse="true"] {
+	--sg-logo-palette: --sg-logo-allocation-reverse;
+}
+@font-palette-values --sg-logo-market {
+	font-family: "SGG Paper Logo";
+	base-palette: 12;
+}
+@font-palette-values --sg-logo-market-reverse {
+	font-family: "SGG Paper Logo";
+	base-palette: 13;
+}
+[data-sg-theme="market"] {
+	--sg-logo-palette: --sg-logo-market;
+}
+[data-sg-theme="market"][data-sg-paper-inverse="true"],
+[data-sg-theme="market"] [data-sg-paper-inverse="true"] {
+	--sg-logo-palette: --sg-logo-market-reverse;
+}
+@font-palette-values --sg-logo-protection {
+	font-family: "SGG Paper Logo";
+	base-palette: 14;
+}
+@font-palette-values --sg-logo-protection-reverse {
+	font-family: "SGG Paper Logo";
+	base-palette: 15;
+}
+[data-sg-theme="protection"] {
+	--sg-logo-palette: --sg-logo-protection;
+}
+[data-sg-theme="protection"][data-sg-paper-inverse="true"],
+[data-sg-theme="protection"] [data-sg-paper-inverse="true"] {
+	--sg-logo-palette: --sg-logo-protection-reverse;
+}
+@font-palette-values --sg-logo-incentives {
+	font-family: "SGG Paper Logo";
+	base-palette: 16;
+}
+@font-palette-values --sg-logo-incentives-reverse {
+	font-family: "SGG Paper Logo";
+	base-palette: 17;
+}
+[data-sg-theme="incentives"] {
+	--sg-logo-palette: --sg-logo-incentives;
+}
+[data-sg-theme="incentives"][data-sg-paper-inverse="true"],
+[data-sg-theme="incentives"] [data-sg-paper-inverse="true"] {
+	--sg-logo-palette: --sg-logo-incentives-reverse;
+}
+@font-palette-values --sg-logo-governance {
+	font-family: "SGG Paper Logo";
+	base-palette: 18;
+}
+@font-palette-values --sg-logo-governance-reverse {
+	font-family: "SGG Paper Logo";
+	base-palette: 19;
+}
+[data-sg-theme="governance"] {
+	--sg-logo-palette: --sg-logo-governance;
+}
+[data-sg-theme="governance"][data-sg-paper-inverse="true"],
+[data-sg-theme="governance"] [data-sg-paper-inverse="true"] {
+	--sg-logo-palette: --sg-logo-governance-reverse;
+}
+@font-palette-values --sg-logo-competition {
+	font-family: "SGG Paper Logo";
+	base-palette: 20;
+}
+@font-palette-values --sg-logo-competition-reverse {
+	font-family: "SGG Paper Logo";
+	base-palette: 21;
+}
+[data-sg-theme="competition"] {
+	--sg-logo-palette: --sg-logo-competition;
+}
+[data-sg-theme="competition"][data-sg-paper-inverse="true"],
+[data-sg-theme="competition"] [data-sg-paper-inverse="true"] {
+	--sg-logo-palette: --sg-logo-competition-reverse;
+}
+@font-palette-values --sg-logo-matching {
+	font-family: "SGG Paper Logo";
+	base-palette: 22;
+}
+@font-palette-values --sg-logo-matching-reverse {
+	font-family: "SGG Paper Logo";
+	base-palette: 23;
+}
+[data-sg-theme="matching"] {
+	--sg-logo-palette: --sg-logo-matching;
+}
+[data-sg-theme="matching"][data-sg-paper-inverse="true"],
+[data-sg-theme="matching"] [data-sg-paper-inverse="true"] {
+	--sg-logo-palette: --sg-logo-matching-reverse;
+}

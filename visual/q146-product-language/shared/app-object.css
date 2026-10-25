@@ -1,0 +1,54 @@
+@import url("./app-object-palettes.css");
+/* Approved 160-unit paper scene fitted into the existing launcher glyph slot. */
+.sg-app-object {
+	display: block;
+	position: relative;
+	inline-size: var(--sg-launch-glyph, 62px);
+	block-size: var(--sg-launch-glyph, 62px);
+	pointer-events: none;
+}
+.sg-app-object .physical {
+	display: block;
+	position: absolute;
+	inline-size: 160px;
+	block-size: 160px;
+	transform: scale(0.3875);
+	transform-origin: top left;
+}
+.sg-app-object .scene {
+	display: block;
+	position: relative;
+	width: 160px;
+	height: 160px;
+	perspective: 540px;
+	perspective-origin: 80px 80px;
+	transform-style: preserve-3d;
+}
+.sg-app-object .piece {
+	display: block;
+	position: absolute;
+	inset: 0;
+	transform-style: preserve-3d;
+	pointer-events: none;
+}
+.sg-app-object .piece svg {
+	position: absolute;
+	inset: 0;
+	display: block;
+	width: 160px;
+	height: 160px;
+	overflow: visible;
+	pointer-events: none;
+	stroke: none;
+	fill: none;
+}
+.sg-app-object .front,
+.sg-app-object .back {
+	backface-visibility: hidden;
+}
+.sg-app-object .back {
+	transform: rotateY(180deg);
+}
+.sg-app-object[data-app-object="game"] .physical {
+	filter: drop-shadow(2.5px 6px 3.5px color-mix(in srgb, var(--art-dark) 17%, transparent));
+}

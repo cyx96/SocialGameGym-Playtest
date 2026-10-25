@@ -15,7 +15,7 @@
 	color: var(--ink);
 	position: relative;
 }
-.tool-tile svg {
+.tool-tile > svg {
 	width: 66px;
 	height: 66px;
 	stroke: none;
@@ -48,7 +48,7 @@
 	stroke-linejoin: round;
 	fill: none;
 }
-.tool-tile svg {
+.tool-tile > svg {
 	width: var(--sg-launch-glyph, 62px);
 	height: var(--sg-launch-glyph, 62px);
 }
@@ -70,7 +70,7 @@
 		--sg-launch-size: 80px;
 		--sg-launch-radius: 22px;
 	}
-	.tool-tile svg {
+	.tool-tile > svg {
 		width: var(--sg-launch-glyph, 62px);
 		height: var(--sg-launch-glyph, 62px);
 	}

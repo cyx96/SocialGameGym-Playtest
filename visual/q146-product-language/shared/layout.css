@@ -59,7 +59,8 @@ body[data-sg-shell][data-scroll="workspace"] {
 	transform: none;
 	white-space: nowrap;
 	flex: none;
-	font: var(--sg-weight-brand) var(--sg-type-brand) / var(--sg-leading-interface) var(--sg-font-ui);
+	font:
+		var(--sg-weight-brand) var(--sg-type-brand) / var(--sg-leading-interface) var(--sg-font-logo);
 	letter-spacing: -0.025em;
 	color: var(--ink);
 	text-decoration: none;
@@ -142,6 +143,13 @@ body.config-open > .sg-product-bar {
 	inline-size: calc(100% - var(--sg-safe-start) - var(--sg-safe-end));
 	max-inline-size: var(--sg-frame);
 	margin-inline: auto;
+}
+/* A scroll-owned App retains a reachable rail; task-specific short-canvas rules still win. */
+.sg-inset-pane > :where(.sg-pane-toolbar) {
+	position: sticky;
+	inset-block-start: 0;
+	z-index: 3;
+	background-color: var(--canvas);
 }
 /* Progress group is mounted inside the common context line, before content. */
 .sg-progress {
@@ -257,7 +265,7 @@ body[data-scroll="workspace"] > .sg-page[data-flow="feed"] {
 	grid-column: 1;
 	grid-row: 1;
 	justify-self: start;
-	position: static;
+	position: relative;
 	inset: auto;
 	margin: 0;
 	max-inline-size: 100%;
@@ -277,7 +285,7 @@ body[data-scroll="workspace"] > .sg-page[data-flow="feed"] {
 	grid-column: 3;
 	grid-row: 1;
 	justify-self: end;
-	position: static;
+	position: relative;
 	inset: auto;
 	margin: 0;
 	max-inline-size: 100%;
@@ -367,7 +375,7 @@ body[data-layout-surface="social"] > .tool-home {
 }
 @media (max-width: 760px) {
 	:root {
-		--sg-gutter: 1.25rem;
+		--sg-gutter: 20px;
 		--sg-header-height: 5.75rem;
 		--sg-page-top: 1.5rem;
 		--sg-task-gap: 1.5rem;
@@ -443,7 +451,7 @@ body[data-layout-surface="social"] > .tool-home {
 }
 @media (max-width: 359px) {
 	:root {
-		--sg-gutter: 1rem;
+		--sg-gutter: 16px;
 	}
 	.sg-progress {
 		column-gap: 0.75rem;
@@ -493,6 +501,9 @@ body[data-layout-surface="social"] > .tool-home {
 	overflow: hidden;
 	text-overflow: ellipsis;
 }
+.sg-context-game > .round {
+	font-size: var(--sg-type-context);
+}
 .sg-context-line > .sg-progress {
 	inline-size: auto;
 	max-inline-size: none;
@@ -511,6 +522,15 @@ body[data-layout-surface="social"] > .tool-home {
 .sg-context-line .sg-progress-group {
 	font-size: var(--sg-type-context);
 	line-height: 1.5;
+}
+.sg-context-line .sg-progress-group > strong {
+	min-inline-size: 0;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+.sg-context-line .sg-progress-group > span {
+	flex: none;
 }
 .sg-context-line .sg-progress-actions {
 	margin: 0;
@@ -540,6 +560,9 @@ body[data-context-progress] > .sg-page {
 	}
 	.sg-product-bar > .game-context {
 		gap: 0.25rem 1rem;
+	}
+	.sg-context-game > .round {
+		font-size: var(--sg-type-context);
 	}
 	.sg-context-line > .sg-progress {
 		gap: 0.75rem;
@@ -773,6 +796,9 @@ body[data-task-scene] > .sg-page.sg-state-page {
 }
 /* Align the visible back glyph to the reading guide, independently of its full target. */
 .sg-pane-toolbar {
+	/* Keep the App bar's 44px targets and notification corner inside its own band,
+	   including short screens; compress body whitespace instead of cutting symbols. */
+	--sg-toolbar-height: 3.5rem;
 	grid-template-columns: minmax(var(--sg-nav-target), 1fr) minmax(0, auto) minmax(
 			var(--sg-nav-target),
 			1fr
@@ -809,18 +835,20 @@ body[data-task-scene] > .sg-page.sg-state-page {
 	font: 400 var(--sg-type-meta) / var(--sg-leading-interface) var(--sg-font-ui);
 	color: var(--secondary);
 	margin-inline-start: 0;
-	white-space: nowrap;
+	white-space: normal;
+	max-inline-size: 100%;
+	text-align: center;
 }
 .sg-pane-toolbar > .sg-button[data-sg-button]:last-child {
 	justify-self: end;
 }
 .sg-pane-toolbar > .sg-button[data-sg-button]:first-child:has(svg[data-sg-icon="back"]) {
-	inline-size: var(--sg-nav-target);
+	inline-size: var(--sg-nav-action-inline, var(--sg-nav-target));
 	block-size: var(--sg-nav-target);
 	min-inline-size: var(--sg-nav-target);
 	min-block-size: var(--sg-nav-target);
 	justify-self: start;
-	margin-inline-start: calc(-1 * var(--sg-nav-leading-overhang));
+	margin-inline-start: calc(-1 * min(var(--sg-nav-leading-overhang), var(--sg-safe-start)));
 }
 
 /* A hanging target at the viewport edge keeps its transient keyboard focus inside its own bounds. */

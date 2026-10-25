@@ -17,6 +17,10 @@
 	}
 	function open(dialog, { event, instant = false } = {}) {
 		enhance(dialog);
+		const keyboard =
+			document.documentElement.dataset.sgMotionInput === "keyboard" ||
+			event?.type?.startsWith("key") ||
+			(event?.type === "click" && event.detail === 0);
 		const interrupted = active.has(dialog),
 			style = interrupted ? getComputedStyle(dialog) : null,
 			from = style ? { opacity: style.opacity, transform: style.transform } : null;
@@ -26,11 +30,11 @@
 			// A top-layer reading takes over from an entering scene; never animate both layers.
 			for (let parent = dialog.parentElement; parent; parent = parent.parentElement)
 				window.SGGMotion?.cancel(parent);
-			if (dialog.dataset.keyboardOpen === "true") dialog.removeAttribute("tabindex");
+			if (keyboard) dialog.removeAttribute("tabindex");
 			dialog.showModal();
 			// Native showModal autofocus otherwise puts a ring on Close after some pointer paths.
 			// The dialog is the initial reading target; Tab still starts at its first control.
-			if (dialog.dataset.keyboardOpen !== "true") {
+			if (!keyboard) {
 				dialog.tabIndex = -1;
 				dialog.focus({ preventScroll: true });
 			}
@@ -67,7 +71,7 @@
 				[
 					from,
 					{
-						opacity: style.getPropertyValue("--sg-reading-exit-opacity").trim() || "0",
+						opacity: 1,
 						transform:
 							style.getPropertyValue("--sg-reading-exit-transform").trim() || "translateY(6px)",
 					},
