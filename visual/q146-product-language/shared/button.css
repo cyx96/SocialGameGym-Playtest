@@ -452,34 +452,12 @@ button.sg-button[data-sg-button][role="menuitem"] .type-mark {
 	inset-block-start: 0;
 	inset-inline-end: 0;
 }
-/* A count is content, so enlarged text can grow the compact action's width.
-   Normal-size counters still fit the established 44px action. */
-.sg-button[data-sg-button]:is([data-sg-role="icon"], [data-sg-role="icon-primary"]):has(
-	> .sg-unread:not([hidden])
-) {
-	display: inline-grid;
-	grid-template-columns: minmax(44px, max-content);
-	--sg-nav-action-inline: max-content;
-	--sg-counter-overhang: max(0px, calc(48px - 2 * var(--sg-type-caption)));
-	inline-size: max-content;
-	gap: 0;
-}
-.sg-button[data-sg-button]:is([data-sg-role="icon"], [data-sg-role="icon-primary"]):has(
-		> .sg-unread:not([hidden])
-	)
-	> :is(.experience-button-content, .sg-button-label, svg, .sg-unread) {
-	grid-area: 1 / 1;
-	justify-self: var(--sg-counter-align, center);
-}
+/* Badges overlay the action's top-right corner; count changes never reflow it. */
 .sg-button[data-sg-button]:is([data-sg-role="icon"], [data-sg-role="icon-primary"]) > .sg-unread {
-	position: relative;
-	inset: auto;
-	align-self: start;
-	--sg-counter-align: end;
-	justify-self: end;
-	/* At normal text size the open outer corner clears both the glyph and header.
-	   Larger counts move upward as the taller toolbar provides room. */
-	translate: var(--sg-counter-overhang) calc(6px - 1em);
+	position: absolute;
+	inset-block-start: 0;
+	inset-inline-end: 0;
+	translate: 25% -25%;
 }
 .sg-unread[hidden] {
 	display: none !important;
@@ -554,12 +532,4 @@ button.sg-button[data-sg-button][role="menuitem"] .type-mark {
 	.sg-activity-indicator > svg {
 		animation: none;
 	}
-}
-
-/* Counter width belongs to its label; the icon's circular paper remains 44px. */
-.sg-button[data-sg-button]:is([data-sg-role="icon"], [data-sg-role="icon-primary"]):has(
-	> .sg-unread:not([hidden])
-) > :is(.sg-paper-depth, .sg-paper-grain, .sg-paper-fold) {
-	inline-size: 44px;
-	margin-inline: auto;
 }
