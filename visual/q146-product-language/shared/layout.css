@@ -842,6 +842,10 @@ body[data-task-scene] > .sg-page.sg-state-page {
 .sg-pane-toolbar > .sg-button[data-sg-button]:last-child {
 	justify-self: end;
 }
+.sg-pane-toolbar > .sg-button[data-sg-button]:last-child:has(> .sg-unread:not([hidden])) {
+	/* The counter's outer corner is part of the trailing action's layout budget. */
+	margin-inline-end: var(--sg-counter-overhang, 0px);
+}
 .sg-pane-toolbar > .sg-button[data-sg-button]:first-child:has(svg[data-sg-icon="back"]) {
 	inline-size: var(--sg-nav-action-inline, var(--sg-nav-target));
 	block-size: var(--sg-nav-target);

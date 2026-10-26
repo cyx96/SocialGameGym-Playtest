@@ -460,6 +460,7 @@ button.sg-button[data-sg-button][role="menuitem"] .type-mark {
 	display: inline-grid;
 	grid-template-columns: minmax(44px, max-content);
 	--sg-nav-action-inline: max-content;
+	--sg-counter-overhang: max(0px, calc(48px - 2 * var(--sg-type-caption)));
 	inline-size: max-content;
 	gap: 0;
 }
@@ -478,7 +479,7 @@ button.sg-button[data-sg-button][role="menuitem"] .type-mark {
 	justify-self: end;
 	/* At normal text size the open outer corner clears both the glyph and header.
 	   Larger counts move upward as the taller toolbar provides room. */
-	translate: max(0px, calc(48px - 2em)) calc(6px - 1em);
+	translate: var(--sg-counter-overhang) calc(6px - 1em);
 }
 .sg-unread[hidden] {
 	display: none !important;
