@@ -279,6 +279,22 @@
 				);
 			if (animation) animations.push(animation);
 		}
+		// A hidden iframe may need its first expensive paint when exposed. Hold the
+		// opening pose through that paint before spending the gateway's duration.
+		for (const animation of animations) {
+			animation.pause();
+			animation.currentTime = 0;
+		}
+		requestAnimationFrame(() =>
+			requestAnimationFrame(() => {
+				for (const animation of animations) {
+					const target = animation.effect?.target;
+					// Cancellation, keyboard/reduced/background settlement must not resurrect it.
+					if (animation.playState === "paused" && active.get(target) === animation)
+						animation.play();
+				}
+			}),
+		);
 		return animations;
 	}
 	function reveal(node, config = {}) {

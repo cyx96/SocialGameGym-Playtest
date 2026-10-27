@@ -114,9 +114,6 @@
 	display: grid;
 	gap: var(--sg-space-related);
 }
-.preparation-page .sg-reading-actions {
-	justify-content: flex-end;
-}
 @media (max-width: 520px) {
 	.preparation-seat {
 		column-gap: var(--sg-space-related);

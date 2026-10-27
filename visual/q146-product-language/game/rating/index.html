@@ -1018,6 +1018,22 @@ body:has(.sg-utility-shell) > .sg-language-control {
 				);
 			if (animation) animations.push(animation);
 		}
+		// A hidden iframe may need its first expensive paint when exposed. Hold the
+		// opening pose through that paint before spending the gateway's duration.
+		for (const animation of animations) {
+			animation.pause();
+			animation.currentTime = 0;
+		}
+		requestAnimationFrame(() =>
+			requestAnimationFrame(() => {
+				for (const animation of animations) {
+					const target = animation.effect?.target;
+					// Cancellation, keyboard/reduced/background settlement must not resurrect it.
+					if (animation.playState === "paused" && active.get(target) === animation)
+						animation.play();
+				}
+			}),
+		);
 		return animations;
 	}
 	function reveal(node, config = {}) {
@@ -4326,6 +4342,7 @@ button:is(
 
 .sg-reading {
 	position: fixed;
+	--sg-reading-inline-space: 24px;
 	--sg-reading-entry-transform: translateY(6px);
 	--sg-reading-exit-transform: translateY(6px);
 	--sg-reading-exit-opacity: 1;
@@ -4391,10 +4408,24 @@ button:is(
 	min-height: 0;
 	min-inline-size: 0;
 	grid-template-columns: minmax(0, 1fr);
-	padding: 8px 24px 26px;
+	padding: 8px var(--sg-reading-inline-space) 26px;
 	max-height: calc(100dvh - 150px);
 	overflow: auto;
 	overscroll-behavior: contain;
+}
+.sg-reading > .sg-reading-actions {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	justify-content: flex-end;
+	flex: none;
+	min-inline-size: 0;
+	gap: var(--sg-space-sibling);
+	padding: 0 var(--sg-reading-inline-space) var(--sg-space-section);
+}
+.sg-reading > .sg-reading-actions > .sg-button {
+	max-inline-size: 100%;
+	white-space: normal;
 }
 .sg-reading-body .rules-brief {
 	font-size: var(--sg-type-body);
@@ -4461,6 +4492,7 @@ body:has(#deck) {
 }
 @media (max-width: 760px) {
 	.sg-reading {
+		--sg-reading-inline-space: 20px;
 		--sg-reading-entry-transform: translateY(100%);
 		--sg-reading-exit-transform: translateY(100%);
 		--sg-reading-exit-opacity: 1;
@@ -4478,7 +4510,7 @@ body:has(#deck) {
 	}
 	.sg-reading > .sg-reading-body {
 		min-height: 0;
-		padding: 6px 20px 24px;
+		padding: 6px var(--sg-reading-inline-space) 24px;
 		max-height: calc(100dvh - 120px);
 	}
 	.dm-create .create-head {

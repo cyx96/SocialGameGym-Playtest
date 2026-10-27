@@ -536,12 +536,6 @@
 	resize: vertical;
 	max-height: 40dvh;
 }
-:where(.sg-social-workspace-host) .editor-actions {
-	padding: var(--sg-space-related) var(--sg-space-surface) var(--sg-space-section);
-	display: flex;
-	justify-content: flex-end;
-	flex: none;
-}
 :where(.sg-social-workspace-host) .editor-actions .submit-stack {
 	min-width: 104px;
 }

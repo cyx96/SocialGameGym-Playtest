@@ -37,7 +37,7 @@
 	/* A wide fold and its receiving shadow travel with the opening paper edge. */
 	background-image:
 		linear-gradient(to bottom, #ffffffb3, #ffffff26 45%, #20232124 52%, #20232100),
-		url("./assets/a9-matte-paper.png");
+		url("./assets/a9-matte-paper.webp");
 	background-size:
 		auto,
 		512px 512px;

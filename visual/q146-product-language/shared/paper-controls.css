@@ -13,6 +13,8 @@
 	--sg-paper-contained-inset: 4px;
 	--sg-paper-fiber: 0.72;
 	--sg-paper-pulp: 0.16;
+	/* Same stock/scale as a sheet; the open canvas retains 3/4 of its fine fiber. */
+	--sg-paper-canvas-wash: calc(100% - var(--sg-paper-fiber) * 75%);
 }
 .sg-paper-face,
 [data-sg-paper-field] {
@@ -173,7 +175,7 @@
 	position: absolute;
 	inset: 0;
 	border-radius: inherit;
-	background: url("./assets/a9-matte-paper.png") repeat;
+	background: url("./assets/a9-matte-paper.webp") repeat;
 	filter: grayscale(1);
 }
 .sg-paper-grain::before,
@@ -423,15 +425,18 @@ button.sg-paper-face.sg-button[data-sg-button][aria-busy="true"]:is(
 	--sg-paper-base: var(--canvas, var(--sg-brand-canvas));
 }
 :root [data-sg-paper-canvas]:where(:not(.sg-welcome[data-leaving="true"])) {
+	background-color: var(--sg-paper-base);
 	background-image:
 		linear-gradient(
-			color-mix(in srgb, var(--sg-paper-base) 88%, transparent),
-			color-mix(in srgb, var(--sg-paper-base) 88%, transparent)
+			color-mix(in srgb, var(--sg-paper-base) var(--sg-paper-canvas-wash), transparent),
+			color-mix(in srgb, var(--sg-paper-base) var(--sg-paper-canvas-wash), transparent)
 		),
-		url("./assets/a9-matte-paper.png");
+		url("./assets/a9-matte-paper.webp");
 	background-size:
 		auto,
 		512px 512px;
+	/* Keep the theme's hue; paper contributes luminance rather than a second tint. */
+	background-blend-mode: normal, luminosity;
 }
 [data-sg-paper-canvas="surface"] {
 	--sg-paper-base: var(--surface);
