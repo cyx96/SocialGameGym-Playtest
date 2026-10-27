@@ -683,14 +683,23 @@ body[data-task-scene] > .sg-page {
 	row-gap: var(--sg-space-section);
 }
 
-/* Gallery navigation keeps its complete button inside the shared product frame. */
+/* Gallery navigation shares the product frame; the visible glyph hangs on its reading guide. */
 .sg-page-back.sg-button[data-sg-button] {
 	position: absolute;
+	--sg-nav-leading-overhang: calc(
+		(var(--sg-button-compact) - var(--sg-icon-action)) /
+		2 +
+		var(--sg-icon-action) /
+		3
+	);
 	inline-size: var(--sg-button-compact);
 	block-size: var(--sg-button-compact);
 	min-inline-size: var(--sg-button-compact);
 	min-block-size: var(--sg-button-compact);
-	inset-inline-start: max(var(--sg-safe-start), (100% - var(--sg-frame)) / 2);
+	inset-inline-start: calc(
+		max(var(--sg-safe-start), (100% - var(--sg-frame)) / 2) -
+		var(--sg-nav-leading-overhang)
+	);
 	inset-block-start: var(--sg-page-gap);
 	z-index: 160;
 }
@@ -785,7 +794,7 @@ body[data-task-scene] > .sg-page.sg-state-page {
 	max-inline-size: var(--sg-focus);
 	margin-inline: auto;
 }
-/* Full button targets share the product bar's safe outer frame on both sides. */
+/* Align the visible back glyph to the reading guide, independently of its full target. */
 .sg-pane-toolbar {
 	/* Keep the App bar's 44px targets and notification corner inside its own band,
 	   including short screens; compress body whitespace instead of cutting symbols. */
@@ -795,6 +804,10 @@ body[data-task-scene] > .sg-page.sg-state-page {
 			1fr
 		);
 	--sg-nav-target: var(--sg-button-compact);
+	--sg-nav-leading-overhang: min(
+		var(--sg-space-surface),
+		calc((var(--sg-nav-target) - var(--sg-icon-action)) / 2 + var(--sg-icon-action) / 4)
+	);
 }
 .sg-pane-toolbar > :is(h1, h2, .sg-toolbar-title),
 .sg-pane-toolbar > :is(.sg-task-toolbar-label, .sg-toolbar-title) > :is(h1, h2) {
@@ -835,7 +848,7 @@ body[data-task-scene] > .sg-page.sg-state-page {
 	min-inline-size: var(--sg-nav-target);
 	min-block-size: var(--sg-nav-target);
 	justify-self: start;
-	margin-inline-start: 0;
+	margin-inline-start: calc(-1 * min(var(--sg-nav-leading-overhang), var(--sg-safe-start)));
 }
 
 /* A hanging target at the viewport edge keeps its transient keyboard focus inside its own bounds. */

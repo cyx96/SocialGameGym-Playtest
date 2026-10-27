@@ -72,7 +72,7 @@
 	position: relative;
 	isolation: isolate;
 	display: flex;
-	align-items: flex-end;
+	align-items: center;
 	gap: var(--sg-space-section);
 	padding: var(--sg-space-sibling) var(--sg-space-sibling) var(--sg-space-sibling)
 		var(--sg-space-task);
@@ -83,53 +83,49 @@
 .sg-welcome-copy {
 	flex: 1;
 	min-width: 0;
-	display: grid;
-	grid-template-columns: minmax(0, 1fr);
-	padding-block: max(0px, calc((var(--sg-target) - 1lh) / 2));
-	font-size: clamp(var(--sg-text-help), calc(0.375rem + 1.9vw), var(--sg-type-app-navigation));
+	display: block;
+	white-space: nowrap;
+	overflow-x: auto;
+	scrollbar-width: none;
+	padding-block: 0.1em;
+	font-size: clamp(var(--sg-type-body), 2.4vw, var(--sg-task-title));
 	line-height: var(--sg-leading-interface);
 	letter-spacing: -0.02em;
-	overflow-wrap: anywhere;
 }
-.sg-welcome-command,
-.sg-welcome-invocation-reserve {
+.sg-welcome-copy::-webkit-scrollbar {
+	display: none;
+}
+.sg-welcome-command {
 	font-weight: 500;
 	color: var(--sg-invocation-ink);
 	background: var(--sg-invocation-wash);
 	padding: 0.08em 0.18em;
 	border-radius: var(--sg-radius-ui);
-	box-decoration-break: clone;
-	-webkit-box-decoration-break: clone;
+	white-space: nowrap;
 }
 .sg-welcome-message {
-	display: inline;
+	display: inline-grid;
 	font-weight: 400;
+	white-space: nowrap;
 }
-.sg-welcome-reserve,
-.sg-welcome-typing {
+.sg-welcome-full {
+	/* Reserve the complete line before typing; neither paper nor Send changes width. */
 	grid-area: 1 / 1;
-	min-width: 0;
-}
-.sg-welcome-reserve {
-	/* Reserve the whole paragraph with the same inline flow as the live text. */
+	padding-inline-end: 0.3em;
 	opacity: 0;
 	pointer-events: none;
 }
-.sg-welcome-caret,
-.sg-welcome-caret-space {
+.sg-welcome-typing {
+	grid-area: 1 / 1;
+}
+.sg-welcome-caret {
 	display: inline-block;
 	height: 1.1em;
 	width: 2px;
 	margin-left: 0.12em;
 	vertical-align: -0.14em;
-}
-.sg-welcome-caret {
 	background: currentColor;
 	animation: sg-welcome-caret 1100ms steps(1, end) infinite;
-}
-.sg-welcome-send {
-	flex-shrink: 0;
-	align-self: flex-end;
 }
 .sg-welcome-send .experience-icon {
 	display: inline-flex;
@@ -160,7 +156,7 @@
 @media (max-width: 760px) {
 	.sg-welcome-prompt {
 		gap: var(--sg-space-related);
-		padding: var(--sg-space-related);
+		padding: var(--sg-space-paragraph);
 		border-radius: var(--sg-radius-ui);
 	}
 	.sg-welcome-copy {

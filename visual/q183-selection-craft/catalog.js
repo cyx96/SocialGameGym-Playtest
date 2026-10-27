@@ -215,12 +215,6 @@
 				gameId: c.game.id,
 				gameName: gameName(c.game),
 				initial,
-				onClose: (event) => {
-					event.stopPropagation();
-					setInputMode(event.detail === 0 ? "instant" : "gesture");
-					command(1, event.detail === 0);
-					stage.focus({ preventScroll: true });
-				},
 				onDraftSaved: () => {
 					const url = new URL(location.href);
 					if (url.searchParams.get("game") === c.game.id && url.searchParams.has("previewConfig")) {
@@ -312,11 +306,11 @@
 		stage.dataset.theme = owner.theme.id;
 		stage.dataset.game = owner.games[mod(Math.round(owner.pos), owner.games.length)].id;
 		stage.dataset.motion = running.size || down || wheelAxis ? "active" : "idle";
-		// Settings belong to the reversed card. Keep outer navigation out of its
-		// canvas throughout opening/closing, including interrupted flips.
-		back.hidden =
-			navigationIntent() > 1 || state.flip > 0.01 || (navigationIntent() === 0 && p < 0.01);
-		back.setAttribute("aria-label", I.t("catalog.backThemes"));
+		back.hidden = navigationIntent() === 0 && p < 0.01;
+		back.setAttribute(
+			"aria-label",
+			I.t(navigationIntent() > 1 ? "catalog.backPosters" : "catalog.backThemes"),
+		);
 		for (const a of assemblies) {
 			const d = ring(a.index, state.theme, assemblies.length),
 				abs = Math.abs(d),

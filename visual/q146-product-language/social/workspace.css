@@ -486,6 +486,9 @@
 	display: block;
 	color: var(--ink);
 }
+:where(.sg-social-workspace-host) .mini-star.filled svg {
+	fill: var(--ink);
+}
 :where(.sg-social-workspace-host) .pending-reviews {
 	margin-bottom: var(--sg-space-task);
 }
@@ -565,7 +568,7 @@
 	border-radius: var(--sg-radius-control);
 	cursor: pointer;
 }
-:where(.sg-social-workspace-host) .star-option:has(input:checked, ~ .star-option input:checked) {
+:where(.sg-social-workspace-host) .star-option:has(input:checked) {
 	background-color: var(--wash);
 }
 :where(.sg-social-workspace-host) .star-option input {
@@ -584,6 +587,18 @@
 	width: 28px;
 	height: 28px;
 	display: block;
+}
+:where(.sg-social-workspace-host)
+	.stars:has(input:checked)
+	.star-option:has(input:checked)
+	> span
+	svg,
+:where(.sg-social-workspace-host)
+	.stars:has(input:checked)
+	.star-option:has(~ .star-option input:checked)
+	> span
+	svg {
+	fill: var(--ink);
 }
 :where(.sg-social-workspace-host) .star-option:has(input:focus-visible) {
 	outline: 2px var(--sg-focus-style, none) var(--ink);

@@ -106,7 +106,7 @@
 
 		return { value: clean, errors };
 	}
-	function mount({ gameId, gameName, initial, onContinue, onDraftSaved, onClose }) {
+	function mount({ gameId, gameName, initial, onContinue, onDraftSaved }) {
 		const form = node("form", "sg-game-config"),
 			head = node("header", "sg-config-head"),
 			name = node("p", "sg-config-game", gameName),
@@ -120,16 +120,6 @@
 		});
 		status.setAttribute("role", "status");
 		head.append(name, title);
-		if (onClose) {
-			const close = B.create({
-				role: "icon",
-				ariaLabelKey: "asset.closeConfiguration",
-				icon: SGGIcons.create("close"),
-			});
-			close.classList.add("sg-config-close");
-			close.onclick = onClose;
-			head.append(close);
-		}
 		form.append(head, body, footer);
 		const model = D.games[gameId];
 		if (!model) {

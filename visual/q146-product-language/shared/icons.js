@@ -30,7 +30,7 @@
 				if (value !== attr.value) n.setAttribute(attr.name, value);
 			}
 	}
-	function create(name, { filled = false } = {}) {
+	function create(name) {
 		if (!registry[name]) throw Error("Unknown icon: " + name);
 		const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
 		svg.setAttribute("viewBox", "0 0 24 24");
@@ -45,12 +45,6 @@
 			'</g><g class="sg-icon-flat">' +
 			flat[name] +
 			"</g>";
-		// Star outlines use an outer contour followed by the inner cutout. Filling
-		// closes that cutout using the same source silhouette in both optical sizes.
-		if (name === "star" && filled) {
-			for (const path of svg.querySelectorAll("path[d]"))
-				path.setAttribute("d", path.getAttribute("d").split(/z/i, 1)[0] + "Z");
-		}
 		// Reuse actual fold faces, retaining their transforms; never light the flat optical shape.
 		const paper = svg.firstElementChild,
 			response = document.createElementNS(svg.namespaceURI, "g");
