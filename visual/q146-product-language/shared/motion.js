@@ -99,11 +99,13 @@
 			delay = parseFloat(css.getPropertyValue("--sg-motion-invitation-delay")) || 0,
 			duration = parseFloat(css.getPropertyValue("--sg-motion-invitation")) || 0;
 		let timer,
+			frame,
 			stopped = false;
 		function finish() {
 			if (stopped) return;
 			stopped = true;
 			clearTimeout(timer);
+			cancelAnimationFrame(frame);
 			listeners.delete(finish);
 			node.textContent = full;
 			onUpdate();
@@ -112,33 +114,41 @@
 		const cancel = () => {
 			stopped = true;
 			clearTimeout(timer);
+			cancelAnimationFrame(frame);
 			listeners.delete(finish);
 		};
 		if (instant() || document.hidden || !exposed || !duration || !parts.length) finish();
 		else {
 			node.textContent = "";
 			listeners.add(finish);
-			const start = performance.now() + delay;
 			let shown = 0;
 			function tick() {
+				if (stopped) return;
 				if (!node.isConnected) return cancel();
-				const count = Math.min(
-					parts.length,
-					Math.max(0, Math.floor(((performance.now() - start) / duration) * parts.length)),
-				);
-				if (count !== shown) {
-					shown = count;
-					node.textContent = parts.slice(0, count).join("");
-					onUpdate();
-				}
-				if (count === parts.length) finish();
+				shown++;
+				node.textContent = parts.slice(0, shown).join("");
+				onUpdate();
+				if (shown === parts.length) finish();
 				else
-					timer = setTimeout(
-						tick,
-						Math.max(0, start + (duration * (count + 1)) / parts.length - performance.now()),
-					);
+					timer = setTimeout(() => {
+						frame = requestAnimationFrame(tick);
+					}, duration / parts.length);
 			}
-			timer = setTimeout(tick, delay + duration / parts.length);
+			// Safari can run timers while initial painting is deferred. Allow the blank
+			// invitation to paint first, then reveal at most one grapheme per painted frame.
+			// A busy startup delays typing instead of spending its entire duration unseen.
+			frame = requestAnimationFrame(() => {
+				if (stopped) return;
+				frame = requestAnimationFrame(() => {
+					if (stopped) return;
+					timer = setTimeout(
+						() => {
+							frame = requestAnimationFrame(tick);
+						},
+						delay + duration / parts.length,
+					);
+				});
+			});
 		}
 		return { finish, cancel };
 	}
