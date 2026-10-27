@@ -93,7 +93,7 @@
 	margin-inline-start: auto;
 	display: flex;
 	align-items: center;
-	gap: 0;
+	gap: var(--sg-space-sibling);
 	flex: none;
 }
 .preparation-roster > .add-seat {
@@ -117,11 +117,5 @@
 @media (max-width: 520px) {
 	.preparation-seat {
 		column-gap: var(--sg-space-related);
-	}
-}
-@media (max-width: 350px) {
-	.preparation-seat .seat-actions {
-		grid-column: 2 / -1;
-		justify-self: end;
 	}
 }

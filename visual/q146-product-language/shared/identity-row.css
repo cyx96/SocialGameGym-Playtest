@@ -27,7 +27,7 @@
 .sg-identity-actions {
 	display: flex;
 	flex: none;
-	gap: 4px;
+	gap: var(--sg-space-sibling);
 }
 .sg-identity-leading > .sg-button[data-sg-button][data-sg-role="icon"] {
 	inline-size: 100%;
@@ -48,9 +48,6 @@
 		--sg-identity-size: var(--avatar-row);
 		gap: var(--sg-space-paragraph);
 		min-block-size: 92px;
-	}
-	.sg-identity-actions {
-		gap: 0;
 	}
 }
 
