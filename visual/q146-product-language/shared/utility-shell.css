@@ -25,7 +25,7 @@
 	padding-block: var(--sg-space-paragraph);
 	min-block-size: var(--sg-header-height);
 	border: 0;
-	background: var(--surface);
+	background-color: var(--surface);
 }
 .sg-utility-shell .topbar .brand {
 	font:

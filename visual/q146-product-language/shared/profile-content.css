@@ -45,7 +45,7 @@
 	border: 0;
 	background: transparent;
 	color: var(--ink);
-	border-radius: 50%;
+	border-radius: var(--sg-radius-ui);
 	display: block;
 }
 .profile-card-avatar > .sg-avatar {
@@ -59,8 +59,6 @@
 	block-size: var(--sg-icon-action);
 	display: grid;
 	place-items: center;
-	background: var(--surface);
-	border-radius: 50%;
 }
 .profile-card-avatar > .avatar-edit-mark > svg {
 	inline-size: var(--sg-icon-chevron);

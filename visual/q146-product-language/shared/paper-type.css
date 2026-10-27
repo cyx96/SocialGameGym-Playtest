@@ -24,7 +24,6 @@
 	--sg-logo-palette: --sg-logo-trust;
 }
 .brand,
-.sg-welcome-command,
 .sg-paper-logo {
 	font-family: var(--sg-font-logo);
 	font-palette: var(--sg-logo-palette);

@@ -41,7 +41,8 @@
 	flex-direction: column;
 	align-items: stretch;
 	gap: 8px;
-	background: var(--paper);
+	/* Footer and scrolled settings are one continuous sheet. */
+	background: transparent;
 }
 .sg-config-footer .sg-button[data-sg-button] {
 	max-inline-size: 100%;
@@ -122,7 +123,7 @@
 	width: 34px;
 	height: 20px;
 	flex: none;
-	border-radius: 999px;
+	border-radius: var(--sg-radius-ui);
 	background: var(--sg-control-fill);
 	transition: background-color var(--sg-motion-state) var(--sg-ease);
 }
@@ -131,7 +132,7 @@
 	display: block;
 	width: 16px;
 	height: 16px;
-	border-radius: 50%;
+	border-radius: var(--sg-radius-ui);
 	background: var(--secondary);
 	transform: translate(2px, 2px);
 	transition:

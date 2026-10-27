@@ -179,6 +179,7 @@
 			if (unit) unit.textContent = SGGI18n.systemCopy(unit.textContent);
 		});
 		trigger.setAttribute("aria-controls", popup.id);
+		window.SGGPaper?.enhance(popup);
 		popup.showPopover({ source: trigger });
 		let zoom = 1;
 		for (let parent = popup.parentElement; parent; parent = parent.parentElement)
@@ -199,6 +200,7 @@
 		if (f.approx) {
 			root.type = "button";
 			root.classList.add("number-approx");
+			root.setAttribute("data-sg-press", "");
 			root.setAttribute("aria-label", SGGI18n.t("asset.numberDetails", { value: f.aria }));
 			root.addEventListener("click", () => showDetail(root, f));
 		} else root.setAttribute("aria-label", f.aria);

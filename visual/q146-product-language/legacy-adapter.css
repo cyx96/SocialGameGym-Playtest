@@ -195,7 +195,7 @@ button[data-quota-step].sg-button {
 	content: "";
 	position: absolute;
 	inset: 6px;
-	border-radius: 50%;
+	border-radius: var(--sg-radius-ui);
 	background: var(--surface);
 	z-index: -1;
 }

@@ -2,8 +2,15 @@
 :root {
 	--sg-paper-rest-shadow:
 		inset 0 0.65px 0 #ffffff70, 0.35px 0.6px 1px #1736240b, 1px 3.5px 5px #1736241a;
-	--sg-paper-pressed-shadow:
+	--sg-paper-contact-shadow:
 		inset 0 0.65px 0 #ffffff70, 0.2px 0.4px 0.8px #1736240b, 0.5px 1.2px 2.2px #17362419;
+	--sg-paper-pressed-shadow: var(--sg-paper-contact-shadow);
+	--sg-paper-object-rest-filter: drop-shadow(0.35px 0.6px 1px #1736240b)
+		drop-shadow(1px 3.5px 5px #1736241a);
+	--sg-paper-object-pressed-filter: drop-shadow(0.2px 0.4px 0.8px #1736240b)
+		drop-shadow(0.5px 1.2px 2.2px #17362419);
+	--sg-paper-contained-pressed-shadow: inset 0 0.65px 0 #ffffff70, 0.1px 0.3px 0.6px #17362414;
+	--sg-paper-contained-inset: 4px;
 	--sg-paper-fiber: 0.72;
 	--sg-paper-pulp: 0.16;
 }
@@ -15,7 +22,37 @@
 .sg-paper-face {
 	overflow: visible;
 }
-[data-sg-paper-flat] > :is(.sg-paper-depth, .sg-paper-grain, .sg-paper-fold) {
+.sg-paper-face[data-sg-paper-boundary="contained"] {
+	--sg-paper-rest-shadow: var(--sg-paper-contact-shadow);
+	--sg-paper-pressed-shadow: var(--sg-paper-contained-pressed-shadow);
+}
+/* Keep a full touch target while its inset paper and short contact shadow stay inside the owner. */
+.sg-paper-face[data-sg-paper-boundary="contained"]:is(
+	[data-sg-role="icon"],
+	[data-sg-role="icon-primary"],
+	.player-choice-trigger,
+	.sg-number > button
+) {
+	/* The transparent hit box includes the inset. Its content-box paint still has a 6px arc. */
+	--sg-paper-hit-radius: calc(var(--sg-radius-ui) + var(--sg-paper-contained-inset));
+	padding: var(--sg-paper-contained-inset);
+	background-clip: content-box;
+}
+.sg-paper-face[data-sg-paper-boundary="contained"]:is(
+		[data-sg-role="icon"],
+		[data-sg-role="icon-primary"],
+		.player-choice-trigger,
+		.sg-number > button
+	)
+	> :is(.sg-paper-depth, .sg-paper-grain, .sg-paper-fold) {
+	inset: var(--sg-paper-contained-inset);
+	border-radius: var(--sg-radius-ui);
+}
+:where([data-sg-paper-print]) {
+	position: relative;
+	isolation: isolate;
+}
+.sg-stage-route [data-stage-state="current"] > .sg-stage-marker > .sg-paper-grain {
 	display: none;
 }
 .sg-paper-depth,
@@ -50,17 +87,27 @@
 	box-shadow: var(--sg-paper-pressed-shadow);
 	opacity: 0;
 }
+.sg-paper-face:active > .sg-paper-depth::before,
 .sg-pressed > .sg-paper-depth::before,
 [aria-pressed="true"] > .sg-paper-depth::before,
 .option:has(input:checked) .sg-paper-depth::before,
+.star-option:has(input:checked) > .sg-paper-depth::before,
+.star-option:has(input:active) > .sg-paper-depth::before,
+.sg-switch:has(input:checked) > .sg-switch-track > .sg-paper-depth::before,
+.sg-switch:has(input:active) > .sg-switch-track > .sg-paper-depth::before,
 .option:has(input:active) .sg-paper-depth::before,
 [data-paper-editing]::before {
 	opacity: 0;
 	transition-duration: var(--sg-motion-press);
 }
+.sg-paper-face:active > .sg-paper-depth::after,
 .sg-pressed > .sg-paper-depth::after,
 [aria-pressed="true"] > .sg-paper-depth::after,
 .option:has(input:checked) .sg-paper-depth::after,
+.star-option:has(input:checked) > .sg-paper-depth::after,
+.star-option:has(input:active) > .sg-paper-depth::after,
+.sg-switch:has(input:checked) > .sg-switch-track > .sg-paper-depth::after,
+.sg-switch:has(input:active) > .sg-switch-track > .sg-paper-depth::after,
 .option:has(input:active) .sg-paper-depth::after,
 [data-paper-editing]::after {
 	opacity: 1;
@@ -68,8 +115,29 @@
 }
 .sg-paper-face:is(:disabled, [aria-disabled="true"]):not([aria-busy="true"]) > .sg-paper-depth,
 .option:has(input:disabled) .sg-paper-depth,
-[data-sg-paper-field]:has(> :disabled)::before,
-[data-sg-paper-field]:has(> :disabled)::after {
+:is(.star-option, .sg-switch):has(input:disabled) .sg-paper-depth,
+:where([inert], [aria-disabled="true"]) .sg-paper-depth,
+.sg-paper-face[inert] > .sg-paper-depth,
+[data-sg-paper-field]:has(
+	> :is(input, textarea, select):is(:disabled, [readonly], [inert], [aria-disabled="true"])
+)::before,
+[data-sg-paper-field]:has(
+	> :is(input, textarea, select):is(:disabled, [readonly], [inert], [aria-disabled="true"])
+)::after,
+[data-sg-paper-field-host]:has(
+		:is(input, textarea, select):is(:disabled, [readonly], [inert], [aria-disabled="true"])
+	)
+	[data-sg-paper-field]::before,
+[data-sg-paper-field-host]:has(
+		:is(input, textarea, select):is(:disabled, [readonly], [inert], [aria-disabled="true"])
+	)
+	[data-sg-paper-field]::after,
+:where([inert], [aria-disabled="true"]) [data-sg-paper-field]::before,
+:where([inert], [aria-disabled="true"]) [data-sg-paper-field]::after,
+[data-sg-paper-field][aria-disabled="true"]::before,
+[data-sg-paper-field][aria-disabled="true"]::after,
+[data-sg-paper-field][inert]::before,
+[data-sg-paper-field][inert]::after {
 	visibility: hidden;
 }
 .sg-paper-face[aria-busy="true"] > .sg-paper-depth::before {
@@ -86,7 +154,21 @@
 .sg-paper-grain::before,
 .sg-paper-grain::after,
 :is(.sg-rule-table, .sg-comparison-region) thead::before,
-:is(.sg-rule-table, .sg-comparison-region) thead::after {
+:is(.sg-rule-table, .sg-comparison-region) thead::after,
+:is(
+	.avatar-edit-mark,
+	.avatar-selected-mark,
+	.sg-avatar-badge,
+	.seat-organizer-mark,
+	.seat-status-mark
+)::before,
+:is(
+	.avatar-edit-mark,
+	.avatar-selected-mark,
+	.sg-avatar-badge,
+	.seat-organizer-mark,
+	.seat-status-mark
+)::after {
 	content: "";
 	position: absolute;
 	inset: 0;
@@ -95,12 +177,26 @@
 	filter: grayscale(1);
 }
 .sg-paper-grain::before,
-:is(.sg-rule-table, .sg-comparison-region) thead::before {
+:is(.sg-rule-table, .sg-comparison-region) thead::before,
+:is(
+	.avatar-edit-mark,
+	.avatar-selected-mark,
+	.sg-avatar-badge,
+	.seat-organizer-mark,
+	.seat-status-mark
+)::before {
 	background-size: 512px 512px;
 	opacity: var(--sg-paper-fiber);
 }
 .sg-paper-grain::after,
-:is(.sg-rule-table, .sg-comparison-region) thead::after {
+:is(.sg-rule-table, .sg-comparison-region) thead::after,
+:is(
+	.avatar-edit-mark,
+	.avatar-selected-mark,
+	.sg-avatar-badge,
+	.seat-organizer-mark,
+	.seat-status-mark
+)::after {
 	background-size: 1024px 1024px;
 	opacity: var(--sg-paper-pulp);
 	filter: grayscale(1) blur(1.2px);
@@ -109,6 +205,26 @@
 :is(.sg-rule-table, .sg-comparison-region) thead::after {
 	z-index: -1;
 	mix-blend-mode: multiply;
+}
+/* Attached noninteractive marks are printed on their owner, not a new raised action. */
+:is(
+	.avatar-edit-mark,
+	.avatar-selected-mark,
+	.sg-avatar-badge,
+	.seat-organizer-mark,
+	.seat-status-mark
+)::before,
+:is(
+	.avatar-edit-mark,
+	.avatar-selected-mark,
+	.sg-avatar-badge,
+	.seat-organizer-mark,
+	.seat-status-mark
+)::after {
+	z-index: -1;
+	mix-blend-mode: multiply;
+	clip-path: inset(0 round var(--sg-radius-ui));
+	pointer-events: none;
 }
 .sg-paper-face
 	> :is(.experience-button-content, .sg-button-label, .sg-paper-copy, .experience-icon),
@@ -197,15 +313,12 @@
 .sg-field [data-sg-paper-field] > .sg-input {
 	background-color: transparent;
 }
-/* A connected composer/search remains one sheet, not a raised button on a sheet. */
+/* Connected fields keep one receiving sheet; embedded actions retain their own thin paper face. */
 :is(.compose-field, .search-surface, .player-choice-search)[data-sg-paper-field] {
 	display: grid;
 }
 .compose-field[data-sg-paper-field] {
 	background-color: var(--canvas);
-}
-:is(.compose-field, .search-surface, .player-choice-search) > .sg-paper-face > .sg-paper-depth {
-	visibility: hidden;
 }
 .sg-paper-sheet {
 	isolation: isolate;
@@ -268,29 +381,48 @@ button.sg-paper-face.sg-button[data-sg-button][aria-busy="true"]:is(
 	}
 }
 @media (forced-colors: active) {
+	.sg-paper-face[data-sg-paper-boundary="contained"]:is(
+		[data-sg-role="icon"],
+		[data-sg-role="icon-primary"],
+		.player-choice-trigger,
+		.sg-number > button
+	) {
+		--sg-paper-hit-radius: var(--sg-radius-ui);
+		background-clip: border-box;
+	}
+
 	.sg-paper-grain,
 	.sg-paper-fold,
 	.sg-paper-depth {
 		display: none;
 	}
 	[data-sg-paper-field]::before,
-	[data-sg-paper-field]::after {
+	[data-sg-paper-field]::after,
+	:is(
+		.avatar-edit-mark,
+		.avatar-selected-mark,
+		.sg-avatar-badge,
+		.seat-organizer-mark,
+		.seat-status-mark
+	)::before,
+	:is(
+		.avatar-edit-mark,
+		.avatar-selected-mark,
+		.sg-avatar-badge,
+		.seat-organizer-mark,
+		.seat-status-mark
+	)::after,
+	:is(.sg-rule-table, .sg-comparison-region) thead::before,
+	:is(.sg-rule-table, .sg-comparison-region) thead::after {
 		content: none;
 	}
 }
 
 /* A common low-relief substrate; content and data remain flat, without extra wrapper cards. */
-:is(
-	.experience,
-	.sg-social-workspace-host,
-	.sg-pane-toolbar,
-	.sg-page,
-	.sg-utility-shell,
-	.sg-stage-route-host,
-	body
-)[data-sg-paper-canvas],
-:is(.experience-header, .sg-product-bar, .catalog-header, .detail-pane)[data-sg-paper-canvas] {
+[data-sg-paper-canvas] {
 	--sg-paper-base: var(--canvas, var(--sg-brand-canvas));
+}
+:root [data-sg-paper-canvas]:where(:not(.sg-welcome[data-leaving="true"])) {
 	background-image:
 		linear-gradient(
 			color-mix(in srgb, var(--sg-paper-base) 88%, transparent),
@@ -301,12 +433,7 @@ button.sg-paper-face.sg-button[data-sg-button][aria-busy="true"]:is(
 		auto,
 		512px 512px;
 }
-:is(
-	.experience-header,
-	.sg-product-bar,
-	.catalog-header,
-	.detail-pane
-)[data-sg-paper-canvas="surface"] {
+[data-sg-paper-canvas="surface"] {
 	--sg-paper-base: var(--surface);
 }
 .sg-number[data-sg-paper-field] {
@@ -315,13 +442,16 @@ button.sg-paper-face.sg-button[data-sg-button][aria-busy="true"]:is(
 .sg-select[data-sg-paper-field] > select {
 	background: transparent;
 }
-.sg-number > .sg-paper-face > .sg-paper-depth {
-	visibility: hidden;
-}
 .sg-paper-face[aria-current="true"] > .sg-paper-depth::before {
 	opacity: 0;
 }
 .sg-paper-face[aria-current="true"] > .sg-paper-depth::after {
+	opacity: 1;
+}
+.sg-paper-face:is([aria-selected="true"], [aria-checked="true"]) > .sg-paper-depth::before {
+	opacity: 0;
+}
+.sg-paper-face:is([aria-selected="true"], [aria-checked="true"]) > .sg-paper-depth::after {
 	opacity: 1;
 }
 .sg-language-menu.sg-paper-sheet > :not(.sg-paper-grain) {
@@ -332,4 +462,16 @@ button.sg-paper-face.sg-button[data-sg-button][aria-busy="true"]:is(
 	[data-sg-paper-canvas] {
 		background-image: none !important;
 	}
+}
+
+/* Input-backed choices use their existing label/track, never a second wrapper sheet. */
+.sg-switch-track {
+	position: relative;
+	isolation: isolate;
+}
+/* Disabled controls cannot retain a stale pointer fold while permissions change. */
+.sg-paper-face:is(:disabled, [aria-disabled="true"], [aria-busy="true"], [inert]) > .sg-paper-fold,
+:is(.option, .star-option, .sg-switch):has(input:disabled) .sg-paper-fold,
+:where([inert], [aria-disabled="true"]) .sg-paper-fold {
+	display: none;
 }

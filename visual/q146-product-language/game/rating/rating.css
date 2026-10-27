@@ -110,7 +110,7 @@ svg {
 	width: 100%;
 	padding: 16px 13px;
 	text-align: left;
-	border-radius: 12px;
+	border-radius: var(--sg-radius-ui);
 	min-height: 82px;
 	position: relative;
 }
@@ -118,7 +118,7 @@ svg {
 	background: color-mix(in srgb, var(--wash) 55%, white);
 }
 .avatar {
-	border-radius: 50%;
+	border-radius: var(--sg-radius-ui);
 	flex: none;
 	width: 44px;
 	height: 44px;
@@ -273,14 +273,14 @@ svg {
 }
 .bar-track {
 	height: 5px;
-	border-radius: 4px;
+	border-radius: var(--sg-radius-ui);
 	background: var(--control);
 	overflow: hidden;
 }
 .bar-fill {
 	height: 100%;
 	background: var(--ink);
-	border-radius: 4px;
+	border-radius: var(--sg-radius-ui);
 }
 .distribution-row > span:last-child {
 	text-align: right;
@@ -357,7 +357,7 @@ svg {
 	min-width: 44px;
 	min-height: 44px;
 	color: var(--secondary);
-	border-radius: 50%;
+	border-radius: var(--sg-radius-ui);
 	padding: 0;
 }
 .score-options {
@@ -383,7 +383,7 @@ svg {
 .score-option span {
 	height: 44px;
 	border: 0;
-	border-radius: 10px;
+	border-radius: var(--sg-radius-ui);
 	background: var(--control);
 	display: flex;
 	align-items: center;
@@ -420,7 +420,7 @@ svg {
 	min-height: 104px;
 	max-height: 260px;
 	border: 0;
-	border-radius: 12px;
+	border-radius: var(--sg-radius-ui);
 	background: var(--surface);
 	padding: 11px 13px;
 	line-height: 1.7;
@@ -450,7 +450,7 @@ textarea::placeholder {
 }
 .primary {
 	min-height: 44px;
-	border-radius: 999px;
+	border-radius: var(--sg-radius-ui);
 	background: var(--ink);
 	color: var(--surface);
 	padding: 10px 22px;
@@ -528,7 +528,7 @@ textarea::placeholder {
 	max-width: 100%;
 	background: var(--paper);
 	padding: 10px 14px;
-	border-radius: 10px;
+	border-radius: var(--sg-radius-ui);
 }
 .storage-message button {
 	min-height: 44px;
@@ -767,7 +767,7 @@ textarea::placeholder {
 	min-height: 62px;
 	min-width: 74px;
 	text-align: right;
-	border-radius: 8px;
+	border-radius: var(--sg-radius-ui);
 	color: var(--label);
 }
 .average-line {
@@ -1191,7 +1191,7 @@ textarea::placeholder {
 	height: 44px;
 	background: none;
 	border: 0;
-	border-radius: 8px;
+	border-radius: var(--sg-radius-ui);
 	color: color-mix(in srgb, var(--label) 34%, white);
 	transition: color var(--sg-motion-state) ease;
 }
@@ -1224,7 +1224,7 @@ textarea::placeholder {
 	padding: 10px 12px;
 	border: 0;
 	background: transparent;
-	border-radius: 4px;
+	border-radius: var(--sg-radius-ui);
 	font-size: var(--sg-type-input);
 	line-height: 1.8;
 	resize: none;

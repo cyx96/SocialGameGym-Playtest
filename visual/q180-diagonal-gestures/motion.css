@@ -42,7 +42,7 @@ body {
 	overscroll-behavior: contain;
 	cursor: grab;
 	outline-offset: -4px;
-	background: var(--canvas);
+	background-color: var(--canvas);
 	transition: background-color 220ms ease;
 }
 #stage.dragging {
@@ -88,9 +88,6 @@ body {
 .front-layer .entry-shadow {
 	z-index: 2;
 }
-.front-layer .paper-grain {
-	opacity: 0.05;
-}
 .card-wrap {
 	position: absolute;
 	left: 50%;
@@ -109,7 +106,7 @@ body {
 .card-face {
 	position: absolute;
 	inset: 0;
-	border-radius: 14px;
+	border-radius: var(--sg-radius-ui);
 	backface-visibility: hidden;
 	-webkit-backface-visibility: hidden;
 	overflow: hidden;
@@ -245,7 +242,7 @@ body {
 }
 #search-dialog {
 	border: 0;
-	border-radius: 16px;
+	border-radius: var(--sg-radius-ui);
 	padding: 0;
 	width: min(560px, calc(100vw - 32px));
 	max-height: 70dvh;
@@ -263,11 +260,19 @@ body {
 	padding: 12px 16px;
 	border-bottom: 1px solid #e3e7e1;
 }
+.search-query[data-sg-paper-field] {
+	display: flex;
+	align-items: center;
+	flex: 1;
+	min-width: 0;
+	padding: 4px 8px 4px 12px;
+	border-radius: var(--sg-radius-ui);
+}
 .search-head input {
 	width: 100%;
 	border: 0;
 	outline: 0;
-	font: 16px / 1.5 inherit;
+	font: var(--sg-type-body) / 1.5 var(--sg-font-ui);
 	background: transparent;
 	color: var(--label);
 	padding: 10px 0;
@@ -283,14 +288,10 @@ body {
 	padding: 14px 16px;
 	text-align: left;
 	border: 0;
-	border-radius: 9px;
+	border-radius: var(--sg-radius-control);
 	background: #fff;
 	color: var(--label);
-	font:
-		15px / 1.5 -apple-system,
-		BlinkMacSystemFont,
-		"PingFang SC",
-		sans-serif;
+	font: var(--sg-type-body) / 1.5 var(--sg-font-ui);
 	cursor: pointer;
 }
 .result:focus-visible {
@@ -299,7 +300,7 @@ body {
 .result small {
 	display: block;
 	color: var(--secondary);
-	font-size: 13px;
+	font-size: var(--sg-type-meta);
 	margin-top: 3px;
 }
 .result:hover {
@@ -327,4 +328,10 @@ body {
 	.catalog-header .brand {
 		transition: none;
 	}
+}
+
+.search-query[data-sg-paper-field] > input {
+	flex: 1;
+	min-width: 0;
+	width: 0;
 }

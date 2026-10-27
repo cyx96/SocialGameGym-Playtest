@@ -9988,7 +9988,7 @@
     {
       "style": "Text",
       "file": "SGGPaperUI-Text.woff2",
-      "sha256": "39721a2936c2969d857e70bde0a47674f7db1f80fdc0ff3d591fc94452e03e2d",
+      "sha256": "8a41601c73bc5e22c5174c53d9445ffbffc7418c93976197b58c52ecf745c891",
       "characters": 9702,
       "inheritedOutlinesUnchanged": true,
       "colorTables": false
@@ -9996,7 +9996,7 @@
     {
       "style": "Display",
       "file": "SGGPaperUI-Display.woff2",
-      "sha256": "93c6f03dc31c2fa67110f04703a70004770b2ff244953a2c56e5a1edeb03c14e",
+      "sha256": "9d8d319abd00aaac21efab70c8ecedbccf70c7b8bafbb19cc733676629061d2d",
       "characters": 9702,
       "inheritedOutlinesUnchanged": true,
       "colorTables": false
@@ -10050,13 +10050,17 @@
     "unpermittedCollisions": 0
   },
   "adoption": {
-    "version": "type-common-2.1-optical1",
-    "scope": "Same 9702 cmap and all advances; only 图 optical terminal and font internal IDs3/5 differ from type-common-2.0",
-    "review": "delivery/paper-product-migration-20261025/font-optical-final-review.md"
+    "version": "type-common-2.2-optical2",
+    "status": "formal; same20 finite independent review, not full-repertoire optical acceptance",
+    "review": "delivery/paper-browser-closeout-20261026/font-independent-review.md",
+    "scope": "Only 复 and name IDs3/5 differ from2.1; 20 finite characters independently rereviewed; all metrics/cmap/order and other9701 character outlines unchanged"
   },
   "opticalCorrections": {
     "source": "source-snapshot.zip",
     "findings": [
+      "FL-01"
+    ],
+    "previousCorrectionsRetained": [
       "MIGRATION-FONT-001",
       "MIGRATION-FONT-002"
     ],

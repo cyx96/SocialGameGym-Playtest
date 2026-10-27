@@ -103,7 +103,7 @@
 	padding: 0;
 	border: 0;
 	background: transparent;
-	border-radius: 50%;
+	border-radius: var(--sg-radius-ui);
 }
 :where(.sg-social-workspace-host) .profile-avatar-edit > .sg-avatar {
 	--avatar-size: var(--avatar-profile);
@@ -114,8 +114,6 @@
 	inset-block-end: 0;
 	inline-size: var(--sg-icon-action);
 	block-size: var(--sg-icon-action);
-	background: var(--surface);
-	border-radius: 50%;
 	display: grid;
 	place-items: center;
 	color: var(--ink);
@@ -318,10 +316,12 @@
 	place-items: center;
 }
 :where(.sg-social-workspace-host) .player-choice-list {
+	display: grid;
+	gap: var(--sg-space-related);
 	max-height: 10rem;
 	overflow: auto;
 	scrollbar-gutter: stable;
-	padding-right: var(--sg-space-related);
+	padding: var(--sg-paper-contained-inset);
 	overscroll-behavior: contain;
 }
 :where(.sg-social-workspace-host) .player-choice-list [role="option"] {
@@ -334,13 +334,10 @@
 	background: transparent;
 	color: var(--label);
 	border: 0;
-	border-radius: var(--sg-radius-action);
+	border-radius: var(--sg-radius-control);
 	text-align: left;
 }
-:where(.sg-social-workspace-host)
-	.player-choice-list
-	[role="option"]
-	> span:not(.sg-avatar):not(.player-choice-check) {
+:where(.sg-social-workspace-host) .player-choice-list [role="option"] > .player-choice-option-name {
 	flex: 1;
 	min-width: 0;
 	white-space: normal;
@@ -475,7 +472,8 @@
 	margin-inline: auto;
 }
 :where(.sg-social-workspace-host) .sg-profile-editor .avatar-grid {
-	grid-template-columns: repeat(auto-fit, minmax(52px, 1fr));
+	grid-template-columns: repeat(auto-fit, 60px);
+	justify-content: center;
 	margin-block-start: var(--sg-space-sibling);
 }
 :where(.sg-social-workspace-host) .sg-profile-editor .avatar-option[data-sg-button] {
@@ -496,8 +494,6 @@
 	place-items: center;
 	inline-size: 16px;
 	block-size: 16px;
-	border-radius: 50%;
-	background: var(--surface);
 	color: var(--ink);
 }
 :where(.sg-social-workspace-host) .avatar-selected-mark > svg {

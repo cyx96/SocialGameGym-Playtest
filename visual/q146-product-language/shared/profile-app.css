@@ -73,7 +73,7 @@ body > .sg-page {
 .profile-row:focus-visible {
 	outline: 2px var(--sg-focus-style, none) var(--ink);
 	outline-offset: 3px;
-	border-radius: 8px;
+	border-radius: var(--sg-radius-ui);
 }
 #profile-edit {
 	display: grid;

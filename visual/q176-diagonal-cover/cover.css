@@ -28,7 +28,7 @@ body {
 	container-type: inline-size;
 	margin: 0;
 	overflow: hidden;
-	border-radius: 14px;
+	border-radius: var(--sg-radius-ui);
 	background: var(--paper);
 	isolation: isolate;
 	box-shadow:
@@ -62,17 +62,15 @@ body {
 		rgba(var(--wash-rgb), 0.98) 100%
 	);
 }
-/* Temporary material source: an unprinted region of the existing paper concept, cropped in CSS. No illustration is baked into the cover. */
+/* Geometry only; the registered paper owner supplies the same A9 material as the UI. */
 .paper-grain {
 	position: absolute;
 	inset: 50% 0 0;
-	background-image: url("../q174-side-opening/side-opening-concepts.png");
-	background-size: 667.826cqw 445.217cqw;
-	background-position: -113.043cqw -39.13cqw;
-	filter: grayscale(1);
-	mix-blend-mode: multiply;
-	opacity: 0.05;
 	pointer-events: none;
+}
+.folder-paper {
+	inline-size: 100%;
+	block-size: 100%;
 }
 .paper-edge {
 	position: absolute;
@@ -103,7 +101,7 @@ body {
 	width: 15.5cqw;
 	height: 15.5cqw;
 	flex: none;
-	border-radius: 50%;
+	border-radius: var(--sg-radius-ui);
 }
 .identity-text {
 	display: flex;

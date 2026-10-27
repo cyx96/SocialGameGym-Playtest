@@ -138,6 +138,7 @@
 			}
 			if (item.dataset.stageType !== node.type) {
 				item.firstElementChild.replaceChildren(SGGIcons.create(typeIcon[node.type]));
+				window.SGGPaper?.enhance(item.firstElementChild);
 				item.dataset.stageType = node.type;
 			}
 			item.dataset.stageState = node.state;

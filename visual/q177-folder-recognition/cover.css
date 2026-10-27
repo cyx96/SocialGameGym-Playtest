@@ -17,7 +17,7 @@
 .cover-art {
 	inset: 14px 24px auto;
 	aspect-ratio: 2 / 3;
-	border-radius: 7px;
+	border-radius: var(--sg-radius-ui);
 	box-shadow: 0 1px 2px #28392524;
 	z-index: 1;
 	background-color: var(--paper);
@@ -27,7 +27,7 @@
 }
 .paper-front {
 	z-index: 2;
-	border-radius: 0 0 14px 14px;
+	border-radius: 0 0 var(--sg-radius-ui) var(--sg-radius-ui);
 	clip-path: polygon(0 59%, 100% 72%, 100% 100%, 0 100%);
 }
 .paper-color {
@@ -63,9 +63,6 @@
 	height: 100%;
 	fill: none;
 	pointer-events: none;
-}
-.cover.indexed .paper-grain {
-	opacity: 0.05;
 }
 .paper-bend {
 	position: absolute;

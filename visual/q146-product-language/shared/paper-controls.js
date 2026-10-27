@@ -21,13 +21,30 @@
 			...scope.querySelectorAll(selector),
 		];
 		for (const surface of all(
-			".experience,.sg-social-workspace-host,.sg-pane-toolbar,.sg-page,.sg-utility-shell,.sg-stage-route-host,body",
+			".experience,.experience-app-pane,.sg-social-workspace-host,.sg-pane-toolbar,.sg-task-context-rail,.sg-page,.sg-utility-shell,.sg-stage-route-host,.sg-welcome,body,body[data-catalog-craft] #stage",
 		))
 			surface.dataset.sgPaperCanvas = "canvas";
-		for (const surface of all(".experience-header,.sg-product-bar,.catalog-header,.detail-pane"))
+		for (const surface of all(
+			".experience-header,.sg-product-bar,.catalog-header,.detail-pane,.sg-utility-shell .topbar",
+		))
 			surface.dataset.sgPaperCanvas = "surface";
+		// Opaque printed regions need material, but never an extra raised action surface.
+		for (const paper of all(
+			"[data-sg-paper-print],.bubble,.player-choice-menu,.player-choice-token,.number-detail,.sg-result-document,.seat-identity-icon,.sg-stage-focus,.sg-stage-marker,.sg-utility-shell .admin-facts pre,body[data-catalog-craft] .card-face,body[data-catalog-craft] .card-front .wash",
+		)) {
+			paper.dataset.sgPaperPrint = "";
+			if (!paper.querySelector(":scope > .sg-paper-grain")) paper.prepend(layer("sg-paper-grain"));
+		}
 		for (const composite of all(".sg-number,.sg-select")) composite.dataset.sgPaperField = "";
-		for (const face of all("[data-sg-button],[data-sg-press],.sg-choice .option-label")) {
+		for (const image of all(
+			"button:is(.profile-card-avatar,.sg-avatar-choice,.avatar-option,.profile-avatar-edit),button.sg-person-link:has(.sg-avatar)",
+		))
+			image.dataset.sgPress = "";
+		for (const face of all(
+			"[data-sg-button],[data-sg-press],.sg-choice .option-label,.star-option,.sg-switch-track",
+		)) {
+			if (face.closest(".sg-number,.compose-field,.sg-language-menu"))
+				face.dataset.sgPaperBoundary = "contained";
 			if (faces.has(face) && face.querySelector(":scope > .sg-paper-depth")) continue;
 			face.classList.add("sg-paper-face");
 			const depth = layer("sg-paper-depth"),
@@ -48,10 +65,10 @@
 		}
 		for (const field of all("[data-sg-paper-field]"))
 			if (!field.querySelector(":scope > .sg-paper-grain")) field.prepend(layer("sg-paper-grain"));
+		for (const paper of all(".sg-welcome-prompt"))
+			if (!paper.querySelector(":scope > .sg-paper-grain")) paper.prepend(layer("sg-paper-grain"));
 		for (const sheet of all("dialog.sg-reading,.sg-language-menu")) {
 			sheet.classList.add("sg-paper-sheet");
-			if (sheet.matches(".sg-language-menu"))
-				for (const row of sheet.querySelectorAll("[data-sg-button]")) row.dataset.sgPaperFlat = "";
 			if (!sheet.querySelector(":scope > .sg-paper-grain")) sheet.prepend(layer("sg-paper-grain"));
 		}
 	}
@@ -59,8 +76,8 @@
 		return (
 			!face?.isConnected ||
 			face.matches(":disabled,[aria-disabled=true],[aria-busy=true]") ||
-			face.closest("[inert],[hidden],[aria-hidden=true]") ||
-			face.closest(".option")?.querySelector("input")?.matches(":disabled")
+			face.closest("[inert],[hidden],[aria-hidden=true],[aria-disabled=true]") ||
+			face.closest(".option,.star-option,.sg-switch")?.querySelector("input")?.matches(":disabled")
 		);
 	}
 	function reset(instant = false) {
@@ -129,8 +146,14 @@
 			!focused
 		)
 			return;
-		const hit = event.target.closest?.("[data-sg-button],[data-sg-press],.sg-choice .option"),
-			face = hit?.matches(".option") ? hit.querySelector(".option-label") : hit;
+		const hit = event.target.closest?.(
+				"[data-sg-button],[data-sg-press],.sg-choice .option,.star-option,.sg-switch",
+			),
+			face = hit?.matches(".option")
+				? hit.querySelector(".option-label")
+				: hit?.matches(".sg-switch")
+					? hit.querySelector(".sg-switch-track")
+					: hit;
 		if (!face || blocked(face)) return reset(true);
 		if (current !== face) {
 			reset();

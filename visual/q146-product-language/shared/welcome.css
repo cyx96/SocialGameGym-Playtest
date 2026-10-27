@@ -23,6 +23,29 @@
 	height: 100%;
 	border: 0;
 }
+.sg-gateway-edges {
+	position: absolute;
+	inset: 0;
+	pointer-events: none;
+	overflow: hidden;
+}
+.sg-gateway-edge {
+	position: absolute;
+	inset: 0 0 auto;
+	block-size: var(--sg-space-task);
+	opacity: 0;
+	/* A wide fold and its receiving shadow travel with the opening paper edge. */
+	background-image:
+		linear-gradient(to bottom, #ffffffb3, #ffffff26 45%, #20232124 52%, #20232100),
+		url("./assets/a9-matte-paper.png");
+	background-size:
+		auto,
+		512px 512px;
+	mask-image: linear-gradient(to bottom, #000 55%, transparent);
+}
+.sg-gateway-edge[data-sg-gateway-edge="bottom"] {
+	scale: 1 -1;
+}
 .sg-welcome {
 	position: fixed;
 	inset: 0;
@@ -46,13 +69,16 @@
 	position: relative;
 }
 .sg-welcome-prompt {
+	position: relative;
+	isolation: isolate;
 	display: flex;
 	align-items: center;
 	gap: var(--sg-space-section);
 	padding: var(--sg-space-sibling) var(--sg-space-sibling) var(--sg-space-sibling)
 		var(--sg-space-task);
-	border-radius: 999px;
+	border-radius: var(--sg-radius-ui);
 	background: var(--surface);
+	box-shadow: var(--sg-paper-rest-shadow);
 }
 .sg-welcome-copy {
 	flex: 1;
@@ -74,20 +100,23 @@
 	color: var(--sg-invocation-ink);
 	background: var(--sg-invocation-wash);
 	padding: 0.08em 0.18em;
-	border-radius: 0.22em;
+	border-radius: var(--sg-radius-ui);
 	white-space: nowrap;
 }
 .sg-welcome-message {
+	display: inline-grid;
 	font-weight: 400;
 	white-space: nowrap;
 }
 .sg-welcome-full {
-	position: absolute;
-	inline-size: 1px;
-	block-size: 1px;
-	margin: -1px;
-	overflow: hidden;
-	clip-path: inset(50%);
+	/* Reserve the complete line before typing; neither paper nor Send changes width. */
+	grid-area: 1 / 1;
+	padding-inline-end: 0.3em;
+	opacity: 0;
+	pointer-events: none;
+}
+.sg-welcome-typing {
+	grid-area: 1 / 1;
 }
 .sg-welcome-caret {
 	display: inline-block;
@@ -128,7 +157,7 @@
 	.sg-welcome-prompt {
 		gap: var(--sg-space-related);
 		padding: var(--sg-space-paragraph);
-		border-radius: 999px;
+		border-radius: var(--sg-radius-ui);
 	}
 	.sg-welcome-copy {
 		letter-spacing: -0.01em;
@@ -138,4 +167,11 @@
 	.sg-welcome-caret {
 		animation: none;
 	}
+}
+
+.sg-welcome[data-font-source="pending"] .sg-welcome-group {
+	visibility: hidden;
+}
+.sg-welcome[data-font-source="fallback"] {
+	font-family: system-ui, sans-serif;
 }

@@ -847,6 +847,8 @@
 		for (const g of hits) {
 			const b = document.createElement("button");
 			b.className = "result";
+			b.dataset.sgPress = "";
+			b.dataset.sgPaperBoundary = "contained";
 			b.textContent = gameName(g);
 			const small = document.createElement("small");
 			small.textContent = themes.find((t) => t.id === g.category)?.label || "";

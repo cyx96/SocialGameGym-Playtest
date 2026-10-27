@@ -233,10 +233,10 @@
 			y = Math.max(0, anchor.top - bounds.top),
 			right = Math.max(0, bounds.right - anchor.right),
 			bottom = Math.max(0, bounds.bottom - anchor.bottom),
-			radius = Math.min(anchor.width, anchor.height) / 2;
+			radius = parseFloat(getComputedStyle(source).borderTopLeftRadius);
 		if (!(anchor.width > 0 && anchor.height > 0 && bounds.width > 0 && bounds.height > 0))
 			return [];
-		return [
+		const animations = [
 			run(source, [{ opacity: 1 }, { opacity: 0 }], { role: "exit", fill: "both" }),
 			run(
 				destination,
@@ -247,6 +247,29 @@
 				{ role: "gateway" },
 			),
 		].filter(Boolean);
+		// Keep the actual catalog flat. Only its thin leading folds travel; no
+		// screenshot clone, text stretch, or second content entrance is introduced.
+		for (const edge of destination.querySelectorAll("[data-sg-gateway-edge]")) {
+			const depth = edge.getBoundingClientRect().height,
+				top = edge.dataset.sgGatewayEdge === "top",
+				start = top ? y : bounds.height - bottom - depth,
+				end = top ? -depth : bounds.height,
+				animation = run(
+					edge,
+					[
+						{ transform: `translateY(${start}px)`, opacity: 0.35 },
+						{
+							transform: `translateY(${start + (end - start) * 0.6}px)`,
+							opacity: 0.75,
+							offset: 0.6,
+						},
+						{ transform: `translateY(${end}px)`, opacity: 0 },
+					],
+					{ role: "gateway", fill: "both" },
+				);
+			if (animation) animations.push(animation);
+		}
+		return animations;
 	}
 	function reveal(node, config = {}) {
 		return run(

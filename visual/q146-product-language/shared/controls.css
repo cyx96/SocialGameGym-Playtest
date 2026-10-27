@@ -141,7 +141,7 @@
 	padding: 0 4px !important;
 	border: 0 !important;
 	background: transparent !important;
-	border-radius: 8px !important;
+	border-radius: var(--sg-radius-ui) !important;
 	color: var(--label, #1f2320);
 	font: 400 var(--sg-type-number-input) / 1.5 var(--sg-font-number) !important;
 	text-align: center;
@@ -172,9 +172,9 @@
 	min-width: 44px !important;
 	height: 44px !important;
 	min-height: 44px !important;
-	padding: 0 !important;
+	padding: var(--sg-paper-contained-inset, 0px) !important;
 	border: 0;
-	border-radius: 10px;
+	border-radius: var(--sg-paper-hit-radius, var(--sg-radius-ui));
 	background: transparent !important;
 	color: var(--ink);
 	font-size: var(--sg-type-amount);
@@ -280,7 +280,7 @@
 	.sg-field .sg-choice .option:has(input:not(:disabled)):hover .option-label {
 		background: color-mix(in srgb, var(--ink) 10%, var(--surface));
 	}
-	.sg-field .sg-choice .option:has(input:checked):hover .option-label {
+	.sg-field .sg-choice .option:has(input:checked:not(:disabled)):hover .option-label {
 		background: var(--wash);
 	}
 	.sg-number > button:not(:disabled):hover {
@@ -326,12 +326,12 @@ textarea.sg-text-control[data-sg-field-appearance="standalone"] {
 .sg-text-control[data-sg-field-appearance="embedded"]:focus-visible {
 	outline: 2px var(--sg-focus-style, none) var(--ink);
 	outline-offset: -2px;
-	border-radius: 8px;
+	border-radius: var(--sg-radius-ui);
 }
 :is(.input-frame, .profile-fields .field-row):has(.sg-text-control:focus-visible) {
 	outline: 2px var(--sg-focus-style, none) var(--ink);
 	outline-offset: 3px;
-	border-radius: 12px;
+	border-radius: var(--sg-radius-ui);
 }
 .sg-select-control:not([multiple]) {
 	min-height: 48px;
@@ -409,7 +409,8 @@ select:not([multiple]):focus-visible {
 
 /* Borderless controls: one material, one shape family. Focus is transient, not a frame. */
 .sg-field .sg-choice input:checked:disabled + .option-label {
-	background: color-mix(in srgb, var(--wash) 72%, var(--surface));
+	background: color-mix(in srgb, var(--sg-control-muted) 16%, var(--surface));
+	color: var(--label);
 }
 .sg-select-control:not([multiple]),
 .sg-text-control[data-sg-field-appearance="standalone"] {
@@ -427,6 +428,9 @@ select:not([multiple]):focus-visible {
 	justify-content: space-between;
 	gap: 12px;
 	min-height: 44px;
+	padding-inline: 12px;
+	border-radius: var(--sg-radius-control);
+	background-color: var(--surface);
 	list-style: none;
 	cursor: pointer;
 }
@@ -527,8 +531,8 @@ textarea.sg-text-control[data-sg-auto-size] {
 
 .sg-control-error {
 	margin: 8px 0 0;
-	color: var(--label);
-	font-size: var(--sg-type-meta);
+	color: var(--sg-control-danger);
+	font-size: var(--sg-text-help);
 	line-height: 1.6;
 	overflow-wrap: anywhere;
 }

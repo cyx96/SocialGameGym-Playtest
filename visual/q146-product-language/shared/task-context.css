@@ -1,5 +1,6 @@
 /* One important context per task: primary + supporting line; operations retain their own hierarchy. */
-.sg-context-task {
+.sg-context-task,
+.experience-app-space {
 	--sg-task-stacked: 0;
 }
 :where(.sg-context-task, .sg-task-context-rail, .sg-inset-pane) {
@@ -158,6 +159,10 @@ body > .sg-task-context-rail {
 	text-overflow: ellipsis;
 }
 @container (max-width: 46rem) {
+	/* The retained viewport has the same width as its native responsive owner. */
+	.experience-app-space {
+		--sg-task-stacked: 1;
+	}
 	.sg-context-task.sg-task-layout {
 		--sg-task-stacked: 1;
 		flex: none;
@@ -384,6 +389,9 @@ body[data-task-scene] > .sg-task-page.sg-page {
 /* A short canvas gives the whole task to its existing pane scroll owner.
    Stacking also enables the unchanged navigation's separate context rail. */
 @media (max-height: 600px) {
+	.experience-app-space {
+		--sg-task-stacked: 1;
+	}
 	.sg-context-task.sg-task-layout {
 		--sg-task-stacked: 1;
 		flex: none;
@@ -443,7 +451,16 @@ body[data-task-scene] > .sg-task-page.sg-page {
 .sg-inset-pane[data-sg-task-stacked="true"]:has(
 	> :is(.sg-pane-toolbar, .sg-task-context-rail):focus-within
 ) {
-	--sg-task-reveal-clearance: 0px;
+	/* Focus changes local reveal geometry, never an inherited task-wide value. */
+	scroll-padding-block-start: 0px;
+}
+.sg-inset-pane[data-sg-task-stacked="true"]:has(
+		> :is(.sg-pane-toolbar, .sg-task-context-rail):focus-within
+	)
+	> :is(.sg-pane-toolbar, .sg-task-context-rail)
+	:is(.sg-button, .sg-person-link) {
+	scroll-margin-block-start: 0px;
+	scroll-margin-block-end: 0px;
 }
 /* Sticky controls are already visible outside the content's safe scroll box.
    Translate its reveal box, preserving its size, instead of scrolling the page. */

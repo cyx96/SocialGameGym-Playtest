@@ -65,7 +65,7 @@ select:focus-visible {
 	white-space: nowrap;
 }
 .avatar {
-	border-radius: 50%;
+	border-radius: var(--sg-radius-ui);
 	display: block;
 	object-fit: cover;
 	flex-shrink: 0;
@@ -159,7 +159,7 @@ select:focus-visible {
 	min-height: 48px;
 	padding: 10px 15px;
 	border: 0;
-	border-radius: 12px;
+	border-radius: var(--sg-radius-ui);
 	background: var(--surface);
 	text-align: center;
 	font-size: 16px;
@@ -188,14 +188,14 @@ select:focus-visible {
 	align-items: center;
 	gap: 16px;
 	border: 0;
-	border-radius: 14px;
+	border-radius: var(--sg-radius-ui);
 	background: var(--surface);
 	padding: 10px;
 }
 .stepper {
 	min-width: 48px;
 	min-height: 48px;
-	border-radius: 10px;
+	border-radius: var(--sg-radius-ui);
 	background: var(--paper);
 	color: var(--ink);
 	font-size: 24px;
@@ -248,7 +248,7 @@ select:focus-visible {
 .primary {
 	min-height: 48px;
 	min-width: 152px;
-	border-radius: 999px;
+	border-radius: var(--sg-radius-ui);
 	background: var(--ink);
 	color: white;
 	padding: 11px 24px;
@@ -317,7 +317,7 @@ button:active:not(:disabled) {
 }
 .document {
 	border: 0;
-	border-radius: 12px;
+	border-radius: var(--sg-radius-ui);
 	background: var(--surface);
 	padding: 8px 20px;
 }
@@ -361,7 +361,7 @@ button:active:not(:disabled) {
 	width: 100%;
 	min-height: 48px;
 	border: 0;
-	border-radius: 12px;
+	border-radius: var(--sg-radius-ui);
 	background: var(--surface);
 	padding: 10px 12px;
 	margin-bottom: 20px;
@@ -428,7 +428,7 @@ button:active:not(:disabled) {
 	width: 88px;
 	min-height: 44px;
 	border: 0;
-	border-radius: 10px;
+	border-radius: var(--sg-radius-ui);
 	text-align: center;
 	background: var(--surface);
 	padding: 6px;
@@ -479,7 +479,7 @@ dialog h2 {
 dialog header button {
 	width: 44px;
 	height: 44px;
-	border-radius: 50%;
+	border-radius: var(--sg-radius-ui);
 	background: var(--paper);
 	font-size: var(--sg-task-title);
 	line-height: 1;
@@ -589,7 +589,7 @@ dialog[open] {
 		max-height: 85dvh;
 		border: 0;
 		border-top: 0;
-		border-radius: 22px 22px 0 0;
+		border-radius: var(--sg-radius-ui) var(--sg-radius-ui) 0 0;
 		padding: 20px 24px max(30px, env(safe-area-inset-bottom));
 	}
 	dialog[open] {
@@ -631,7 +631,7 @@ dialog[open] {
 .editable-row {
 	position: relative;
 	cursor: pointer;
-	border-radius: 8px;
+	border-radius: var(--sg-radius-ui);
 	margin: 0 -8px;
 	padding-left: 8px;
 	padding-right: 8px;

@@ -21,7 +21,8 @@
 	const reduce = matchMedia("(prefers-reduced-motion:reduce)"),
 		groups = new WeakMap();
 	const block = (b) =>
-		b.disabled ||
+		b.matches(":disabled,[inert]") ||
+		b.closest("[inert],[aria-disabled=true]") ||
 		b.getAttribute("aria-disabled") === "true" ||
 		b.getAttribute("aria-busy") === "true";
 	const getButton = (target) =>
@@ -59,7 +60,7 @@
 					selected.dataset.sgInput === "keyboard";
 				if (instant) group.dataset.sgInstant = "";
 				// DOM rectangles include ancestor App-flight scale; CSS insets use local units.
-				indicator.style.clipPath = `inset(${(r.top - g.top) / scaleY}px ${(g.right - r.right) / scaleX}px ${(g.bottom - r.bottom) / scaleY}px ${(r.left - g.left) / scaleX}px round ${getComputedStyle(group).getPropertyValue("--sg-button-selection-radius").trim() || "10px"})`;
+				indicator.style.clipPath = `inset(${(r.top - g.top) / scaleY}px ${(g.right - r.right) / scaleX}px ${(g.bottom - r.bottom) / scaleY}px ${(r.left - g.left) / scaleX}px round ${getComputedStyle(group).getPropertyValue("--sg-button-selection-radius").trim() || "6px"})`;
 				if (instant && !reduce.matches) requestAnimationFrame(() => delete group.dataset.sgInstant);
 			}
 			const resize = new ResizeObserver(() => update(true));
@@ -358,7 +359,7 @@
 		n.className = "sg-activity-indicator";
 		n.setAttribute("aria-hidden", "true");
 		n.innerHTML =
-			'<svg viewBox="2 2 20 20" stroke-width="1.7"><circle cx="12" cy="12" r="8" opacity=".3"/><path d="M12 4a8 8 0 0 1 8 8"/></svg>';
+			'<svg class="sg-activity-glyph" viewBox="2 2 20 20" stroke-width="1.7"><circle cx="12" cy="12" r="8" opacity=".3"/><path d="M12 4a8 8 0 0 1 8 8"/></svg>';
 		return n;
 	}
 	function settleActivity() {

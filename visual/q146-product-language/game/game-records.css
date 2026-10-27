@@ -47,7 +47,7 @@ dialog[data-content="records"] #panel-body {
 .record-snapshot-trigger:focus-visible {
 	outline: 2px var(--sg-focus-style, none) var(--ink);
 	outline-offset: -2px;
-	border-radius: 8px;
+	border-radius: var(--sg-radius-ui);
 }
 .record-round-heading {
 	display: block;
@@ -152,7 +152,7 @@ dialog[data-content="records"] #panel-body {
 .record-avatar {
 	width: 28px;
 	height: 28px;
-	border-radius: 50%;
+	border-radius: var(--sg-radius-ui);
 	display: block;
 	background: var(--paper);
 	position: relative;
@@ -279,7 +279,7 @@ dialog[data-content="records"] #panel-body {
 .record-document {
 	margin: 4px 0 0;
 	padding: 10px 14px 10px 38px;
-	border-radius: 10px;
+	border-radius: var(--sg-radius-ui);
 	background: var(--paper);
 	font-size: 15px;
 	line-height: 1.9;
@@ -307,7 +307,7 @@ dialog[data-content="records"] #panel-body {
 	color: var(--label);
 	background: var(--paper);
 	border: 0;
-	border-radius: 8px;
+	border-radius: var(--sg-radius-ui);
 	min-height: 44px;
 	padding: 8px 12px;
 }

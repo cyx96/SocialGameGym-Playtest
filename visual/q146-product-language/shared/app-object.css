@@ -49,6 +49,29 @@
 .sg-app-object .back {
 	transform: rotateY(180deg);
 }
-.sg-app-object[data-app-object="game"] .physical {
-	filter: drop-shadow(2.5px 6px 3.5px color-mix(in srgb, var(--art-dark) 17%, transparent));
+/* Whole-object action elevation is separate from the artwork's internal folds. */
+.launch-tool .sg-app-object {
+	filter: var(--sg-paper-object-rest-filter);
+	transition: filter var(--sg-motion-release) var(--sg-ease);
+}
+.launch-tool:active .sg-app-object {
+	filter: var(--sg-paper-object-pressed-filter);
+	transition-duration: var(--sg-motion-press);
+}
+.launch-tool:is(:disabled, [aria-disabled="true"], [inert], [inert] *, [aria-disabled="true"] *)
+	.sg-app-object {
+	filter: none;
+}
+[data-sg-motion-input="keyboard"] .launch-tool .sg-app-object {
+	transition: none;
+}
+@media (prefers-reduced-motion: reduce), (forced-colors: active) {
+	.launch-tool .sg-app-object {
+		transition: none;
+	}
+}
+@media (forced-colors: active) {
+	.launch-tool:is(:active, .launch-tool) .sg-app-object {
+		filter: none;
+	}
 }

@@ -16,7 +16,7 @@
 	flex: none;
 	vertical-align: middle;
 	isolation: isolate;
-	border-radius: 50%;
+	border-radius: var(--sg-radius-ui);
 	background: transparent;
 	color: var(--secondary, #535a55);
 	line-height: 0;
@@ -28,7 +28,7 @@
 	aspect-ratio: 1;
 	object-fit: cover;
 	object-position: center;
-	border-radius: 50%;
+	border-radius: var(--sg-radius-ui);
 	user-select: none;
 	-webkit-user-select: none;
 }
@@ -60,8 +60,6 @@
 	height: 18px;
 	box-sizing: border-box;
 	border: 0;
-	border-radius: 50%;
-	background: var(--surface, #fff);
 	color: var(--secondary, #535a55);
 	line-height: 0;
 }
@@ -82,14 +80,68 @@ img.avatar {
 	aspect-ratio: 1;
 	object-fit: cover;
 	object-position: center;
-	border-radius: 50%;
+	border-radius: var(--sg-radius-ui);
 	flex: none;
 }
 
+/* The image carries depth; its transparent action target adds no backing sheet. */
+button:is(
+	.profile-card-avatar,
+	.sg-avatar-choice,
+	.avatar-option,
+	.profile-avatar-edit,
+	.sg-person-link
+) {
+	background: transparent !important;
+	box-shadow: none;
+}
+button:is(
+		.profile-card-avatar,
+		.sg-avatar-choice,
+		.avatar-option,
+		.profile-avatar-edit,
+		.sg-person-link
+	)
+	> :is(.sg-paper-depth, .sg-paper-grain, .sg-paper-fold) {
+	display: none;
+}
+button:is(
+		.profile-card-avatar,
+		.sg-avatar-choice,
+		.avatar-option,
+		.profile-avatar-edit,
+		.sg-person-link
+	)
+	.sg-avatar
+	> img {
+	box-shadow: var(--sg-paper-rest-shadow);
+}
+button:is(
+		.profile-card-avatar,
+		.sg-avatar-choice,
+		.avatar-option,
+		.profile-avatar-edit,
+		.sg-person-link
+	):is(:active, .sg-pressed, [aria-pressed="true"])
+	.sg-avatar
+	> img {
+	box-shadow: var(--sg-paper-pressed-shadow);
+}
+:is(.avatar-edit-mark, .avatar-selected-mark, .sg-avatar-badge) {
+	background: var(--surface, #fff);
+	border-radius: var(--sg-radius-ui);
+	box-shadow: none;
+	isolation: isolate;
+}
+
 /* Image-only actions own one foreground cue; suppress the generic background cue. */
-button:is(.profile-card-avatar, .sg-avatar-choice, .avatar-option, .profile-avatar-edit):not(
-	:disabled
-):focus-visible:has(> .sg-avatar) {
+button:is(
+	.profile-card-avatar,
+	.sg-avatar-choice,
+	.avatar-option,
+	.profile-avatar-edit,
+	.sg-person-link
+):not(:disabled):focus-visible:has(.sg-avatar) {
 	background-image: none !important;
 }
 /* Image-only avatar actions need their keyboard cue above the artwork, not behind it. */
@@ -97,8 +149,9 @@ button:is(
 	.profile-card-avatar,
 	.sg-avatar-choice,
 	.avatar-option,
-	.profile-avatar-edit
-):focus-visible > .sg-avatar::after {
+	.profile-avatar-edit,
+	.sg-person-link
+):focus-visible .sg-avatar::after {
 	content: "";
 	position: absolute;
 	inline-size: var(--sg-space-sibling);
@@ -108,4 +161,65 @@ button:is(
 	background: var(--ink, currentColor);
 	opacity: var(--sg-focus-mark-opacity, 0);
 	pointer-events: none;
+}
+
+/* Availability wins over image selection/press; artwork's internal folds remain unchanged. */
+button:is(
+		.profile-card-avatar,
+		.sg-avatar-choice,
+		.avatar-option,
+		.profile-avatar-edit,
+		.sg-person-link
+	)
+	.sg-avatar
+	> img {
+	transition: box-shadow var(--sg-motion-release) var(--sg-ease);
+}
+button:is(
+		.profile-card-avatar,
+		.sg-avatar-choice,
+		.avatar-option,
+		.profile-avatar-edit,
+		.sg-person-link
+	)[aria-busy="true"]
+	.sg-avatar
+	> img {
+	box-shadow: var(--sg-paper-pressed-shadow);
+}
+button:is(
+		.profile-card-avatar,
+		.sg-avatar-choice,
+		.avatar-option,
+		.profile-avatar-edit,
+		.sg-person-link
+	):is(:disabled, [aria-disabled="true"], [inert], [inert] *, [aria-disabled="true"] *)
+	.sg-avatar
+	> img {
+	box-shadow: none;
+}
+@media (prefers-reduced-motion: reduce), (forced-colors: active) {
+	button:is(
+			.profile-card-avatar,
+			.sg-avatar-choice,
+			.avatar-option,
+			.profile-avatar-edit,
+			.sg-person-link
+		)
+		.sg-avatar
+		> img {
+		transition: none;
+	}
+}
+@media (forced-colors: active) {
+	button:is(
+			.profile-card-avatar,
+			.sg-avatar-choice,
+			.avatar-option,
+			.profile-avatar-edit,
+			.sg-person-link
+		):is(:active, .sg-pressed, [aria-pressed="true"], [aria-busy="true"], button)
+		.sg-avatar
+		> img {
+		box-shadow: none;
+	}
 }

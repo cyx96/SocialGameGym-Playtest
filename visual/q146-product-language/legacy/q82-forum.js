@@ -94,7 +94,7 @@ function sync() {
 		w = width - (width - 44) * raw,
 		h = 78 - 34 * raw;
 	surface.style.transform = `translate(${shiftX}px,${y}px) scale(${w / width},${h / 78})`;
-	surface.style.borderRadius = `${16 + (width / 2 - 16) * raw}px / ${16 + 23 * raw}px`;
+	surface.style.borderRadius = "var(--sg-radius-ui)";
 	icon.style.transform = `translate(${-14 * (1 - raw) + shiftX}px,${expandedY + 17 - (expandedY + 17 - compactY) * raw}px)`;
 	copy.style.opacity = Math.max(0, 1 - raw * 8);
 	copy.style.top = expandedY + 20 + "px";
@@ -110,7 +110,7 @@ function sync() {
 	hit.style.translate = (readonlyEntry ? 0 : shiftX) + "px";
 	hit.style.width = w + "px";
 	hit.style.height = h + "px";
-	hit.style.borderRadius = 16 + 6 * raw + "px";
+	hit.style.borderRadius = "var(--sg-radius-ui)";
 	scroller.dataset.composer = raw === 0 ? "expanded" : raw === 1 ? "compact" : "morphing";
 	scroller.dataset.progress = raw.toFixed(4);
 }

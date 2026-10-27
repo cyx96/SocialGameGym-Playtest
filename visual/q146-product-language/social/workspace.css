@@ -144,7 +144,7 @@
 	background: transparent;
 	color: var(--label);
 	border: 0;
-	border-radius: var(--sg-radius-surface);
+	border-radius: var(--sg-radius-control);
 	padding: var(--sg-space-sibling);
 	display: flex;
 	align-items: center;
@@ -565,8 +565,11 @@
 	height: 44px;
 	display: grid;
 	place-items: center;
-	border-radius: var(--sg-radius-action);
+	border-radius: var(--sg-radius-control);
 	cursor: pointer;
+}
+:where(.sg-social-workspace-host) .star-option:has(input:checked) {
+	background-color: var(--wash);
 }
 :where(.sg-social-workspace-host) .star-option input {
 	position: absolute;

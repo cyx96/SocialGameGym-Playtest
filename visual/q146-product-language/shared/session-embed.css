@@ -98,7 +98,7 @@ html[data-session-app] .preview-empty {
 	place-items: center;
 	min-height: 56px;
 	border: 0;
-	border-radius: 12px;
+	border-radius: var(--sg-radius-ui);
 	background: none;
 	cursor: pointer;
 }

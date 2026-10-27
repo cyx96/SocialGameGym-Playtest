@@ -1,6 +1,6 @@
 :root {
 	--catalog-edge-fade: clamp(48px, 10dvh, 80px);
-	--catalog-paper-radius: 14px;
+	--catalog-paper-radius: var(--sg-radius-ui);
 	--poster-transition-extent: 48px;
 	--poster-transition-ramp: 40px;
 }
@@ -141,7 +141,7 @@
 .card-wrap:focus-visible {
 	outline: 2px var(--sg-focus-style, none) var(--ink);
 	outline-offset: 5px;
-	border-radius: 14px;
+	border-radius: var(--sg-radius-ui);
 }
 .card-wrap.ghost {
 	pointer-events: none;
@@ -200,7 +200,7 @@
 .search-head input:focus-visible {
 	outline: 2px var(--sg-focus-style, none) var(--ink);
 	outline-offset: 3px;
-	border-radius: 4px;
+	border-radius: var(--sg-radius-ui);
 }
 .result {
 	min-height: 48px;

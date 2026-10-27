@@ -10,7 +10,7 @@
 	height: var(--sg-launch-size, 88px);
 	display: grid;
 	place-items: center;
-	border-radius: var(--sg-launch-radius, 24px);
+	border-radius: var(--sg-launch-radius, var(--sg-radius-ui));
 	background: var(--surface, #fff);
 	color: var(--ink);
 	position: relative;
@@ -63,12 +63,12 @@
 .launch-tool:focus-visible {
 	outline: 2px var(--sg-focus-style, none) var(--ink);
 	outline-offset: 6px;
-	border-radius: 18px;
+	border-radius: var(--sg-radius-ui);
 }
 @media (max-width: 760px) {
 	:root {
 		--sg-launch-size: 80px;
-		--sg-launch-radius: 22px;
+		--sg-launch-radius: var(--sg-radius-ui);
 	}
 	.tool-tile > svg {
 		width: var(--sg-launch-glyph, 62px);

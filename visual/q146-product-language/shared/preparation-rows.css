@@ -49,7 +49,7 @@
 	place-items: center;
 	inline-size: var(--sg-target);
 	block-size: var(--sg-target);
-	border-radius: 50%;
+	border-radius: var(--sg-radius-ui);
 	background: var(--sg-control-fill);
 	color: var(--secondary);
 }
@@ -67,7 +67,9 @@
 	inline-size: 16px;
 	block-size: 16px;
 	background: var(--canvas);
-	border-radius: 50%;
+	border-radius: var(--sg-radius-ui);
+	isolation: isolate;
+	box-shadow: none;
 	color: var(--secondary);
 }
 .seat-organizer-mark {

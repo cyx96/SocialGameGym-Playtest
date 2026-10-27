@@ -34,7 +34,7 @@
 	block-size: 100%;
 	min-inline-size: 44px;
 	min-block-size: 44px;
-	border-radius: 50%;
+	border-radius: var(--sg-radius-ui);
 }
 .sg-identity-leading > .sg-button[data-sg-button].sg-identity-add {
 	background: var(--sg-control-fill);

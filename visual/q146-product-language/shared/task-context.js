@@ -8,7 +8,7 @@
 	let canvasFrame = 0;
 	function updateCanvases() {
 		canvasFrame = 0;
-		const viewport = document.documentElement.clientHeight;
+		let viewport;
 		for (const [source, targets] of canvases) {
 			if (!source.isConnected) {
 				for (const target of targets) canvasSize.unobserve(target);
@@ -16,19 +16,31 @@
 				continue;
 			}
 			if (
+				source.closest("[hidden]") &&
+				!source.closest("[data-sg-app-measuring],[data-sg-app-retained]")
+			)
+				continue;
+			const intro = source.querySelector(":scope > .intro"),
+				children = intro ? [...intro.children] : [];
+			if (!children.length) continue;
+			const style = getComputedStyle(source),
+				stacked = style.getPropertyValue("--sg-task-stacked").trim() === "1";
+			// The stacked layout has no vertical context offset, independent of
+			// painted geometry. Apply that correction before requesting any rects.
+			if (stacked) {
+				if (source.style.getPropertyValue("--sg-task-context-inset") !== "0px")
+					source.style.setProperty("--sg-task-context-inset", "0px");
+				continue;
+			}
+			if (
 				!source.checkVisibility({ checkVisibilityCSS: true }) &&
 				!source.closest("[data-sg-app-measuring]")
 			)
 				continue;
-			const intro = source.querySelector(":scope > .intro"),
-				style = getComputedStyle(source),
-				children = intro ? [...intro.children] : [];
-			if (!children.length) continue;
 			const bounds = source.getBoundingClientRect();
 			// App flight changes painted coordinates, never the underlying reading layout.
 			if (Math.abs(bounds.width - source.offsetWidth) > 1) continue;
-			const stacked = style.getPropertyValue("--sg-task-stacked").trim() === "1",
-				start = bounds.top + parseFloat(style.paddingTop),
+			const start = bounds.top + parseFloat(style.paddingTop),
 				first = children[0].getBoundingClientRect(),
 				last = children.at(-1).getBoundingClientRect(),
 				copy = intro.querySelector(".sg-task-copy")?.getBoundingClientRect(),
@@ -40,7 +52,10 @@
 					: Math.max(
 							0,
 							Math.min(
-								viewport / 2 - start - before - height / 2,
+								(viewport ??= document.documentElement.clientHeight) / 2 -
+									start -
+									before -
+									height / 2,
 								available - (last.bottom - first.top),
 							),
 						),
@@ -254,7 +269,17 @@
 	window.SGGTaskContext = Object.freeze({
 		version: "sgg.task-context/1",
 		connect,
-		refresh() {
+		refresh({ stackedRoot } = {}) {
+			// A current launch capture may supply the shared stacked role before
+			// activating this pane. Its offset is exactly zero, independent of rects.
+			if (stackedRoot) {
+				for (const source of stackedRoot.querySelectorAll(
+					".sg-context-task.sg-task-layout, .sg-summary-page.sg-task-layout",
+				))
+					if (source.style.getPropertyValue("--sg-task-context-inset") !== "0px")
+						source.style.setProperty("--sg-task-context-inset", "0px");
+				return;
+			}
 			discoverCanvases();
 			cancelAnimationFrame(canvasFrame);
 			updateCanvases();

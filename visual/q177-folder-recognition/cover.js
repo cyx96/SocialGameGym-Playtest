@@ -32,14 +32,21 @@
 		board.setAttribute("viewBox", "0 0 300 450");
 		board.setAttribute("preserveAspectRatio", "none");
 		board.setAttribute("aria-hidden", "true");
+		const boardClipId = "folder-board-" + ++sequence;
 		board.innerHTML =
-			'<path d="' +
+			'<defs><clipPath id="' +
+			boardClipId +
+			'"><path d="' +
+			boardOutline(variant) +
+			'"/></clipPath></defs><path d="' +
 			boardOutline(variant) +
 			'" fill="' +
 			theme.colors.wash +
 			'" stroke="' +
 			theme.colors.ink +
-			'" stroke-opacity=".13" stroke-width=".8"/><path d="M9 25 V432 Q9 440 18 440 H284" fill="none" stroke="#ffffff" stroke-opacity=".7" stroke-width="1"/>';
+			'" stroke-opacity=".13" stroke-width=".8"/><foreignObject width="300" height="450" clip-path="url(#' +
+			boardClipId +
+			')"><div xmlns="http://www.w3.org/1999/xhtml" class="folder-paper" data-sg-paper-print=""></div></foreignObject><path d="M9 25 V432 Q9 440 18 440 H284" fill="none" stroke="#ffffff" stroke-opacity=".7" stroke-width="1"/>';
 		const art = document.createElement("div");
 		art.className = "cover-art";
 		const shadow = document.createElementNS("http://www.w3.org/2000/svg", "svg");
@@ -64,7 +71,7 @@
 		front.className = "paper-front";
 		front.style.clipPath = "url(#" + clipId + ")";
 		front.innerHTML =
-			'<span class="paper-color"></span><span class="paper-grain"></span><span class="paper-bend"></span><svg class="paper-edge" viewBox="0 0 300 450" preserveAspectRatio="none" aria-hidden="true"><path d="M0 265.5 300 324"/></svg>';
+			'<span class="paper-color"></span><span class="paper-grain" data-sg-paper-print=""></span><span class="paper-bend"></span><svg class="paper-edge" viewBox="0 0 300 450" preserveAspectRatio="none" aria-hidden="true"><path d="M0 265.5 300 324"/></svg>';
 		const fold = document.createElementNS("http://www.w3.org/2000/svg", "svg");
 		fold.classList.add("fold-edge");
 		fold.setAttribute("viewBox", "0 0 300 450");

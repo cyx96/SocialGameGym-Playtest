@@ -294,6 +294,8 @@
 		for (const summary of summaries) {
 			if (summary.querySelector("svg") || summary.dataset.sgDisclosure === "custom") continue;
 			summary.classList.add("sg-disclosure");
+			summary.dataset.sgPress = "";
+			summary.dataset.sgPaperBoundary = "contained";
 			const arrow = SGGIcons.create("chevron-down");
 			arrow.classList.add("sg-disclosure-chevron");
 			arrow.setAttribute("aria-hidden", "true");

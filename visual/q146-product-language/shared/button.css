@@ -1,7 +1,7 @@
 @import url("./foundation.css");
 /* SocialGameGym button language v1. Theme roles are supplied by the game UI package. */
 :root {
-	--sg-button-ink:var(--ink);--sg-button-secondary:var(--secondary);--sg-button-surface:var(--surface,#fff);--sg-button-wash:var(--wash,color-mix(in srgb,var(--sg-button-ink) 12%,white));--sg-button-height:48px;--sg-button-compact:44px;--sg-button-radius:999px;--sg-button-ease:var(--sg-ease);--sg-button-press:var(--sg-motion-press);--sg-button-release:var(--sg-motion-release);--sg-button-state:var(--sg-motion-state);--sg-button-selection:var(--sg-motion-selection);--sg-button-selection-radius:var(--sg-radius-action)
+	--sg-button-ink:var(--ink);--sg-button-secondary:var(--secondary);--sg-button-surface:var(--surface,#fff);--sg-button-wash:var(--wash,color-mix(in srgb,var(--sg-button-ink) 12%,white));--sg-button-height:48px;--sg-button-compact:44px;--sg-button-radius:var(--sg-radius-ui);--sg-button-ease:var(--sg-ease);--sg-button-press:var(--sg-motion-press);--sg-button-release:var(--sg-motion-release);--sg-button-state:var(--sg-motion-state);--sg-button-selection:var(--sg-motion-selection);--sg-button-selection-radius:var(--sg-radius-ui)
 }
 button.sg-button[data-sg-button],
 a.sg-button[data-sg-button] {
@@ -27,7 +27,7 @@ a.sg-button[data-sg-button] {
 	padding: 12px 24px;
 	border: 0;
 	border-radius: var(--sg-button-radius);
-	background: transparent;
+	background-color: transparent;
 	box-shadow: none;
 	color: var(--sg-button-ink);
 	font-family: inherit;
@@ -58,16 +58,16 @@ button.sg-button[data-sg-button].sg-pressed {
 	transition-duration: var(--sg-button-press), var(--sg-button-state), var(--sg-button-state);
 }
 .sg-button[data-sg-button][data-sg-role="primary"] {
-	background: var(--sg-button-ink);
+	background-color: var(--sg-button-ink);
 	color: var(--sg-button-surface);
 	font-weight: 550;
 }
 .sg-button[data-sg-button][data-sg-role="soft"] {
-	background: color-mix(in srgb, var(--sg-button-wash) 58%, var(--sg-button-surface));
+	background-color: color-mix(in srgb, var(--sg-button-wash) 58%, var(--sg-button-surface));
 	color: var(--sg-button-ink);
 }
 .sg-button[data-sg-button][data-sg-role="quiet"] {
-	background: transparent;
+	background-color: transparent;
 	color: var(--sg-button-ink);
 }
 .sg-button[data-sg-button][data-sg-size="compact"] {
@@ -82,14 +82,22 @@ button.sg-button[data-sg-button].sg-pressed {
 	min-width: 44px;
 	min-height: 44px;
 	padding: 0;
-	border-radius: 50%;
-	background: transparent;
+	border-radius: var(--sg-paper-hit-radius, var(--sg-radius-ui));
+	background-color: transparent;
 	color: var(--sg-button-ink);
 	flex: 0 0 auto;
 }
 .sg-button[data-sg-button][data-sg-role="icon-primary"] {
-	background: var(--sg-button-ink);
+	background-color: var(--sg-button-ink);
 	color: var(--sg-button-surface);
+}
+/* Placement determines icon shape; availability and feedback never change it. */
+.sg-button[data-sg-button][data-sg-paper-boundary="contained"]:is(
+	[data-sg-role="icon"],
+	[data-sg-role="icon-primary"]
+),
+[data-sg-press][data-sg-paper-boundary="contained"] {
+	border-radius: var(--sg-paper-hit-radius, var(--sg-radius-ui));
 }
 .sg-button[data-sg-button] svg {
 	display: block;
@@ -112,7 +120,7 @@ button.sg-button[data-sg-button].sg-pressed {
 	transform: none;
 	opacity: 1;
 	color: var(--sg-button-secondary);
-	background: transparent;
+	background-color: transparent;
 	filter: none;
 }
 .sg-button[data-sg-button]:is(
@@ -120,22 +128,22 @@ button.sg-button[data-sg-button].sg-pressed {
 	[data-sg-role="icon-primary"],
 	[data-sg-role="soft"]
 ):is(:disabled, [aria-disabled="true"]) {
-	background: var(--sg-button-disabled-fill);
+	background-color: var(--sg-button-disabled-fill);
 	color: var(--sg-button-secondary);
 }
 
 .sg-button[data-sg-button][aria-busy="true"] {
-	background: transparent;
+	background-color: transparent;
 	color: var(--sg-button-ink);
 	cursor: progress;
 }
 .sg-button[data-sg-button][data-sg-role="primary"][aria-busy="true"],
 .sg-button[data-sg-button][data-sg-role="icon-primary"][aria-busy="true"] {
-	background: var(--sg-button-ink);
+	background-color: var(--sg-button-ink);
 	color: var(--sg-button-surface);
 }
 .sg-button[data-sg-button][data-sg-role="soft"][aria-busy="true"] {
-	background: var(--sg-button-wash);
+	background-color: var(--sg-button-wash);
 }
 .sg-button[data-sg-button][aria-busy="true"] > .sg-button-label {
 	opacity: 1;
@@ -196,7 +204,7 @@ button.sg-button[data-sg-button].sg-pressed {
 }
 @media (hover: hover) and (pointer: fine) {
 	.sg-button[data-sg-button]:not(:disabled):not([aria-disabled="true"]):hover {
-		background: color-mix(in srgb, var(--sg-button-wash) 44%, var(--sg-button-surface));
+		background-color: color-mix(in srgb, var(--sg-button-wash) 44%, var(--sg-button-surface));
 		filter: none;
 	}
 	.sg-button[data-sg-button][data-sg-role="primary"]:not(:disabled):not(
@@ -205,17 +213,17 @@ button.sg-button[data-sg-button].sg-pressed {
 	.sg-button[data-sg-button][data-sg-role="icon-primary"]:not(:disabled):not(
 		[aria-disabled="true"]
 	):hover {
-		background: color-mix(in srgb, var(--sg-button-ink) 93%, #000);
+		background-color: color-mix(in srgb, var(--sg-button-ink) 93%, #000);
 	}
 	.sg-button[data-sg-button][data-sg-role="soft"]:not(:disabled):not([aria-disabled="true"]):hover {
-		background: var(--sg-button-wash);
+		background-color: var(--sg-button-wash);
 	}
 }
 /* Native radio choice retains its input and keyboard behavior. */
 .sg-choice .option-label {
 	min-height: 48px;
 	border: 0;
-	background: var(--sg-control-fill, color-mix(in srgb, var(--ink) 6%, var(--surface)));
+	background-color: var(--sg-control-fill, color-mix(in srgb, var(--ink) 6%, var(--surface)));
 	border-radius: var(--sg-control-radius, var(--sg-radius-control));
 	box-shadow: none;
 	font-weight: 400;
@@ -224,7 +232,7 @@ button.sg-button[data-sg-button].sg-pressed {
 		border-color var(--sg-button-state) ease;
 }
 .sg-choice input:checked + .option-label {
-	background: var(--sg-button-wash);
+	background-color: var(--sg-button-wash);
 	border-color: color-mix(in srgb, var(--sg-button-ink) 35%, var(--line));
 	box-shadow: none;
 	font-weight: 550;
@@ -246,7 +254,7 @@ button.sg-button[data-sg-button].sg-pressed {
 	height: 100%;
 	z-index: -1;
 	border-radius: var(--sg-button-selection-radius);
-	background: color-mix(in srgb, var(--sg-button-wash) 58%, var(--sg-button-surface));
+	background-color: color-mix(in srgb, var(--sg-button-wash) 58%, var(--sg-button-surface));
 	pointer-events: none;
 	transition: clip-path var(--sg-button-selection) var(--sg-button-ease);
 	width: 100%;
@@ -258,15 +266,15 @@ button.sg-button[data-sg-button].sg-pressed {
 	font-size: var(--sg-text-help);
 	flex: 1;
 	color: var(--sg-button-secondary);
-	background: transparent;
+	background-color: transparent;
 }
 .sg-segmented .sg-button[data-sg-button][aria-pressed="true"] {
 	color: var(--sg-button-ink);
 	font-weight: 550;
-	background: transparent;
+	background-color: transparent;
 }
 .sg-segmented .sg-button[data-sg-button]:hover {
-	background: transparent;
+	background-color: transparent;
 }
 .sg-segmented[data-sg-instant] > .sg-selection,
 [data-sg-motion-input="keyboard"] .sg-segmented > .sg-selection {
@@ -364,7 +372,7 @@ html:not([data-sg-mounted]) .sg-button > svg {
 }
 
 .sg-button[data-sg-button][data-sg-motion="add"][aria-expanded="true"] {
-	background: color-mix(in srgb, var(--sg-button-wash) 58%, var(--sg-button-surface));
+	background-color: color-mix(in srgb, var(--sg-button-wash) 58%, var(--sg-button-surface));
 }
 /* Menu items are compound rows, not centered standalone text buttons. */
 button.sg-button[data-sg-button][role="menuitem"] {
@@ -390,7 +398,7 @@ button.sg-button[data-sg-button][role="menuitem"] .type-mark {
 }
 
 .sg-button[data-sg-button][data-sg-role="danger"] {
-	background: var(--sg-danger, #a73731);
+	background-color: var(--sg-danger, #a73731);
 	color: #fff;
 	font-weight: 550;
 }
@@ -398,11 +406,11 @@ button.sg-button[data-sg-button][role="menuitem"] .type-mark {
 	.sg-button[data-sg-button][data-sg-role="danger"]:not(:disabled):not(
 		[aria-disabled="true"]
 	):hover {
-		background: color-mix(in srgb, var(--sg-danger, #a73731) 93%, #000);
+		background-color: color-mix(in srgb, var(--sg-danger, #a73731) 93%, #000);
 	}
 }
 .sg-button[data-sg-button][data-sg-role="danger"]:disabled {
-	background: var(--sg-button-disabled-fill);
+	background-color: var(--sg-button-disabled-fill);
 	color: var(--sg-button-secondary);
 }
 
@@ -433,11 +441,12 @@ button.sg-button[data-sg-button][role="menuitem"] .type-mark {
 	display: grid;
 	place-items: center;
 	min-inline-size: 22px;
+	inline-size: max-content;
 	block-size: max(22px, calc(1em + 6px));
 	padding-inline: 5px;
 	box-sizing: border-box;
-	border-radius: 99px;
-	background: var(--ink, var(--sg-brand-ink));
+	border-radius: var(--sg-radius-ui);
+	background-color: var(--ink, var(--sg-brand-ink));
 	color: var(--surface, #fff);
 	font: 600 var(--sg-type-caption) / 1 var(--sg-font-number);
 	font-variant-numeric: tabular-nums;
@@ -457,7 +466,8 @@ button.sg-button[data-sg-button][role="menuitem"] .type-mark {
 	position: absolute;
 	inset-block-start: 0;
 	inset-inline-end: 0;
-	translate: 25% -25%;
+	/* Cap upward overlap at the existing rail's clearance around a compact icon target. */
+	translate: 25% max(-75%, calc((var(--sg-button-compact) - var(--sg-toolbar-height, 3.5rem)) / 2));
 }
 .sg-unread[hidden] {
 	display: none !important;
@@ -513,23 +523,23 @@ button.sg-button[data-sg-button][role="menuitem"] .type-mark {
 	flex: none;
 	vertical-align: middle;
 }
-.sg-activity-indicator > svg {
+.sg-activity-indicator > svg.sg-activity-glyph {
 	inline-size: 20px;
 	block-size: 20px;
 	fill: none;
 	stroke: currentColor;
 	animation: sg-button-spin 700ms linear infinite;
 }
-[data-sg-activity-paused] .sg-activity-indicator > svg,
-[inert] .sg-activity-indicator > svg,
-[hidden] .sg-activity-indicator > svg {
+[data-sg-activity-paused] .sg-activity-indicator > svg.sg-activity-glyph,
+[inert] .sg-activity-indicator > svg.sg-activity-glyph,
+[hidden] .sg-activity-indicator > svg.sg-activity-glyph {
 	animation-play-state: paused;
 }
-[data-sg-motion-input="keyboard"] .sg-activity-indicator > svg {
+[data-sg-motion-input="keyboard"] .sg-activity-indicator > svg.sg-activity-glyph {
 	animation: none;
 }
 @media (prefers-reduced-motion: reduce) {
-	.sg-activity-indicator > svg {
+	.sg-activity-indicator > svg.sg-activity-glyph {
 		animation: none;
 	}
 }

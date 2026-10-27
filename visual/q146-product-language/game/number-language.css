@@ -63,12 +63,14 @@
 	color: inherit;
 }
 .number-approx {
+	border-radius: var(--sg-radius-ui);
 	border: 0;
 	background: transparent;
 	padding: 0;
 	cursor: pointer;
 	position: relative;
 	min-height: 44px;
+	min-width: 44px;
 	text-decoration-line: underline;
 	text-decoration-style: dotted;
 	text-decoration-color: var(--line);
@@ -77,7 +79,7 @@
 .number-approx:focus-visible {
 	outline: 2px var(--sg-focus-style, none) var(--ink);
 	outline-offset: 4px;
-	border-radius: 4px;
+	border-radius: var(--sg-radius-ui);
 }
 .number-approx:active {
 	transform: none !important;

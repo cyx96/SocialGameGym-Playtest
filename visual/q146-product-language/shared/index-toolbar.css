@@ -34,7 +34,7 @@
 }
 .search-surface :is(#search-trigger, .search-trigger),
 .search-surface :is(#search-clear, .search-clear) {
-	border-radius: var(--sg-radius-control);
+	border-radius: var(--sg-paper-hit-radius, var(--sg-radius-ui));
 }
 .search-surface :is(#search-trigger, .search-trigger) {
 	pointer-events: auto;
@@ -52,7 +52,7 @@
 	line-height: var(--sg-leading-interface);
 	pointer-events: auto;
 	outline-offset: -3px;
-	border-radius: 4px;
+	border-radius: var(--sg-radius-ui);
 	appearance: none;
 }
 .search-surface input::-webkit-search-cancel-button {
