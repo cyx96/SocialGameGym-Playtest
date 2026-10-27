@@ -217,6 +217,10 @@
 	flex-direction: column;
 	overflow: hidden;
 }
+/* Empty content and its single legal action share the common state reading lane. */
+:where(.sg-social-workspace-host) .workspace-empty {
+	gap: var(--sg-space-related);
+}
 :where(.sg-social-workspace-host) .detail-heading.profile-identity {
 	--sg-person-heading-avatar: var(--avatar-profile);
 	flex: none;

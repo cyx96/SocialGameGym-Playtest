@@ -77,31 +77,6 @@
 	}
 }
 
-/* Brief states use the same portrait canvas rhythm as short decisions.
-   Rich summaries retain their own document structure. */
-@media (min-height: 601px) {
-	@container (max-width: 46rem) {
-		.sg-state-layout.sg-summary-page.sg-task-layout:not(:has(> .content > *)) {
-			display: flex;
-			flex-direction: column;
-			row-gap: var(--sg-space-task);
-			align-items: stretch;
-		}
-		.sg-state-layout.sg-summary-page.sg-task-layout:not(:has(> .content > *)) > .intro {
-			flex: none;
-			align-self: stretch;
-			margin-block: auto;
-		}
-		.sg-state-layout.sg-summary-page.sg-task-layout:not(:has(> .content > *)) > .content:empty {
-			display: none;
-		}
-		.sg-state-layout.sg-summary-page.sg-task-layout:not(:has(> .content > *)) > .sg-scene-actions {
-			flex: none;
-			align-self: stretch;
-		}
-	}
-}
-
 /* State uses the same task reading grid without moving its parent's App navigation. */
 .sg-inset-pane > .sg-summary-page {
 	inline-size: calc(100% - 2 * var(--sg-pane-inset));
@@ -111,7 +86,19 @@
 /* Short lifecycle states share one focus lane for both reading and recovery.
    Rich game outcomes keep their task's independent information/action rails. */
 .sg-state-layout.sg-summary-page.sg-task-layout {
+	display: flex;
+	flex-direction: column;
+	align-items: stretch;
+	gap: var(--sg-space-task);
 	max-inline-size: var(--sg-focus);
+}
+.sg-state-layout.sg-summary-page.sg-task-layout > .intro {
+	flex: 1;
+	min-block-size: min-content;
+	align-self: stretch;
+	justify-content: center;
+	margin: 0;
+	padding-block-start: 0;
 }
 .sg-summary-score {
 	display: grid;

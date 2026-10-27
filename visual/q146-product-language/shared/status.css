@@ -59,6 +59,9 @@
 .sg-state-content > .sg-status {
 	inline-size: 100%;
 }
+.sg-state-content > .sg-state-layout.sg-summary-page {
+	padding-block: 0;
+}
 
 /* Finite state template: the message owns reading; recovery/exit actions own the common lower rail. */
 .sg-state-layout > .intro {
@@ -73,6 +76,9 @@
 	flex-wrap: wrap;
 	justify-content: flex-end;
 	gap: var(--sg-space-sibling);
+}
+.sg-state-layout > .sg-scene-actions:empty {
+	display: none;
 }
 @container (max-width: 30rem) {
 	.sg-state-layout > .sg-scene-actions {
