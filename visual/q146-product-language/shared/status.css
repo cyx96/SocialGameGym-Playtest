@@ -72,6 +72,7 @@
 	gap: 0;
 }
 .sg-state-layout > .sg-scene-actions {
+	max-inline-size: 100%;
 	display: flex;
 	flex-wrap: wrap;
 	justify-content: flex-end;
@@ -80,14 +81,12 @@
 .sg-state-layout > .sg-scene-actions:empty {
 	display: none;
 }
-@container (max-width: 30rem) {
-	.sg-state-layout > .sg-scene-actions {
-		flex-direction: column;
-		align-items: stretch;
-	}
-	.sg-state-layout > .sg-scene-actions > .sg-button {
-		inline-size: 100%;
-	}
+/* Content, rather than a phone breakpoint, determines whether actions wrap. */
+.sg-state-layout > .sg-scene-actions > .sg-button {
+	flex: none;
+	max-inline-size: 100%;
+	white-space: normal;
+	overflow-wrap: anywhere;
 }
 .sg-phase-guide {
 	margin: 0 0 var(--sg-space-paragraph);
