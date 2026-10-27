@@ -4,12 +4,11 @@
 		inset 0 0.65px 0 #ffffff70, 0.35px 0.6px 1px #1736240b, 1px 3.5px 5px #1736241a;
 	--sg-paper-contact-shadow:
 		inset 0 0.65px 0 #ffffff70, 0.2px 0.4px 0.8px #1736240b, 0.5px 1.2px 2.2px #17362419;
-	--sg-paper-pressed-shadow: var(--sg-paper-contact-shadow);
+	/* Landed controls share the receiving plane: no residual edge light or shadow. */
+	--sg-paper-pressed-shadow: none;
 	--sg-paper-object-rest-filter: drop-shadow(0.35px 0.6px 1px #1736240b)
 		drop-shadow(1px 3.5px 5px #1736241a);
-	--sg-paper-object-pressed-filter: drop-shadow(0.2px 0.4px 0.8px #1736240b)
-		drop-shadow(0.5px 1.2px 2.2px #17362419);
-	--sg-paper-contained-pressed-shadow: inset 0 0.65px 0 #ffffff70, 0.1px 0.3px 0.6px #17362414;
+	--sg-paper-object-pressed-filter: none;
 	--sg-paper-contained-inset: 4px;
 	--sg-paper-fiber: 0.72;
 	--sg-paper-pulp: 0.16;
@@ -26,7 +25,6 @@
 }
 .sg-paper-face[data-sg-paper-boundary="contained"] {
 	--sg-paper-rest-shadow: var(--sg-paper-contact-shadow);
-	--sg-paper-pressed-shadow: var(--sg-paper-contained-pressed-shadow);
 }
 /* Keep a full touch target while its inset paper and short contact shadow stay inside the owner. */
 .sg-paper-face[data-sg-paper-boundary="contained"]:is(
@@ -474,6 +472,18 @@ button.sg-paper-face.sg-button[data-sg-button][aria-busy="true"]:is(
 	position: relative;
 	isolation: isolate;
 }
+/* Contact and persistent selection flatten the hover fold as well as the elevation. */
+.sg-paper-face:is(
+	:active,
+	.sg-pressed,
+	[aria-pressed="true"],
+	[aria-selected="true"],
+	[aria-checked="true"],
+	[aria-current="true"]
+) > .sg-paper-fold,
+.option:has(input:checked, input:active) .sg-paper-fold,
+.star-option:has(input:checked, ~ .star-option input:checked, input:active) > .sg-paper-fold,
+.sg-switch:has(input:checked, input:active) > .sg-switch-track > .sg-paper-fold,
 /* Disabled controls cannot retain a stale pointer fold while permissions change. */
 .sg-paper-face:is(:disabled, [aria-disabled="true"], [aria-busy="true"], [inert]) > .sg-paper-fold,
 :is(.option, .star-option, .sg-switch):has(input:disabled) .sg-paper-fold,
