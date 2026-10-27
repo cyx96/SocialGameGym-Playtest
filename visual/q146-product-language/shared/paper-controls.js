@@ -72,12 +72,19 @@
 			if (!sheet.querySelector(":scope > .sg-paper-grain")) sheet.prepend(layer("sg-paper-grain"));
 		}
 	}
-	function blocked(face) {
+	// Hover lighting is an extra resting-state cue, not permission or selection itself.
+	function hoverBlocked(face) {
 		return (
 			!face?.isConnected ||
-			face.matches(":disabled,[aria-disabled=true],[aria-busy=true]") ||
+			face.matches(
+				":active,.sg-pressed,[aria-pressed=true],[aria-selected=true],[aria-checked=true],[aria-current=true],:disabled,[aria-disabled=true],[aria-busy=true]",
+			) ||
+			face.matches(".star-option:has(input:checked, ~ .star-option input:checked)") ||
 			face.closest("[inert],[hidden],[aria-hidden=true],[aria-disabled=true]") ||
-			face.closest(".option,.star-option,.sg-switch")?.querySelector("input")?.matches(":disabled")
+			face
+				.closest(".option,.star-option,.sg-switch")
+				?.querySelector("input")
+				?.matches(":disabled,:checked,:active")
 		);
 	}
 	function reset(instant = false) {
@@ -95,7 +102,7 @@
 		if (
 			!current ||
 			!point ||
-			blocked(current) ||
+			hoverBlocked(current) ||
 			!precise.matches ||
 			motion.instant() ||
 			document.hidden ||
@@ -154,7 +161,7 @@
 				: hit?.matches(".sg-switch")
 					? hit.querySelector(".sg-switch-track")
 					: hit;
-		if (!face || blocked(face)) return reset(true);
+		if (!face || hoverBlocked(face)) return reset(true);
 		if (current !== face) {
 			reset();
 			enhance(face);
@@ -242,7 +249,7 @@
 					!n.classList.contains("sg-paper-fold")
 				)
 					enhance(n);
-		if (current && blocked(current)) reset(true);
+		if (current && hoverBlocked(current)) reset(true);
 		else if (
 			records.some((r) => r.attributeName === "aria-pressed" || r.attributeName === "aria-selected")
 		)
@@ -262,6 +269,8 @@
 			"aria-hidden",
 			"aria-pressed",
 			"aria-selected",
+			"aria-checked",
+			"aria-current",
 		],
 	});
 	enhance();
