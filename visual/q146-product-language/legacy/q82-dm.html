@@ -3618,6 +3618,10 @@ dialog[data-content="records"] #panel-body {
 .sg-choice[data-choice-layout="text"] .option-label {
 	overflow-wrap: normal;
 }
+.sg-choice[data-choice-layout="list"] {
+	display: grid;
+	grid-template-columns: minmax(0, 1fr);
+}
 .sg-choice[data-choice-layout="numeric"] {
 	display: grid;
 	grid-template-columns: repeat(
@@ -3658,6 +3662,11 @@ dialog[data-content="records"] #panel-body {
 }
 .sg-field .sg-choice[data-choice-layout="text"] .option-label {
 	overflow-wrap: normal;
+}
+.sg-field .sg-choice[data-choice-layout="list"] .option-label {
+	justify-content: flex-start;
+	text-align: start;
+	overflow-wrap: break-word;
 }
 .sg-field .sg-choice input {
 	position: absolute;
