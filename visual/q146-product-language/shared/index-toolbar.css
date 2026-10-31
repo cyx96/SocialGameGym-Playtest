@@ -38,7 +38,6 @@
 }
 .search-surface :is(#search-trigger, .search-trigger) {
 	pointer-events: auto;
-	color: var(--secondary);
 }
 .search-surface input {
 	min-width: 0;
@@ -64,7 +63,6 @@
 }
 .search-surface :is(#search-clear, .search-clear) {
 	pointer-events: auto;
-	color: var(--secondary);
 }
 .search-tools[data-has-filters="true"][data-open="false"] input,
 .search-tools[data-has-filters="true"][data-open="false"] :is(#search-clear, .search-clear) {

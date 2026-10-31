@@ -5,10 +5,9 @@
 	inset-inline-end: max(var(--sg-safe-end, 2.5rem), calc((100vw - var(--sg-frame, 70rem)) / 2));
 	/* Above embedded/standalone header tracks; native modal top layers still own focus. */
 	z-index: 210;
-	color: var(--secondary, var(--sg-brand-secondary));
+	color: var(--ink, var(--sg-brand-ink));
 }
 .sg-language-control > .sg-button[data-sg-button] {
-	color: inherit;
 	background: transparent;
 }
 .sg-language-menu {
@@ -49,6 +48,7 @@
 	font-weight: 550;
 }
 .sg-language-check {
+	color: var(--ink, var(--sg-brand-ink));
 	width: 18px;
 	height: 18px;
 	flex: none;

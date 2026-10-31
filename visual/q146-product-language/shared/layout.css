@@ -4,7 +4,8 @@
 
 	--sg-frame: 70rem;
 	--sg-work: 65rem;
-	--sg-task-reading-width: 52rem;
+	--sg-task-reading-width: 60rem;
+	--sg-desktop-content-width: 52rem;
 	--sg-focus: 40rem;
 	--sg-gutter: 2.5rem;
 	--sg-safe-start: max(var(--sg-gutter), env(safe-area-inset-left));
@@ -125,7 +126,7 @@ body[data-sg-shell][data-scroll="workspace"] {
 	block-size: var(--sg-button-compact);
 	min-block-size: var(--sg-button-compact);
 	padding: 0;
-	color: var(--secondary, #535a55);
+	/* The shared button owns semantic foreground, including disabled and busy. */
 }
 body.config-open > .sg-product-bar {
 	z-index: 60;
@@ -756,7 +757,7 @@ body[data-task-scene] > .sg-page.sg-state-page {
 
 /* Full-width App host. Its navigation and reading content own separate canvases. */
 .sg-inset-pane {
-	--sg-pane-inset: var(--sg-space-surface);
+	--sg-pane-inset: var(--sg-gutter);
 	inline-size: 100%;
 	max-inline-size: none;
 	padding-inline: 0;
@@ -838,7 +839,7 @@ body[data-task-scene] > .sg-page.sg-state-page {
 	margin-inline-start: 0;
 }
 
-/* A hanging target at the viewport edge keeps its transient keyboard focus inside its own bounds. */
+/* Edge navigation keeps transient keyboard focus inside the complete target's bounds. */
 .sg-pane-toolbar
 > .sg-button[data-sg-button]:first-child:has(svg[data-sg-icon="back"]):focus-visible {
 	outline-offset: -2px;

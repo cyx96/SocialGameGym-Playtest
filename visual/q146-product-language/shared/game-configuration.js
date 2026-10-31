@@ -21,7 +21,9 @@
 		return {
 			rounds: String(g.rounds),
 			communication: String(g.communication),
-			tools: Object.fromEntries(D.tools.map((t) => [t.id, true])),
+			tools: Object.fromEntries(
+				D.tools.map((t) => [t.id, g.sessionConstraints?.externalSocial !== "disabled"]),
+			),
 			socialQuotas: Object.fromEntries(D.tools.map((t) => [t.id, "1"])),
 			socialQuotaPolicy: {
 				reset: "communication_round",
@@ -61,6 +63,13 @@
 				if (clean.tools[t.id]) errors["quota-" + t.id] = SGGI18n.t("asset.integerOne");
 			} else clean.socialQuotas[t.id] = String(Number(quota));
 		}
+		if (g.fixedRounds && clean.rounds !== String(g.rounds))
+			errors.rounds = SGGI18n.t("asset.unavailable");
+		if (
+			g.sessionConstraints?.externalSocial === "disabled" &&
+			(D.tools.some((t) => clean.tools[t.id]) || clean.communication !== "0")
+		)
+			errors.communication = SGGI18n.t("asset.unavailable");
 		if (!D.tools.some((t) => clean.tools[t.id])) clean.communication = "0";
 		for (const f of g.extraFields) {
 			const selected = value?.[f.key] === undefined ? clean[f.key] : value[f.key];
@@ -218,6 +227,8 @@
 			return field;
 		}
 		const basics = group("基础", true);
+		const socialDisabled = D.games[gameId].sessionConstraints?.externalSocial === "disabled";
+		if (socialDisabled && D.games[gameId].fixedRounds) basics.hidden = true;
 		number(
 			basics,
 			() => SGGI18n.t("asset.progress." + (D.games[gameId].progressUnit || "round")),
@@ -237,6 +248,7 @@
 		const social = group("社交"),
 			quotaTitle = node("p", "sg-config-quota-title", L("asset.perStep"));
 		social.append(quotaTitle);
+		if (socialDisabled) social.hidden = true;
 		function syncTools() {
 			const any = D.tools.some((t) => draft.tools[t.id]);
 			const input = communication.querySelector("input");
@@ -311,7 +323,7 @@
 		}
 		if (model.rationalFields) {
 			game.append(node("h3", "sg-config-section-title", L("asset.payoffs")));
-			game.append(node("p", "", L("asset.payoffHelp")));
+			game.append(node("p", "", L(model.strictOrder ? "asset.payoffHelp" : "asset.fractionHelp")));
 			for (const f of model.rationalFields) {
 				const box = node("div", ""),
 					key = "payoff-" + f.key;
@@ -327,7 +339,10 @@
 							key: instance + key + part,
 							label: f.label + " · " + label,
 							labelText: () =>
-								SGGI18n.t("asset.fieldPart", { label: f.label, part: SGGI18n.systemCopy(label) }),
+								SGGI18n.t("asset.fieldPart", {
+									label: SGGI18n.systemCopy(f.label),
+									part: SGGI18n.systemCopy(label),
+								}),
 						},
 						draft.payoffs[f.key][part],
 						(v) => {

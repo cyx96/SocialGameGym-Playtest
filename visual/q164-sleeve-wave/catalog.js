@@ -1,12 +1,121 @@
-const SGGPosterArt = {"trust":"assets/posters/trust.webp?v=420a7aee51d9c093","network-pd":"assets/posters/network-pd.webp?v=682dec5947f5740b","ultimatum":"assets/posters/ultimatum.webp?v=d65753fdb4009058","stag-hunt":"assets/posters/stag-hunt.webp?v=a3a9ed1916d56156","hidden-profile":"assets/posters/hidden-profile.webp?v=17c383592dd83785","cooperative-search":"assets/posters/cooperative-search.webp?v=1560518114a36b74","threshold-public-good":"assets/posters/threshold-public-good.webp?v=f26185123cb1295f","best-shot":"assets/posters/best-shot.webp?v=9752846586a30c33","dictator":"assets/posters/dictator.webp?v=ee1499b0a40e00c1","double-auction":"assets/posters/double-auction.webp?v=25449874a0bea0b9"};
+const SGGPosterArt = {"local-graph-colouring":"","strategic-relocation":"","sequential-allocation":"","structured-writing":"","multi-issue-bargaining":"","centralised-matching":"","decentralised-matching":"","trust":"assets/posters/trust.webp?v=420a7aee51d9c093","network-pd":"assets/posters/network-pd.webp?v=682dec5947f5740b","ultimatum":"assets/posters/ultimatum.webp?v=d65753fdb4009058","stag-hunt":"assets/posters/stag-hunt.webp?v=a3a9ed1916d56156","hidden-profile":"assets/posters/hidden-profile.webp?v=17c383592dd83785","cooperative-search":"assets/posters/cooperative-search.webp?v=1560518114a36b74","threshold-public-good":"assets/posters/threshold-public-good.webp?v=f26185123cb1295f","best-shot":"assets/posters/best-shot.webp?v=9752846586a30c33","dictator":"assets/posters/dictator.webp?v=ee1499b0a40e00c1","double-auction":"assets/posters/double-auction.webp?v=25449874a0bea0b9","minimum-effort":"assets/posters/minimum-effort.webp?v=c79e410606537338","ultimatum-eight":"assets/posters/ultimatum-eight.webp?v=e80ac6bb500c33f7","shared-route-private-waypoints":"assets/posters/shared-route-private-waypoints.webp?v=061a2c430bb9f1ea"};
 window.CatalogStudy = {
 	games: [
+		{
+			id: "shared-route-private-waypoints",
+			name: "同路异愿",
+			category: "coordination",
+			desc: "轮流延伸同一条路线，兼顾各自私有的必经点。",
+			source:
+				"backend/runtime/frozen-sources/blobs/018f9982d1b8738e4a02e3b51d5a1eee8b91bd94ef927a0e5f22f7d446f25aae",
+			art: SGGPosterArt["shared-route-private-waypoints"],
+			backgroundSize: "cover",
+			backgroundPosition: "center",
+			scope: "installed-gameplay",
+		},
+		{
+			id: "minimum-effort",
+			name: "最低努力协调",
+			category: "coordination",
+			desc: "全组最低努力决定共同收益，自己承担努力成本。",
+			source:
+				"backend/runtime/frozen-sources/blobs/a24faa2baca8f7c0843498940587901b69cd1fd08630088cbb8e91bdf43f9eb3",
+			art: SGGPosterArt["minimum-effort"],
+			backgroundSize: "cover",
+			backgroundPosition: "center",
+			scope: "installed-gameplay",
+		},
+		{
+			id: "local-graph-colouring",
+			name: "局部着色",
+			category: "cooperation",
+			desc: "选择颜色，让相邻节点互不相同。",
+			source:
+				"backend/runtime/frozen-sources/blobs/79fb47ce29db0e9548a27ae5d0ecfa35da3d69a7f3c25b61d701e5e0874df2b7",
+			art: "",
+			backgroundSize: "cover",
+			backgroundPosition: "center",
+			scope: "installed-gameplay",
+		},
+		{
+			id: "strategic-relocation",
+			name: "战略空间迁移",
+			category: "cooperation",
+			desc: "选择留在原位或迁移到空位。",
+			source:
+				"backend/runtime/frozen-sources/blobs/2c48c1e08da9638d8a27a2db79112510c08a4845149261b61acca5ce7afbc500",
+			art: "",
+			backgroundSize: "cover",
+			backgroundPosition: "center",
+			scope: "installed-gameplay",
+		},
+		{
+			id: "sequential-allocation",
+			name: "顺序取物",
+			category: "allocation",
+			desc: "轮流从剩余物品中取走一件。",
+			source:
+				"backend/runtime/frozen-sources/blobs/b125aed70df3c454f2eda621eede4a4070ea1c032c3b319bed2b6bf7ee40efe7",
+			art: "",
+			backgroundSize: "cover",
+			backgroundPosition: "center",
+			scope: "installed-gameplay",
+		},
+		{
+			id: "structured-writing",
+			name: "结构化写作",
+			category: "creation",
+			desc: "轮流修改同一份共享文档。",
+			source:
+				"backend/runtime/frozen-sources/blobs/05f40b1817886eb2ddf97efa1b99495bd443734b6e812ac14b8fe0d7311e2273",
+			art: "",
+			backgroundSize: "cover",
+			backgroundPosition: "center",
+			scope: "installed-gameplay",
+		},
+		{
+			id: "multi-issue-bargaining",
+			name: "多事项协商",
+			category: "allocation",
+			desc: "就两个事项提出方案与回应。",
+			source:
+				"backend/runtime/frozen-sources/blobs/099380fcff556333790631e2cb6fdd89f6fcd3386710afa091380eed8f32c8f6",
+			art: "",
+			backgroundSize: "cover",
+			backgroundPosition: "center",
+			scope: "installed-gameplay",
+		},
+		{
+			id: "centralised-matching",
+			name: "集中匹配",
+			category: "coordination",
+			desc: "提交偏好顺序，由共同机制匹配。",
+			source:
+				"backend/runtime/frozen-sources/blobs/994c6b49b6e4da43bb974ea4353a46a25492e7adf915871803dfb3d84c3de17c",
+			art: "",
+			backgroundSize: "cover",
+			backgroundPosition: "center",
+			scope: "installed-gameplay",
+		},
+		{
+			id: "decentralised-matching",
+			name: "分散匹配",
+			category: "coordination",
+			desc: "提出与保留提议，逐步形成配对。",
+			source:
+				"backend/runtime/frozen-sources/blobs/6bf41559c58fbdf4ef0de3cdb7f27c8304119f6eccc81e947c4521dde3459fb0",
+			art: "",
+			backgroundSize: "cover",
+			backgroundPosition: "center",
+			scope: "installed-gameplay",
+		},
 		{
 			id: "trust",
 			name: "信任游戏",
 			category: "trust",
 			desc: "转出的资源会放大，对方决定返还多少。",
-			source: "games/066-trust.md",
+			source:
+				"backend/runtime/frozen-sources/blobs/c86d70e9aa135269e0c64c547af3fd7ece7b1deb822386d9ee4007c350aed1ce",
 			art: SGGPosterArt["trust"],
 			backgroundSize: "cover",
 			backgroundPosition: "center",
@@ -17,7 +126,8 @@ window.CatalogStudy = {
 			name: "网络囚徒困境",
 			category: "cooperation",
 			desc: "向邻居分别作出选择，关系会延续。",
-			source: "games/042-network-pd.md",
+			source:
+				"backend/runtime/frozen-sources/blobs/124d0066f462132bfd8980a87b52b37df1df366504406ca0dc242ef540d22f9e",
 			art: SGGPosterArt["network-pd"],
 			backgroundSize: "cover",
 			backgroundPosition: "center",
@@ -28,8 +138,21 @@ window.CatalogStudy = {
 			name: "最后通牒",
 			category: "allocation",
 			desc: "提出分配方案，由对方决定是否接受。",
-			source: "games/076-ultimatum.md",
+			source:
+				"backend/runtime/frozen-sources/blobs/866ac7343bf81aefb0461a3b76b9ab810c2f317346efdf319a516559dd5289af",
 			art: SGGPosterArt["ultimatum"],
+			backgroundSize: "cover",
+			backgroundPosition: "center",
+			scope: "installed-gameplay",
+		},
+		{
+			id: "ultimatum-eight",
+			name: "最后通牒 · 八单位",
+			category: "allocation",
+			desc: "提出分配方案，由对方决定是否接受。",
+			source:
+				"backend/runtime/frozen-sources/blobs/2c817e7d160d64c0abcbc4e6344ce67c216428983df05921275f950c0b1f7b84",
+			art: SGGPosterArt["ultimatum-eight"],
 			backgroundSize: "cover",
 			backgroundPosition: "center",
 			scope: "installed-gameplay",
@@ -39,7 +162,8 @@ window.CatalogStudy = {
 			name: "猎鹿协调",
 			category: "coordination",
 			desc: "和伙伴同时选择，权衡配合收益与风险。",
-			source: "games/003-stag-hunt.md",
+			source:
+				"backend/runtime/frozen-sources/blobs/a94825b2fe3749b3d76d8b0e3411fef5e91ba5eb754a3551c19c498a28062497",
 			art: SGGPosterArt["stag-hunt"],
 			backgroundSize: "cover",
 			backgroundPosition: "center",
@@ -50,7 +174,8 @@ window.CatalogStudy = {
 			name: "固定证据的披露与投票修订",
 			category: "information",
 			desc: "分享手中的线索，逐步修订共同判断。",
-			source: "games/020-hidden-profile.md",
+			source:
+				"backend/runtime/frozen-sources/blobs/b3c20fbac91044e2f762bc84b8cb68511ae0e647a5ad22970dcafea033437317",
 			art: SGGPosterArt["hidden-profile"],
 			backgroundSize: "cover",
 			backgroundPosition: "center",
@@ -61,7 +186,8 @@ window.CatalogStudy = {
 			name: "单地图合作搜索",
 			category: "creation",
 			desc: "从各自的位置出发，寻找共同的目标。",
-			source: "games/034-cooperative-search.md",
+			source:
+				"backend/runtime/frozen-sources/blobs/a282732e7775113af4164c8b1f3fbce98eec9aacf8586ed1b03bee301765d185",
 			art: SGGPosterArt["cooperative-search"],
 			backgroundSize: "cover",
 			backgroundPosition: "center",
@@ -72,7 +198,8 @@ window.CatalogStudy = {
 			name: "固定贡献阈值下的公共品",
 			category: "cooperation",
 			desc: "向公共池投入资源，共享收益并承担成本。",
-			source: "games/051-threshold-public-good.md",
+			source:
+				"backend/runtime/frozen-sources/blobs/d12309a1e9ff430788551d72acca88323ae412f315fc9864b6c01b8cc73fe2f7",
 			art: SGGPosterArt["threshold-public-good"],
 			backgroundSize: "cover",
 			backgroundPosition: "center",
@@ -83,7 +210,8 @@ window.CatalogStudy = {
 			name: "最佳投入公共品",
 			category: "cooperation",
 			desc: "每人选择投入，全组共享最高投入的收益。",
-			source: "games/061-best-shot.md",
+			source:
+				"backend/runtime/frozen-sources/blobs/0634b84fe2edd92c18d320d47b29f322fd376178827865cb58a64897cc7aaf54",
 			art: SGGPosterArt["best-shot"],
 			backgroundSize: "cover",
 			backgroundPosition: "center",
@@ -94,7 +222,8 @@ window.CatalogStudy = {
 			name: "独裁者分配",
 			category: "allocation",
 			desc: "决定一笔资源如何分配，接收者无需回应。",
-			source: "games/077-dictator.md",
+			source:
+				"backend/runtime/frozen-sources/blobs/4cf5be7f8c0b0e2ffc7f6b7c4a514e27ee86a1f58a199dc5a827b96a5e5f311e",
 			art: SGGPosterArt["dictator"],
 			backgroundSize: "cover",
 			backgroundPosition: "center",
@@ -105,7 +234,8 @@ window.CatalogStudy = {
 			name: "持续订单簿双重拍卖",
 			category: "market",
 			desc: "提交或撤回报价，与其他玩家达成交易。",
-			source: "games/087-double-auction-order-book.md",
+			source:
+				"backend/runtime/frozen-sources/blobs/e3b17788f484ed1ebd5841a2fb7093521e2c54b0dd3ac99c30c36c794cfa3d6d",
 			art: SGGPosterArt["double-auction"],
 			backgroundSize: "cover",
 			backgroundPosition: "center",

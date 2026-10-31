@@ -38,7 +38,9 @@ a.sg-button[data-sg-button] {
 	text-decoration: none;
 	text-align: center;
 	vertical-align: middle;
-	white-space: nowrap;
+	white-space: normal;
+	overflow-wrap: anywhere;
+	hyphens: auto;
 	cursor: pointer;
 	touch-action: manipulation;
 	-webkit-tap-highlight-color: transparent;
@@ -487,6 +489,19 @@ button.sg-button[data-sg-button][role="menuitem"] .type-mark {
 .sg-action-stack > button:not([data-sg-role="icon"]):not([data-sg-role="icon-primary"]) {
 	justify-self: stretch;
 }
+/* Local draft navigation is one trailing row; a single task exit retains its own rail. */
+.sg-action-stack[data-action-layout="steps"] {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: flex-end;
+	align-items: center;
+	gap: var(--sg-space-sibling);
+}
+.sg-action-stack[data-action-layout="steps"] > .sg-button {
+	flex: 0 0 auto;
+	inline-size: auto;
+	max-inline-size: 100%;
+}
 .sg-action-hint {
 	margin: 0;
 	font: 400 var(--sg-text-help) / var(--sg-leading-interface) var(--sg-font-ui);
@@ -506,7 +521,7 @@ button.sg-button[data-sg-button][role="menuitem"] .type-mark {
 	}
 }
 
-/* Paired Submit/Submitted labels reserve the longer localized state without moving the action. */
+/* Paired localized action labels reserve the longer state without moving the action. */
 .sg-button[data-sg-button].sg-submission-action {
 	min-inline-size: calc(3em + 3rem);
 }

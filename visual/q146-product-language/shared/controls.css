@@ -4,10 +4,14 @@
 	--sg-control-radius: var(--sg-radius-control);
 	--sg-control-gap: 8px;
 	--sg-control-line: var(--sg-line-control);
-	--sg-control-fill: color-mix(in srgb, var(--ink, #1d6940) 6%, var(--surface, #fff));
-	--sg-control-muted: var(--secondary, #535a55);
 	--sg-control-danger: #a73731;
 	--sg-control-ease: var(--sg-ease);
+}
+/* Resolve derived roles at each theme boundary, before custom properties inherit. */
+:root,
+[data-sg-theme] {
+	--sg-control-fill: color-mix(in srgb, var(--ink, #1d6940) 6%, var(--surface, #fff));
+	--sg-control-muted: var(--secondary, #535a55);
 }
 .sg-field {
 	border: 0;
@@ -99,9 +103,38 @@
 	overflow-wrap: normal;
 }
 .sg-field .sg-choice[data-choice-layout="list"] .option-label {
-	justify-content: flex-start;
-	text-align: start;
-	overflow-wrap: break-word;
+	inline-size: var(--sg-target);
+	block-size: var(--sg-target);
+	min-block-size: var(--sg-target);
+	padding: 0;
+	flex: none;
+}
+.sg-field .sg-choice[data-choice-layout="list"] > .option {
+	display: grid;
+	grid-template-columns: var(--sg-target) minmax(0, 1fr);
+	align-items: start;
+	gap: var(--sg-space-sibling);
+	padding-block: var(--sg-space-related);
+}
+.sg-choice[data-choice-layout="list"] .option-description {
+	align-self: center;
+	min-inline-size: 0;
+	color: var(--label);
+	font: 400 var(--sg-type-body) / var(--sg-leading-body) var(--sg-font-ui);
+	overflow-wrap: anywhere;
+}
+.sg-choice-mark {
+	inline-size: 0.65em;
+	block-size: 0.65em;
+	border-radius: 50%;
+	background: var(--ink);
+	opacity: 0;
+}
+.sg-choice input:checked + .option-label .sg-choice-mark {
+	opacity: 1;
+}
+.sg-choice input:disabled ~ .option-description {
+	color: var(--secondary);
 }
 .sg-field .sg-choice input {
 	position: absolute;
@@ -586,4 +619,16 @@ textarea.sg-text-control[data-sg-auto-size] {
 				minmax(max(var(--sg-target), calc((100% - 3 * var(--sg-control-gap)) / 4)), 1fr)
 			);
 	}
+}
+
+/* Proposed shared controls.css addition: a bounded-text editor's count and alternate choice. */
+.sg-text-entry-footer {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	flex-wrap: wrap;
+	gap: var(--sg-space-sibling);
+}
+.sg-text-entry-footer > .field-help {
+	margin: 0;
 }

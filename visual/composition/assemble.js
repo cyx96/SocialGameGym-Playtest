@@ -214,6 +214,7 @@
 			recipe: spec.recipe,
 		});
 		scene.dataset.assembly = spec.purpose || "task";
+		if (spec.purpose === "config") content.dataset.sgPaperCanvas = "surface";
 		if (spec.recipe === "summary" && !contextTask)
 			scene.classList.add("sg-state-layout", "sg-summary-page");
 		if (spec.purpose === "result") scene.dataset.scene = "result";

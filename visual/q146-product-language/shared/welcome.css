@@ -86,7 +86,7 @@
 	display: grid;
 	grid-template-columns: minmax(0, 1fr);
 	padding-block: max(0px, calc((var(--sg-target) - 1lh) / 2));
-	font-size: clamp(var(--sg-text-help), calc(0.375rem + 1.9vw), var(--sg-type-app-navigation));
+	font-size: var(--sg-type-app-navigation);
 	line-height: var(--sg-leading-interface);
 	letter-spacing: -0.02em;
 	overflow-wrap: anywhere;
@@ -164,7 +164,18 @@
 		border-radius: var(--sg-radius-ui);
 	}
 	.sg-welcome-copy {
+		font-size: var(--sg-type-value);
 		letter-spacing: -0.01em;
+	}
+}
+@media (max-width: 600px) {
+	.sg-welcome-copy {
+		font-size: var(--sg-type-body);
+	}
+}
+@media (max-width: 440px) {
+	.sg-welcome-copy {
+		font-size: var(--sg-text-help);
 	}
 }
 @media (prefers-reduced-motion: reduce) {

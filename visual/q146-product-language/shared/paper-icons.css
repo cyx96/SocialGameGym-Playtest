@@ -6,7 +6,7 @@ svg.sg-paper-icon,
 .sg-number svg.sg-paper-icon {
 	--sg-icon-face-light: color-mix(in srgb, currentColor 76%, white);
 	--sg-icon-face-fold: color-mix(in srgb, currentColor 88%, white);
-	--sg-icon-paper-shadow: color-mix(in srgb, var(--ink, currentColor) 76%, black);
+	--sg-icon-paper-shadow: color-mix(in srgb, currentColor 76%, black);
 	stroke: none;
 	fill: none;
 	overflow: visible;

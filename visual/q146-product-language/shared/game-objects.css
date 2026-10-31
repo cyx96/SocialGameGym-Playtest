@@ -1,0 +1,276 @@
+@import url("./directed-flow.css");
+/* Authorized object geometry; shared controls retain type, material and physical state. */
+.sg-game-objects {
+	display: grid;
+	grid-template-columns: minmax(0, 1fr);
+	gap: var(--sg-space-section);
+	min-inline-size: 0;
+}
+.sg-game-colour {
+	display: inline-flex;
+	align-items: center;
+	gap: var(--sg-space-related);
+}
+.sg-game-colour svg {
+	inline-size: 1.75em;
+	block-size: 1.75em;
+	fill: currentColor;
+	flex: none;
+}
+.sg-game-local-graph {
+	display: grid;
+	grid-template-columns: repeat(3, minmax(0, 1fr));
+	gap: var(--sg-space-sibling);
+	margin: 0;
+}
+.sg-game-graph-node {
+	position: relative;
+	display: grid;
+	justify-items: center;
+	gap: var(--sg-space-sibling);
+	min-inline-size: 0;
+}
+.sg-game-edge {
+	position: absolute;
+	inset-inline-start: calc(-1 * var(--sg-space-sibling));
+	inset-block-start: 0.4em;
+}
+.sg-game-object-row {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	gap: var(--sg-space-sibling);
+	inline-size: 100%;
+	flex-wrap: wrap;
+}
+.sg-game-object-row strong {
+	font-weight: var(--sg-weight-name);
+}
+.sg-game-object-meta {
+	display: block;
+	color: var(--secondary);
+	margin-block-start: var(--sg-space-related);
+}
+.sg-game-relation-list {
+	list-style: none;
+	padding: 0;
+	margin: var(--sg-space-sibling) 0;
+	display: grid;
+	gap: var(--sg-space-sibling);
+}
+.sg-game-relation-list > li {
+	display: flex;
+	justify-content: space-between;
+	gap: var(--sg-space-sibling);
+	flex-wrap: wrap;
+}
+.sg-game-ring {
+	position: relative;
+	inline-size: 100%;
+	min-inline-size: 21rem;
+	flex: none;
+	aspect-ratio: 1;
+	margin: 0 auto;
+}
+.sg-game-ring > svg {
+	position: absolute;
+	inset: 0;
+	inline-size: 100%;
+	block-size: 100%;
+	opacity: 0.25;
+	pointer-events: none;
+}
+.sg-game-ring-node {
+	position: absolute;
+	transform: translate(-50%, -50%);
+	inline-size: 7rem;
+	display: grid;
+	justify-items: center;
+	gap: var(--sg-space-related);
+	text-align: center;
+	overflow-wrap: anywhere;
+}
+.sg-game-ring-node .sg-choice[data-choice-layout="list"] > .option {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: var(--sg-space-related);
+}
+.sg-game-ring-node .option-description {
+	text-align: center;
+}
+.sg-game-document {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+	display: grid;
+	gap: var(--sg-space-related);
+}
+.sg-game-line-number {
+	color: var(--secondary);
+	display: inline-block;
+	min-inline-size: 1.5em;
+	margin-inline-end: var(--sg-space-sibling);
+}
+.sg-game-document-line {
+	padding-block: var(--sg-space-sibling);
+}
+.sg-game-inline-editor {
+	display: grid;
+	gap: var(--sg-space-sibling);
+	margin-block: var(--sg-space-sibling);
+	margin-inline-start: var(--sg-space-section);
+}
+
+.sg-game-spatial-scroll {
+	overflow: auto;
+	max-inline-size: 100%;
+	min-inline-size: 0;
+	overscroll-behavior-inline: contain;
+}
+.sg-game-ranking {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+	display: grid;
+	gap: var(--sg-space-sibling);
+}
+.sg-game-ranking > li {
+	display: flex;
+	align-items: center;
+	flex-wrap: wrap;
+	gap: var(--sg-space-sibling);
+}
+.sg-game-ranking-actions {
+	display: flex;
+	gap: var(--sg-space-sibling);
+	margin-inline-start: auto;
+}
+.sg-game-pairs {
+	display: grid;
+	gap: var(--sg-space-sibling);
+	list-style: none;
+	padding: 0;
+	margin: 0;
+}
+.sg-game-pairs > li {
+	display: flex;
+	align-items: center;
+	gap: var(--sg-space-sibling);
+	flex-wrap: wrap;
+}
+
+/* One indivisible allocation; Quantity retains touch, material, focus and scalar validation. */
+.sg-unit-allocation,
+.sg-unit-allocation-items {
+	display: grid;
+	grid-template-columns: minmax(0, 1fr);
+	gap: var(--sg-space-sibling);
+	min-inline-size: 0;
+}
+.sg-unit-allocation-item {
+	min-inline-size: 0;
+}
+.sg-unit-allocation-summary {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: baseline;
+	gap: var(--sg-space-related) var(--sg-space-section);
+	color: var(--secondary);
+}
+.sg-unit-allocation-count {
+	display: inline-flex;
+	flex-wrap: wrap;
+	gap: var(--sg-space-related);
+}
+.sg-unit-allocation-status {
+	flex-basis: 100%;
+}
+.sg-unit-allocation--over .sg-unit-allocation-count:nth-child(2),
+.sg-unit-allocation--invalid .sg-unit-allocation-status {
+	color: var(--sg-control-danger);
+}
+
+/* A single fixed budget, with named shares kept in the same order as the split. */
+.sg-budget-split {
+	display: grid;
+	gap: var(--sg-space-related);
+	min-inline-size: 0;
+}
+.sg-budget-split-heading,
+.sg-budget-split-shares {
+	display: flex;
+	justify-content: space-between;
+	gap: var(--sg-space-sibling);
+}
+.sg-budget-split-heading {
+	flex-wrap: wrap;
+	align-items: baseline;
+}
+.sg-budget-split-bar {
+	display: flex;
+	block-size: var(--sg-space-sibling);
+	background: var(--line);
+	overflow: hidden;
+}
+.sg-budget-split-bar > span {
+	min-inline-size: 0;
+	flex-basis: 0;
+	background: var(--ink);
+}
+.sg-budget-split-bar > span + span {
+	background: var(--secondary);
+}
+.sg-budget-split-share {
+	display: grid;
+	align-content: start;
+	gap: var(--sg-space-related);
+	min-inline-size: 0;
+	overflow-wrap: anywhere;
+}
+.sg-budget-split-share:last-child {
+	text-align: end;
+}
+.sg-budget-split-alternative {
+	color: var(--secondary);
+}
+
+.sg-orthogonal-route {
+	margin: 0;
+	inline-size: min(100%, 20rem);
+	display: grid;
+	gap: var(--sg-space-sibling);
+}
+.sg-orthogonal-route svg {
+	inline-size: 100%;
+	block-size: auto;
+	overflow: visible;
+	color: var(--ink);
+}
+.sg-route-node {
+	fill: currentColor;
+	opacity: 0.45;
+}
+.sg-route-segment {
+	stroke: currentColor;
+	stroke-width: 5;
+	stroke-linecap: round;
+}
+.sg-route-current {
+	fill: currentColor;
+	stroke: var(--paper);
+	stroke-width: 2;
+}
+.sg-route-target {
+	fill: var(--paper);
+	stroke: currentColor;
+	stroke-width: 2;
+}
+.sg-orthogonal-route text {
+	fill: currentColor;
+	font: inherit;
+	font-size: 16px;
+}
+.sg-orthogonal-route figcaption {
+	font: inherit;
+}

@@ -19,7 +19,7 @@ window.PreparationCatalog = {
 			secondary: "#535a55",
 			line: "#cbcfcc",
 		},
-		ruleSource: "docs/gameplay/games/066-trust.md",
+		ruleSource: "games/trust/rules/legacy/066-trust.md",
 	},
 	"network-pd": {
 		gameId: "network-pd",
@@ -40,7 +40,7 @@ window.PreparationCatalog = {
 			secondary: "#585951",
 			line: "#cdceca",
 		},
-		ruleSource: "docs/gameplay/games/042-network-pd.md",
+		ruleSource: "games/network-pd/rules/legacy/042-network-pd.md",
 	},
 	ultimatum: {
 		gameId: "ultimatum",
@@ -61,6 +61,6 @@ window.PreparationCatalog = {
 			secondary: "#5e5653",
 			line: "#d1cdca",
 		},
-		ruleSource: "docs/gameplay/games/076-ultimatum.md",
+		ruleSource: "games/ultimatum/rules/legacy/076-ultimatum.md",
 	},
 };

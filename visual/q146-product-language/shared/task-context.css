@@ -13,6 +13,7 @@
 	min-inline-size: 0;
 }
 .sg-task-primary {
+	max-inline-size: 28ch;
 	margin: 0;
 	font: 600 var(--sg-task-title) / var(--sg-task-title-leading) var(--sg-font-ui);
 	overflow-wrap: anywhere;
@@ -20,6 +21,7 @@
 }
 .sg-task-support,
 .sg-context-task .sg-task-support {
+	max-inline-size: 60ch;
 	margin: var(--sg-space-paragraph) 0 0;
 	color: var(--secondary);
 	font: 400 var(--sg-text-task-support) / var(--sg-leading-body) var(--sg-font-ui);
@@ -34,7 +36,7 @@
 	inline-size: 100%;
 	margin-inline: auto;
 	padding-block: var(--sg-space-task) max(var(--sg-space-section), env(safe-area-inset-bottom));
-	grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+	grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
 	grid-template-rows: minmax(0, 1fr) auto;
 	grid-template-areas: "context interaction" "context actions";
 	row-gap: var(--sg-space-section);
@@ -91,6 +93,27 @@
 }
 .sg-task-controls:empty {
 	display: none;
+}
+.sg-decision-action-choices {
+	display: flex;
+	flex-wrap: wrap;
+	gap: var(--sg-space-sibling);
+}
+.sg-decision-section {
+	min-inline-size: 0;
+	display: grid;
+	grid-template-columns: minmax(0, 1fr);
+	gap: var(--sg-space-sibling);
+}
+.sg-context-task > .content > .sg-decision-section + .sg-decision-section {
+	margin-block-start: var(--sg-space-section);
+}
+.sg-decision-section > h2 {
+	font: var(--sg-weight-name) var(--sg-type-body) / var(--sg-leading-body) var(--sg-font-ui);
+}
+.sg-decision-section > :last-child,
+.sg-decision-section > .sg-field {
+	margin-block-end: 0;
 }
 .sg-context-task > .content > .sg-task-controls:not(:first-child) {
 	margin-block-start: var(--sg-space-section);
@@ -241,7 +264,8 @@ body > .sg-task-context-rail {
 /* Message owns its typography; generic paragraph and panel-heading adapters cannot override it. */
 .sg-task-message > .sg-task-copy {
 	min-inline-size: 0;
-	max-inline-size: 22rem;
+	max-inline-size: none;
+	inline-size: 100%;
 }
 .sg-task-reference {
 	min-inline-size: 0;
@@ -255,6 +279,7 @@ body > .sg-task-context-rail {
 	margin-block-end: 0;
 }
 .sg-task-message .sg-task-primary {
+	max-inline-size: 28ch;
 	margin: 0;
 	font: 600 var(--sg-task-title) / var(--sg-task-title-leading) var(--sg-font-ui);
 	overflow-wrap: anywhere;
@@ -421,6 +446,19 @@ body[data-task-scene] > .sg-task-page.sg-page {
 .sg-task-facts {
 	min-inline-size: 0;
 	container-type: inline-size;
+}
+/* Decision evidence uses reading type; it is not a result metric. */
+.sg-task-facts .sg-result-facts {
+	max-inline-size: none;
+}
+.sg-task-facts .sg-result-fact :is(dt, dd) {
+	font: 400 var(--sg-type-body) / var(--sg-leading-body) var(--sg-font-ui);
+}
+.sg-task-facts .sg-result-fact dd {
+	text-align: end;
+}
+.sg-task-facts + .sg-comparison-region {
+	margin-block-start: var(--sg-space-section);
 }
 
 /* A native App retains one reachable navigation rail on short canvases.

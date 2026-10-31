@@ -1,0 +1,45 @@
+/* Content geometry only; typography, material, controls and action rail retain their owners. */
+.sg-directed-flow {
+	display: grid;
+	gap: var(--sg-space-section);
+	min-inline-size: 0;
+}
+.sg-directed-flow-entities {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(min(100%, 6rem), 1fr));
+	gap: var(--sg-space-sibling);
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+.sg-directed-flow-entities > li {
+	display: grid;
+	align-content: start;
+	gap: var(--sg-space-related);
+	min-inline-size: 0;
+}
+.sg-directed-flow-entities strong {
+	font-weight: var(--sg-weight-name);
+}
+.sg-directed-flow-entities p {
+	margin: 0;
+}
+.sg-directed-flow-transfers {
+	display: grid;
+	gap: var(--sg-space-sibling);
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+.sg-directed-flow-transfers > li {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: space-between;
+	align-items: baseline;
+	gap: var(--sg-space-related) var(--sg-space-sibling);
+}
+.sg-directed-flow-route {
+	display: inline-flex;
+	flex-wrap: wrap;
+	gap: var(--sg-space-related);
+}

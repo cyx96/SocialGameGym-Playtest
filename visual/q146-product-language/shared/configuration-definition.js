@@ -153,6 +153,96 @@
       "extraFields": [],
       "progressUnit": "search-step",
       "communication": 0
+    },
+    "local-graph-colouring": {
+      "rounds": 3,
+      "extraFields": [],
+      "progressUnit": "round",
+      "communication": 2
+    },
+    "strategic-relocation": {
+      "rounds": 3,
+      "extraFields": [],
+      "rationalFields": [
+        {
+          "key": "sameCoefficient",
+          "label": "同类相邻收益",
+          "value": {
+            "n": "2",
+            "d": "1"
+          }
+        },
+        {
+          "key": "differentCoefficient",
+          "label": "异类相邻收益",
+          "value": {
+            "n": "-1",
+            "d": "1"
+          }
+        },
+        {
+          "key": "moveCost",
+          "label": "尝试迁移成本",
+          "value": {
+            "n": "1",
+            "d": "2"
+          }
+        }
+      ],
+      "progressUnit": "round",
+      "communication": 2
+    },
+    "sequential-allocation": {
+      "rounds": 2,
+      "extraFields": [],
+      "progressUnit": "round",
+      "communication": 2
+    },
+    "structured-writing": {
+      "rounds": 2,
+      "extraFields": [],
+      "progressUnit": "round",
+      "communication": 2
+    },
+    "multi-issue-bargaining": {
+      "rounds": 3,
+      "extraFields": [],
+      "progressUnit": "round",
+      "communication": 2
+    },
+    "centralised-matching": {
+      "rounds": 3,
+      "extraFields": [],
+      "progressUnit": "round",
+      "communication": 2
+    },
+    "decentralised-matching": {
+      "rounds": 3,
+      "extraFields": [],
+      "progressUnit": "round",
+      "communication": 2
+    },
+    "minimum-effort": {
+      "rounds": 5,
+      "extraFields": [],
+      "progressUnit": "round",
+      "communication": 2
+    },
+    "ultimatum-eight": {
+      "rounds": 3,
+      "extraFields": [],
+      "progressUnit": "round",
+      "communication": 2
+    },
+    "shared-route-private-waypoints": {
+      "rounds": 1,
+      "fixedRounds": true,
+      "communication": 2,
+      "sessionConstraints": {
+        "externalSocial": "disabled"
+      },
+      "extraFields": [],
+      "progressUnit": "round"
     }
   }
 };

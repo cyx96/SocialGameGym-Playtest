@@ -1,0 +1,29 @@
+{
+  "format": "sgg.font-correction-overlay/1",
+  "version": "type-common-2.3",
+  "baseArchive": {
+    "path": "frontend/design/system/fonts/source-snapshot.zip",
+    "sha256": "c51d2ae3894de5c75fc08fe0e9fb2280bcdd48fc6b8a4f6daa05caf84498cac0",
+    "preserveUnchanged": true
+  },
+  "files": {
+    "rebuild.py": "b7dfeb66177cf25744bf8a387d8c4684bb966bd4bef4008b51ec2c9cbc740997",
+    "verify_candidate.py": "ff27cdc9533adbf09f6610f90c0816c9e44bd7b374d3da02352fe3df6c7db0a6",
+    "README.md": "2e5b828b7267b347c7013b008136bc33cb5cb7f7211d00ef41d428b2027b1fec"
+  },
+  "licensedSourceRecord": "base archive/glyphs-used.json glyphs/愿",
+  "originalBaseManifest": "base archive/MANIFEST.json",
+  "newSourcePermission": {
+    "character": "愿",
+    "pair": [
+      4,
+      5
+    ],
+    "scope": "explicit source-local median endpoint extension only"
+  },
+  "outputs": {
+    "Text": "1797b2ea1482215760cedd67f3a471c4c3d64e106fadf82d1d92b2b7a941c55e",
+    "Display": "f539c9a9a28612ffcad5763621bc6498c72ab00cd88af86f4de3586bf1276070"
+  },
+  "logoSha256": "b441184c100b67e0812c45ccb4fc69f7c0a36b59ad9f6277cdf1a009553b186e"
+}

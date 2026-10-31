@@ -10,7 +10,7 @@ window.GAME_UI_PACKAGES = {
       "name": "路径上的成本性信息传递",
       "theme": "information",
       "source": {
-        "path": "docs/gameplay/candidates/021-information-transmission-on-a-fixed-network.md",
+        "path": "docs/games/library/candidates/021-information-transmission-on-a-fixed-network.md",
         "sha256": "5ef6a1bb9f8942ab4e9caceb1bfd7dceaa4518a2c26b94bd799c6cf6544786e0",
         "status": "candidate"
       },
@@ -456,7 +456,7 @@ window.GAME_UI_PACKAGES = {
       "name": "群际历史与共同目标",
       "theme": "competition",
       "source": {
-        "path": "docs/gameplay/candidates/128-intergroup-history-and-a-shared-goal.md",
+        "path": "docs/games/library/candidates/128-intergroup-history-and-a-shared-goal.md",
         "sha256": "d636730020f0a8ca38639275dac83750b62aed0c85b7f58dfc71d3d682d24607",
         "status": "candidate"
       },
@@ -958,7 +958,7 @@ window.GAME_UI_PACKAGES = {
       "name": "信任游戏",
       "theme": "trust",
       "source": {
-        "path": "docs/gameplay/games/066-trust.md",
+        "path": "games/trust/rules/legacy/066-trust.md",
         "sha256": "d4641551a2ccb8d5ea6bdfe518c974983bca1f47893a21ccc1ed0546235daf19",
         "status": "formal-design-rule"
       },
@@ -3114,7 +3114,7 @@ window.GAME_UI_PACKAGES = {
       "name": "持续共享文档的结构化写作",
       "theme": "creation",
       "source": {
-        "path": "docs/gameplay/candidates/036-structured-collaborative-writing.md",
+        "path": "docs/games/library/candidates/036-structured-collaborative-writing.md",
         "sha256": "2e175482729d4f2dac55d6c9767c034e0c85ca0e0900a13379633706b71c24ef",
         "status": "candidate"
       },

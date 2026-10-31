@@ -79,7 +79,7 @@
 	function paintArt(node, g) {
 		node.style.setProperty(
 			"--art",
-			'url("' + new URL("/SocialGameGym-Playtest/visual/q164-sleeve-wave/" + g.art, location.href).href + '")',
+			g.art ? 'url("' + new URL("/SocialGameGym-Playtest/visual/q164-sleeve-wave/" + g.art, location.href).href + '")' : "none",
 		);
 		node.style.setProperty("--art-size", g.backgroundSize);
 		node.style.setProperty("--art-position", g.backgroundPosition);
@@ -234,6 +234,7 @@
 		c.configurationMounted = true;
 	}
 	const selected = () => assemblies[mod(Math.round(state.theme), assemblies.length)];
+	let appliedTheme;
 	function setThemeColors() {
 		const a = selected();
 		if (
@@ -252,13 +253,18 @@
 			targets.nav > 0.5
 				? themes.find((t) => t.id === a.games[mod(Math.round(a.pos), a.games.length)].category)
 				: a.theme;
-		document.documentElement.dataset.sgTheme = theme.id;
-		for (const [k, v] of Object.entries({
-			ink: theme.colors.ink,
-			wash: theme.colors.wash,
-			canvas: theme.colors.canvas || theme.colors.paper,
-		}))
-			document.documentElement.style.setProperty("--" + k, v);
+		if (appliedTheme !== theme.id) {
+			const root = document.documentElement;
+			// Clear the previous palette before the neutral "all" collection restores defaults.
+			for (const key of Object.keys(SGGThemes.get("trust"))) root.style.removeProperty("--" + key);
+			for (const [key, value] of Object.entries({
+				...theme.colors,
+				canvas: theme.colors.canvas || theme.colors.paper,
+			}))
+				root.style.setProperty("--" + key, value);
+			root.dataset.sgTheme = theme.id;
+			appliedTheme = theme.id;
+		}
 		announce.textContent = I.t("catalog.announcement", {
 			theme: a.theme.label,
 			game: gameName(a.games[mod(Math.round(a.pos), a.games.length)]),
@@ -282,13 +288,19 @@
 		size.frontWidth = shortWide ? Math.min(460, size.w - 120) * inv : 300;
 		for (const a of assemblies) {
 			a.root.style.setProperty("--card-inverse", inv);
-			a.root.style.setProperty("--folder-title", Math.max(34, 24 / size.folder) + "px");
+			a.root.style.setProperty("--folder-title", Math.max(34, 24 / size.folder) / 16 + "rem");
 			a.root.style.setProperty("--folder-label-inset", Math.max(24, 20 / size.folder) + "px");
 			a.root.style.setProperty("--folder-label-bottom", Math.max(30, 20 / size.folder) + "px");
 			a.root.style.setProperty("--folder-label-gap", Math.max(12, 12 / size.folder) + "px");
-			a.root.style.setProperty("--folder-count", Math.max(16, 16 / size.folder) + "px");
-			a.root.style.setProperty("--poster-title", size.poster * 300 < 260 ? "26px" : "29px");
-			a.root.style.setProperty("--poster-description", size.poster * 300 < 260 ? "14px" : "15px");
+			a.root.style.setProperty("--folder-count", Math.max(16, 16 / size.folder) / 16 + "rem");
+			a.root.style.setProperty(
+				"--poster-title",
+				size.poster * 300 < 260 ? "1.625rem" : "1.8125rem",
+			);
+			a.root.style.setProperty(
+				"--poster-description",
+				size.poster * 300 < 260 ? ".875rem" : ".9375rem",
+			);
 			a.root.style.setProperty("--settings-width", Math.min(480, size.w - 40) * inv + "px");
 			a.root.style.setProperty("--settings-height", Math.min(640, size.h - 32) * inv + "px");
 			a.root.style.setProperty("--wide-card-width", Math.min(460, size.w - 120) * inv + "px");
@@ -339,6 +351,7 @@
 			// One spatial focus envelope owns the fan, its reading and the poster.
 			// At the ownership midpoint both neighbours have zero reading opacity.
 			if (focusOnly) a.identity.style.opacity = String(reveal);
+			a.identity.tabIndex = active && p < 0.01 ? 0 : -1;
 			a.board.style.transform = `translateX(${-fp * 95}px) scale(${1 - 0.06 * fp})`;
 			a.board.style.opacity = String(1 - smooth(fp / 0.78));
 			a.front.style.transform = `perspective(1200px) translateX(${-fp * 150}px) rotateY(${-12 * reveal - 38 * fp}deg)`;
@@ -373,6 +386,7 @@
 				c.wrap.style.pointerEvents = active && gameMain ? "auto" : "none";
 				c.wrap.tabIndex = active && gameMain ? 0 : -1;
 				const f = active && gameMain ? state.flip * fp : 0;
+				c.copy.tabIndex = active && gameMain && fp > 0.99 && f < 0.5 ? 0 : -1;
 				if (f > 0.5 && !c.configurationMounted) mountConfiguration(c);
 				if (f < 0.01) c.configurationMounted = false;
 				c.turn.style.transform = `rotateY(${f * 180}deg)`;
@@ -624,6 +638,7 @@
 		g.axis = axis;
 		g.moved = true;
 		clickBlocked = true;
+		if (axis === "y" && g.reading) return;
 		if (axis === "x") {
 			settleBrowse(g);
 			return;
@@ -638,6 +653,10 @@
 		if (g.mode === 1) spring("theme", Math.round(g.theme));
 		else moveGames(g.a, g.gameTarget);
 	}
+	function scrollableReading(target) {
+		const reading = target.closest(".card-copy,.identity");
+		return reading && reading.scrollHeight > reading.clientHeight + 1 ? reading : null;
+	}
 	stage.addEventListener("pointerdown", (e) => {
 		tapTarget = null;
 		if (
@@ -648,7 +667,8 @@
 		)
 			return;
 		if (e.clientX < 18 || e.clientX > innerWidth - 18) return;
-		const g = freeze();
+		const g = freeze(),
+			reading = scrollableReading(e.target);
 		down = {
 			...g,
 			target: e.target,
@@ -658,6 +678,8 @@
 			last: e.clientX,
 			lastY: e.clientY,
 			lastT: performance.now(),
+			reading,
+			readingTop: reading?.scrollTop ?? 0,
 			vx: 0,
 			vy: 0,
 			axis: null,
@@ -691,6 +713,10 @@
 			dragNavigation(g.nav, -dx / Math.min(240, size.w * 0.6));
 			return;
 		}
+		if (g.reading) {
+			g.reading.scrollTop = g.readingTop - dy;
+			return;
+		}
 		if (g.mode > 1) return;
 		const step = profile.step * (g.mode === 1 ? size.poster : size.folder);
 		if (g.mode === 1) g.a.pos = g.pos - dy / step;
@@ -707,7 +733,7 @@
 			vx = fresh ? g.vx : 0,
 			vy = fresh ? g.vy : 0;
 		if (g.axis === "x") finishNavigation(g, -vx, cancel);
-		else if (g.axis === "y" && g.mode < 2) {
+		else if (g.axis === "y" && g.mode < 2 && !g.reading) {
 			const step = profile.step * (g.mode === 1 ? size.poster : size.folder),
 				velocity = cancel ? 0 : (-vy * 1000) / step;
 			if (g.mode === 1) moveGames(g.a, cancel ? g.pos : g.a.pos - (vy * 180) / step, { velocity });
@@ -765,7 +791,8 @@
 			if (
 				e.ctrlKey ||
 				e.target.closest("input,select,textarea,[contenteditable]") ||
-				(e.target.closest(".card-back") && Math.abs(e.deltaY) >= Math.abs(e.deltaX))
+				(e.target.closest(".card-back") && Math.abs(e.deltaY) >= Math.abs(e.deltaX)) ||
+				(scrollableReading(e.target) && Math.abs(e.deltaY) >= Math.abs(e.deltaX))
 			)
 				return;
 			const axis = Math.abs(e.deltaX) > Math.abs(e.deltaY) * 1.2 ? "x" : "y";
@@ -798,6 +825,11 @@
 	);
 	stage.addEventListener("keydown", (e) => {
 		setInputMode("instant");
+		if (
+			scrollableReading(e.target) &&
+			["ArrowUp", "ArrowDown", "PageUp", "PageDown", "Home", "End", " "].includes(e.key)
+		)
+			return;
 		if (e.target.closest("input,label,summary,button,select,textarea,[contenteditable]")) return;
 		if (["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight", "Enter", " "].includes(e.key))
 			e.preventDefault();

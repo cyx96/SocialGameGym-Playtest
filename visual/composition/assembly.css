@@ -2,6 +2,7 @@
 .assembled-fields {
 	display: grid;
 	gap: var(--sg-space-section);
+	container-type: inline-size;
 }
 .assembled-fields > .sg-field {
 	margin: 0;
@@ -36,9 +37,16 @@
 .assembled-section .assembled-number > .field-help {
 	grid-column: 1 / -1;
 }
+@container (max-width: 24rem) {
+	.assembled-section .assembled-number {
+		grid-template-columns: minmax(0, 1fr);
+		align-items: start;
+	}
+}
 [data-assembly="config"] > .content {
-	background: var(--surface);
+	background-color: var(--surface);
 	padding: var(--sg-space-surface);
+	padding-inline: min(var(--sg-space-surface), var(--sg-gutter));
 	border-radius: var(--sg-radius-surface);
 }
 [data-assembly="config"] .assembled-section:first-child {

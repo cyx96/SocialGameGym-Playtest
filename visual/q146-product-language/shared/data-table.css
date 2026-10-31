@@ -47,7 +47,7 @@
 	border: 0;
 	box-sizing: content-box;
 	min-inline-size: 4.5rem;
-	padding: var(--sg-space-paragraph) var(--sg-space-sibling);
+	padding: var(--sg-space-sibling) var(--sg-space-paragraph);
 	text-align: start;
 	vertical-align: top;
 	white-space: normal;
@@ -55,9 +55,16 @@
 	font-weight: 400;
 	background: none;
 }
-:is(.sg-comparison, .sg-rule-table table, .sg-utility-shell .admin-table) th {
+:is(.sg-comparison, .sg-rule-table table, .sg-utility-shell .admin-table) thead th {
 	color: var(--secondary);
-	font: 400 var(--sg-text-help) / var(--sg-leading-interface) var(--sg-font-ui);
+	font: var(--sg-weight-name) var(--sg-type-body) / var(--sg-leading-interface) var(--sg-font-ui);
+	vertical-align: bottom;
+}
+.sg-comparison tbody th {
+	font-weight: var(--sg-weight-name);
+}
+.sg-comparison :is(th, td):first-child {
+	overflow-wrap: anywhere;
 }
 :is(.sg-comparison, .sg-rule-table table, .sg-utility-shell .admin-table) :is(th, td):first-child {
 	padding-inline-start: 0;
@@ -80,4 +87,41 @@
 }
 .sg-comparison .sg-person-inline {
 	max-inline-size: 100%;
+}
+
+/* Entity facts flow in the task pane; each record keeps its full set of facts. */
+.sg-comparison-entries {
+	min-inline-size: 0;
+	margin-block: var(--sg-space-paragraph) var(--sg-space-section);
+}
+.sg-comparison-entries :is(h2, h3) {
+	margin: 0;
+	font: var(--sg-weight-name) var(--sg-type-body) / var(--sg-leading-body) var(--sg-font-ui);
+}
+.sg-comparison-entry {
+	margin-block-start: var(--sg-space-paragraph);
+}
+.sg-comparison-entry dl {
+	margin: var(--sg-space-sibling) 0 0;
+}
+.sg-comparison-entry dl > div {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: space-between;
+	gap: 0 var(--sg-space-paragraph);
+}
+.sg-comparison-entry dt {
+	color: var(--secondary);
+}
+.sg-comparison-entry dd {
+	margin: 0;
+}
+.sg-comparison-entry :is(dt, dd, h3) {
+	min-inline-size: 0;
+	max-inline-size: 100%;
+	overflow-wrap: anywhere;
+}
+.sg-comparison-entry [data-numeric] {
+	white-space: nowrap;
+	font-variant-numeric: lining-nums tabular-nums;
 }

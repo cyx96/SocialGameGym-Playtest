@@ -15,9 +15,9 @@
 	inline-size: 100%;
 	max-inline-size: none;
 	margin: 0;
-	padding: 0 max(var(--sg-safe-end), calc((100% - var(--sg-task-reading-width)) / 2))
+	padding: 0 max(var(--sg-safe-end), calc((100% - var(--sg-desktop-content-width)) / 2))
 		max(var(--sg-space-section), env(safe-area-inset-bottom))
-		max(var(--sg-safe-start), calc((100% - var(--sg-task-reading-width)) / 2));
+		max(var(--sg-safe-start), calc((100% - var(--sg-desktop-content-width)) / 2));
 	overflow: auto;
 	scroll-padding-block: var(--sg-space-section);
 }
