@@ -84,6 +84,96 @@
 		node.style.setProperty("--art-size", g.backgroundSize);
 		node.style.setProperty("--art-position", g.backgroundPosition);
 	}
+	function createCard(root, game, gi, gameCount) {
+		const wrap = document.createElement("div");
+		wrap.className = "card-wrap";
+		wrap.dataset.game = game.id;
+		wrap.tabIndex = -1;
+		wrap.setAttribute("role", "group");
+		wrap.setAttribute("aria-label", I.t("catalog.cardHint", { name: gameName(game) }));
+		paintArt(wrap, game);
+		const gameTheme = themes.find((t) => t.id === game.category);
+		wrap.style.setProperty("--ink", gameTheme.colors.ink);
+		wrap.style.setProperty("--paper", gameTheme.colors.paper);
+		const turn = document.createElement("div");
+		turn.className = "card-turn";
+		const face = document.createElement("div");
+		face.className = "card-face card-front";
+		const art = document.createElement("div");
+		art.className = "art";
+		const wash = document.createElement("div");
+		wash.className = "wash";
+		const copy = document.createElement("div");
+		copy.className = "card-copy";
+		const title = document.createElement("h1");
+		title.textContent = gameName(game);
+		const desc = document.createElement("p");
+		addText(desc, gameDescription(game));
+		copy.append(title, desc);
+		const flip = document.createElement("button");
+		flip.type = "button";
+		flip.className = "sg-button flip-button";
+		flip.dataset.sgButton = "";
+		flip.dataset.sgRole = "icon";
+		I.bind(flip, "catalog.flip", { attr: "aria-label" });
+		flip.append(SGGIcons.create("flip"));
+		flip.onclick = (e) => {
+			e.stopPropagation();
+			if (!clickBlocked) flipCard();
+		};
+		const reading = document.createElement("div");
+		reading.className = "card-reading";
+		reading.append(wash, copy);
+		face.append(art, reading);
+		if (!flipOnly) face.append(flip);
+		const reverse = document.createElement("div");
+		reverse.className = "card-face card-back";
+		const settingsContent = document.createElement("div");
+		settingsContent.className = "settings-content";
+		reverse.append(settingsContent);
+		turn.append(face, reverse);
+		wrap.append(turn);
+		root.append(wrap);
+		const card = {
+			game,
+			wrap,
+			turn,
+			copy,
+			desc,
+			flip,
+			face,
+			reverse,
+			settingsContent,
+			gi,
+			wash,
+			configurationMounted: false,
+		};
+		if (gameCount === 2) {
+			const c = card;
+			const ghost = document.createElement("div");
+			ghost.className = "card-wrap ghost";
+			ghost.inert = true;
+			ghost.setAttribute("aria-hidden", "true");
+			paintArt(ghost, c.game);
+			const f = c.face.cloneNode(true);
+			f.querySelector(".flip-button")?.remove();
+			ghost.append(f);
+			root.append(ghost);
+			c.ghost = ghost;
+		}
+		return card;
+	}
+	function retainCards(a, indices) {
+		for (const [index, card] of a.cards) {
+			if (indices.has(index)) continue;
+			card.wrap.remove();
+			card.ghost?.remove();
+			a.cards.delete(index);
+		}
+		for (const index of indices)
+			if (!a.cards.has(index))
+				a.cards.set(index, createCard(a.root, a.games[index], index, a.games.length));
+	}
 	const assemblies = themes.map((theme, index) => {
 		const games = CatalogStudy.games.filter((g) => theme.id === "all" || g.category === theme.id),
 			samples = SGGEntrySamples.get(theme.id);
@@ -100,6 +190,7 @@
 		root.dataset.theme = theme.id;
 		root.dataset.index = index;
 		root.style.cssText = source.style.cssText;
+		root.style.removeProperty("--art");
 		const board = document.createElement("div");
 		board.className = "board-layer";
 		board.append(source.querySelector(".backboard"));
@@ -108,84 +199,7 @@
 		for (const n of [...source.children]) if (!n.classList.contains("cover-art")) front.append(n);
 		root.append(board, front);
 		plane.append(root);
-		const cards = games.map((game, gi) => {
-			const wrap = document.createElement("div");
-			wrap.className = "card-wrap";
-			wrap.dataset.game = game.id;
-			wrap.tabIndex = -1;
-			wrap.setAttribute("role", "group");
-			wrap.setAttribute("aria-label", I.t("catalog.cardHint", { name: gameName(game) }));
-			paintArt(wrap, game);
-			const gameTheme = themes.find((t) => t.id === game.category);
-			wrap.style.setProperty("--ink", gameTheme.colors.ink);
-			wrap.style.setProperty("--paper", gameTheme.colors.paper);
-			const turn = document.createElement("div");
-			turn.className = "card-turn";
-			const face = document.createElement("div");
-			face.className = "card-face card-front";
-			const art = document.createElement("div");
-			art.className = "art";
-			const wash = document.createElement("div");
-			wash.className = "wash";
-			const copy = document.createElement("div");
-			copy.className = "card-copy";
-			const title = document.createElement("h1");
-			title.textContent = gameName(game);
-			const desc = document.createElement("p");
-			addText(desc, gameDescription(game));
-			copy.append(title, desc);
-			const flip = document.createElement("button");
-			flip.type = "button";
-			flip.className = "sg-button flip-button";
-			flip.dataset.sgButton = "";
-			flip.dataset.sgRole = "icon";
-			I.bind(flip, "catalog.flip", { attr: "aria-label" });
-			flip.append(SGGIcons.create("flip"));
-			flip.onclick = (e) => {
-				e.stopPropagation();
-				if (!clickBlocked) flipCard();
-			};
-			const reading = document.createElement("div");
-			reading.className = "card-reading";
-			reading.append(wash, copy);
-			face.append(art, reading);
-			if (!flipOnly) face.append(flip);
-			const reverse = document.createElement("div");
-			reverse.className = "card-face card-back";
-			const settingsContent = document.createElement("div");
-			settingsContent.className = "settings-content";
-			reverse.append(settingsContent);
-			turn.append(face, reverse);
-			wrap.append(turn);
-			root.append(wrap);
-			return {
-				game,
-				wrap,
-				turn,
-				copy,
-				desc,
-				flip,
-				face,
-				reverse,
-				settingsContent,
-				gi,
-				wash,
-				configurationMounted: false,
-			};
-		});
-		if (games.length === 2)
-			for (const c of cards) {
-				const ghost = document.createElement("div");
-				ghost.className = "card-wrap ghost";
-				ghost.inert = true;
-				ghost.setAttribute("aria-hidden", "true");
-				paintArt(ghost, c.game);
-				const f = c.face.cloneNode(true);
-				f.querySelector(".flip-button")?.remove();
-				ghost.append(f);
-				root.append(ghost);
-				c.ghost = ghost;
-			}
+		const cards = new Map();
 		return {
 			theme,
 			index,
@@ -340,7 +354,10 @@
 			a.root.style.visibility = visible ? "visible" : "hidden";
 			a.root.style.display = visible ? "" : "none";
 			a.root.inert = !visible;
-			if (!visible) continue;
+			if (!visible) {
+				retainCards(a, new Set());
+				continue;
+			}
 			a.root.style.opacity = String(
 				themeOpacity * profile.depth(d) * (1 - smooth((abs - 1.5) / 0.7)),
 			);
@@ -359,7 +376,16 @@
 			const current = mod(Math.round(a.pos), a.games.length),
 				main = a.games[current],
 				preview = [main, ...a.samples.filter((g) => g.id !== main.id)].slice(0, 3);
-			for (const c of a.cards) {
+			// The visible fan and a small swipe buffer own the mounted image window.
+			// Do not paint all URL backgrounds first: hidden backgrounds still fetch.
+			const indices = new Set([current]);
+			if (fp < 0.999 && reveal > 0.001)
+				for (const game of preview) indices.add(a.games.indexOf(game));
+			if (fp > 0.001 || (active && targets.nav > 0))
+				for (let offset = -2; offset <= 2; offset++)
+					indices.add(mod(Math.floor(a.pos) + offset, a.games.length));
+			retainCards(a, indices);
+			for (const c of a.cards.values()) {
 				const gd = ring(c.gi, a.pos, a.games.length),
 					ga = Math.abs(gd),
 					rank = preview.indexOf(c.game),
@@ -1048,7 +1074,7 @@
 		for (const a of assemblies) {
 			const label = a.identity.querySelector(".theme");
 			if (label) label.textContent = a.theme.label;
-			for (const c of a.cards) {
+			for (const c of a.cards.values()) {
 				c.copy.querySelector("h1").textContent = gameName(c.game);
 				addText(c.desc, gameDescription(c.game));
 				c.wrap.setAttribute("aria-label", I.t("catalog.cardHint", { name: gameName(c.game) }));

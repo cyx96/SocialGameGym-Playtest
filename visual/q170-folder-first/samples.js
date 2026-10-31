@@ -36,16 +36,31 @@
 		return a;
 	}
 	function allSample() {
-		const triples = [];
-		for (let a = 0; a < games.length; a++)
-			for (let b = a + 1; b < games.length; b++)
-				for (let c = b + 1; c < games.length; c++) {
-					const set = [games[a], games[b], games[c]];
-					if (validAll(set)) triples.push(set);
+		const families = new Map();
+		for (const game of games) {
+			const key = color(game);
+			if (!families.has(key)) families.set(key, []);
+			families.get(key).push(game);
+		}
+		const pools = [...families.values()];
+		let chosen,
+			totalWeight = 0;
+		// Enumerate the few registered color families, never the game triples.
+		// Weight by pool sizes to retain uniform sampling of legal game triples.
+		for (let a = 0; a < pools.length; a++)
+			for (let b = a + 1; b < pools.length; b++)
+				for (let c = b + 1; c < pools.length; c++) {
+					const set = [pools[a], pools[b], pools[c]];
+					if (!validAll(set.map((pool) => pool[0]))) continue;
+					const weight = set.reduce((product, pool) => product * pool.length, 1);
+					totalWeight += weight;
+					if (Math.random() * totalWeight < weight) chosen = set;
 				}
-		if (!triples.length)
+		if (!chosen)
 			throw new Error("Catalogue needs three sufficiently distinct registered colour families");
-		return shuffle(triples[Math.floor(Math.random() * triples.length)]).map((g) => g.id);
+		return shuffle(chosen.map((pool) => pool[Math.floor(Math.random() * pool.length)])).map(
+			(g) => g.id,
+		);
 	}
 	let samples;
 	try {

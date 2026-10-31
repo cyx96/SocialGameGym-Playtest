@@ -1,4 +1,4 @@
-const SGGPosterArt = {"local-graph-colouring":"","strategic-relocation":"","sequential-allocation":"","structured-writing":"","multi-issue-bargaining":"","centralised-matching":"","decentralised-matching":"","trust":"assets/posters/trust.webp?v=420a7aee51d9c093","network-pd":"assets/posters/network-pd.webp?v=682dec5947f5740b","ultimatum":"assets/posters/ultimatum.webp?v=d65753fdb4009058","stag-hunt":"assets/posters/stag-hunt.webp?v=a3a9ed1916d56156","hidden-profile":"assets/posters/hidden-profile.webp?v=17c383592dd83785","cooperative-search":"assets/posters/cooperative-search.webp?v=1560518114a36b74","threshold-public-good":"assets/posters/threshold-public-good.webp?v=f26185123cb1295f","best-shot":"assets/posters/best-shot.webp?v=9752846586a30c33","dictator":"assets/posters/dictator.webp?v=ee1499b0a40e00c1","double-auction":"assets/posters/double-auction.webp?v=25449874a0bea0b9","minimum-effort":"assets/posters/minimum-effort.webp?v=c79e410606537338","ultimatum-eight":"assets/posters/ultimatum-eight.webp?v=e80ac6bb500c33f7","shared-route-private-waypoints":"assets/posters/shared-route-private-waypoints.webp?v=061a2c430bb9f1ea"};
+const SGGPosterArt = {"trust":"assets/posters/trust.webp?v=55b45811e8d2b5c2","network-pd":"assets/posters/network-pd.webp?v=758ef93915a0cacf","ultimatum":"assets/posters/ultimatum.webp?v=c5d7b2d5d2c13416","stag-hunt":"assets/posters/stag-hunt.webp?v=d48b9de6b75face4","hidden-profile":"assets/posters/hidden-profile.webp?v=f6107966af1c8199","cooperative-search":"assets/posters/cooperative-search.webp?v=eb7e2052176b0266","threshold-public-good":"assets/posters/threshold-public-good.webp?v=d5c01f8f5fa47b66","best-shot":"assets/posters/best-shot.webp?v=315d63eb7d5d5708","dictator":"assets/posters/dictator.webp?v=972b037ad765dcb5","double-auction":"assets/posters/double-auction.webp?v=19b206d0bcc944fa","minimum-effort":"assets/posters/minimum-effort.webp?v=6a18a743c49ebb69","ultimatum-eight":"assets/posters/ultimatum-eight.webp?v=5d1c79757b4a7804","shared-route-private-waypoints":"assets/posters/shared-route-private-waypoints.webp?v=ef4eb5edc29a3f8e","local-graph-colouring":"assets/posters/local-graph-colouring.webp?v=00724e6b56f4454e","strategic-relocation":"assets/posters/strategic-relocation.webp?v=17c1c46e2500ce92","sequential-allocation":"assets/posters/sequential-allocation.webp?v=86dcb1feb038228d","structured-writing":"assets/posters/structured-writing.webp?v=45370eb459dea58a","multi-issue-bargaining":"assets/posters/multi-issue-bargaining.webp?v=2b5a529e00254595","centralised-matching":"assets/posters/centralised-matching.webp?v=25b8f82f066f1535","decentralised-matching":"assets/posters/decentralised-matching.webp?v=b0b5eaf3fa87245a"};
 window.CatalogStudy = {
 	games: [
 		{
@@ -32,7 +32,7 @@ window.CatalogStudy = {
 			desc: "选择颜色，让相邻节点互不相同。",
 			source:
 				"backend/runtime/frozen-sources/blobs/79fb47ce29db0e9548a27ae5d0ecfa35da3d69a7f3c25b61d701e5e0874df2b7",
-			art: "",
+			art: SGGPosterArt["local-graph-colouring"],
 			backgroundSize: "cover",
 			backgroundPosition: "center",
 			scope: "installed-gameplay",
@@ -44,7 +44,7 @@ window.CatalogStudy = {
 			desc: "选择留在原位或迁移到空位。",
 			source:
 				"backend/runtime/frozen-sources/blobs/2c48c1e08da9638d8a27a2db79112510c08a4845149261b61acca5ce7afbc500",
-			art: "",
+			art: SGGPosterArt["strategic-relocation"],
 			backgroundSize: "cover",
 			backgroundPosition: "center",
 			scope: "installed-gameplay",
@@ -56,7 +56,7 @@ window.CatalogStudy = {
 			desc: "轮流从剩余物品中取走一件。",
 			source:
 				"backend/runtime/frozen-sources/blobs/b125aed70df3c454f2eda621eede4a4070ea1c032c3b319bed2b6bf7ee40efe7",
-			art: "",
+			art: SGGPosterArt["sequential-allocation"],
 			backgroundSize: "cover",
 			backgroundPosition: "center",
 			scope: "installed-gameplay",
@@ -68,7 +68,7 @@ window.CatalogStudy = {
 			desc: "轮流修改同一份共享文档。",
 			source:
 				"backend/runtime/frozen-sources/blobs/05f40b1817886eb2ddf97efa1b99495bd443734b6e812ac14b8fe0d7311e2273",
-			art: "",
+			art: SGGPosterArt["structured-writing"],
 			backgroundSize: "cover",
 			backgroundPosition: "center",
 			scope: "installed-gameplay",
@@ -80,7 +80,7 @@ window.CatalogStudy = {
 			desc: "就两个事项提出方案与回应。",
 			source:
 				"backend/runtime/frozen-sources/blobs/099380fcff556333790631e2cb6fdd89f6fcd3386710afa091380eed8f32c8f6",
-			art: "",
+			art: SGGPosterArt["multi-issue-bargaining"],
 			backgroundSize: "cover",
 			backgroundPosition: "center",
 			scope: "installed-gameplay",
@@ -92,7 +92,7 @@ window.CatalogStudy = {
 			desc: "提交偏好顺序，由共同机制匹配。",
 			source:
 				"backend/runtime/frozen-sources/blobs/994c6b49b6e4da43bb974ea4353a46a25492e7adf915871803dfb3d84c3de17c",
-			art: "",
+			art: SGGPosterArt["centralised-matching"],
 			backgroundSize: "cover",
 			backgroundPosition: "center",
 			scope: "installed-gameplay",
@@ -104,7 +104,7 @@ window.CatalogStudy = {
 			desc: "提出与保留提议，逐步形成配对。",
 			source:
 				"backend/runtime/frozen-sources/blobs/6bf41559c58fbdf4ef0de3cdb7f27c8304119f6eccc81e947c4521dde3459fb0",
-			art: "",
+			art: SGGPosterArt["decentralised-matching"],
 			backgroundSize: "cover",
 			backgroundPosition: "center",
 			scope: "installed-gameplay",

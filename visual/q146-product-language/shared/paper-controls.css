@@ -173,7 +173,7 @@
 	position: absolute;
 	inset: 0;
 	border-radius: inherit;
-	background: url("./assets/a9-matte-paper.webp?v=51766ed36a9b4c25") repeat;
+	background: url("./assets/a9-matte-paper.webp?v=5c85fa9d095ef93c") repeat;
 	filter: grayscale(1);
 }
 .sg-paper-grain::before,
@@ -429,7 +429,7 @@ button.sg-paper-face.sg-button[data-sg-button][aria-busy="true"]:is(
 			color-mix(in srgb, var(--sg-paper-base) var(--sg-paper-canvas-wash), transparent),
 			color-mix(in srgb, var(--sg-paper-base) var(--sg-paper-canvas-wash), transparent)
 		),
-		url("./assets/a9-matte-paper.webp?v=51766ed36a9b4c25");
+		url("./assets/a9-matte-paper.webp?v=5c85fa9d095ef93c");
 	background-size:
 		auto,
 		512px 512px;
