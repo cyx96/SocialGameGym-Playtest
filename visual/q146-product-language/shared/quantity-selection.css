@@ -1,0 +1,44 @@
+/* A planned quantity is produced at its named source; it is not taken from a budget. */
+.sg-quantity-selection {
+	display: grid;
+	gap: var(--sg-space-sibling);
+	min-inline-size: 0;
+}
+.sg-quantity-selection-plan {
+	display: grid;
+	align-content: start;
+	gap: var(--sg-space-related);
+	min-inline-size: 0;
+	overflow-wrap: anywhere;
+}
+.sg-quantity-selection-source {
+	font-weight: var(--sg-weight-name);
+}
+.sg-quantity-selection-current {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: baseline;
+	gap: var(--sg-space-related) var(--sg-space-sibling);
+}
+.sg-quantity-selection-marks {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: var(--sg-space-related);
+	min-block-size: 1.75rem;
+}
+.sg-quantity-selection-mark {
+	display: inline-block;
+	inline-size: 1.75rem;
+	block-size: 1.75rem;
+	flex: none;
+	background: var(--wash);
+	border: 1px solid color-mix(in srgb, var(--ink) 35%, var(--surface));
+	box-shadow: var(--sg-paper-contact-shadow);
+}
+.sg-quantity-selection-zero {
+	color: var(--secondary);
+}
+.sg-quantity-selection > [data-sg-button] {
+	justify-self: start;
+}

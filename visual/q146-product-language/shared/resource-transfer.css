@@ -1,0 +1,46 @@
+/* One personal budget: available units stay at source until an explicit local choice. */
+.sg-resource-transfer {
+	display: grid;
+	gap: var(--sg-space-sibling);
+	min-inline-size: 0;
+}
+.sg-resource-transfer-source {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: baseline;
+	gap: var(--sg-space-related) var(--sg-space-sibling);
+}
+.sg-resource-transfer-source > .sg-resource-transfer-units {
+	flex-basis: 100%;
+}
+.sg-resource-transfer-shares {
+	display: grid;
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+	gap: var(--sg-space-section);
+}
+.sg-resource-transfer-share {
+	display: grid;
+	align-content: start;
+	gap: var(--sg-space-related);
+	min-inline-size: 0;
+	overflow-wrap: anywhere;
+}
+.sg-resource-transfer-units {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: var(--sg-space-related);
+	min-block-size: 1.75rem;
+}
+.sg-resource-transfer-unit {
+	display: inline-block;
+	inline-size: 1.75rem;
+	block-size: 1.75rem;
+	flex: none;
+	background: var(--wash);
+	border: 1px solid color-mix(in srgb, var(--ink) 35%, var(--surface));
+	box-shadow: var(--sg-paper-contact-shadow);
+}
+.sg-resource-transfer > [data-sg-button] {
+	justify-self: start;
+}

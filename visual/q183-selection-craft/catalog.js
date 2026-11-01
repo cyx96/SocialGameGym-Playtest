@@ -19,30 +19,17 @@
 			return v * v * (3 - 2 * v);
 		},
 		ring = (i, p, n) => (n === 1 ? 0 : mod(i - p + n / 2, n) - n / 2);
-	const order = [
-		"all",
-		"allocation",
-		"market",
-		"cooperation",
-		"trust",
-		"creation",
-		"coordination",
-		"information",
-	];
-	const themes = order
-		.map((id) => {
-			const theme = CatalogStudy.themes.find((t) => t.id === id);
-			return theme
-				? {
-						...theme,
-						get label() {
-							return I.t("catalog.theme." + theme.id);
-						},
-						colors: SGGThemes.get(id) || theme.colors,
-					}
-				: null;
-		})
-		.filter(Boolean);
+	SGGCatalogGameThemes.validate(CatalogStudy);
+	const themes = SGGCatalogGameThemes.folderOrder.map((id) => {
+		const theme = CatalogStudy.themes.find((t) => t.id === id);
+		return {
+			...theme,
+			get label() {
+				return I.t("catalog.theme." + theme.id);
+			},
+			colors: SGGThemes.get(id) || theme.colors,
+		};
+	});
 	const state = { theme: themes.findIndex((theme) => theme.id === "all"), nav: 0, boundary: 0 };
 	Object.defineProperties(state, {
 		open: { enumerable: true, get: () => clamp(state.nav) },
@@ -92,7 +79,7 @@
 		wrap.setAttribute("role", "group");
 		wrap.setAttribute("aria-label", I.t("catalog.cardHint", { name: gameName(game) }));
 		paintArt(wrap, game);
-		const gameTheme = themes.find((t) => t.id === game.category);
+		const gameTheme = SGGCatalogGameThemes.resolve(game);
 		wrap.style.setProperty("--ink", gameTheme.colors.ink);
 		wrap.style.setProperty("--paper", gameTheme.colors.paper);
 		const turn = document.createElement("div");
@@ -224,27 +211,70 @@
 			} catch {}
 			consumedConfig.add(c.game.id);
 		}
-		c.settingsContent.replaceChildren(
-			SGGGameConfiguration.mount({
-				gameId: c.game.id,
-				gameName: gameName(c.game),
-				initial,
-				onClose: (event) => {
-					event.stopPropagation();
-					setInputMode(event.detail === 0 ? "instant" : "gesture");
-					command(1, event.detail === 0);
-					stage.focus({ preventScroll: true });
-				},
-				onDraftSaved: () => {
-					const url = new URL(location.href);
-					if (url.searchParams.get("game") === c.game.id && url.searchParams.has("previewConfig")) {
-						url.searchParams.delete("previewConfig");
-						history.replaceState(null, "", url.href);
-					}
-				},
-				onContinue: (config) => window.SGGCreateParticipation(c.game.id, config, c.settingsContent),
-			}),
-		);
+		const options = {
+			gameId: c.game.id,
+			gameName: gameName(c.game),
+			initial,
+			onClose: (event) => {
+				event.stopPropagation();
+				setInputMode(event.detail === 0 ? "instant" : "gesture");
+				command(1, event.detail === 0);
+				stage.focus({ preventScroll: true });
+			},
+			onDraftSaved: () => {
+				const url = new URL(location.href);
+				if (url.searchParams.get("game") === c.game.id && url.searchParams.has("previewConfig")) {
+					url.searchParams.delete("previewConfig");
+					history.replaceState(null, "", url.href);
+				}
+			},
+			onContinue: (config) => window.SGGCreateParticipation(c.game.id, config, c.settingsContent),
+		};
+		const mount = (configurationContext) => {
+			const form = SGGGameConfiguration.mount({
+				...options,
+				...(configurationContext
+					? {
+							configurationSchema: configurationContext.configurationSchema,
+							configurationContext,
+							participantCountSchema: window.SGGParticipantCountSchema,
+						}
+					: {}),
+			});
+			c.settingsContent.replaceChildren(form);
+			return form;
+		};
+		let form = mount();
+		if (document.body.dataset.creationRuntime) {
+			const read = async () => {
+				form.querySelector(".sg-config-retry")?.remove();
+				for (const control of form.querySelectorAll(
+					"input,select,textarea,button[type=submit],.sg-number button",
+				))
+					control.disabled = true;
+				const status = form.querySelector("[role=status]");
+				if (status) status.textContent = I.t("asset.loading");
+				try {
+					if (typeof window.SGGReadConfigurationContext !== "function")
+						await new Promise((resolve) =>
+							window.addEventListener("sgg:creation-ready", resolve, { once: true }),
+						);
+					// The initial form also listens for readiness; keep it read-only until the installed schema arrives.
+					form.querySelector("button[type=submit]").disabled = true;
+					const schema = await window.SGGReadConfigurationContext(c.game.id);
+					if (c.settingsContent.firstElementChild !== form) return;
+					form = mount(schema);
+				} catch {
+					if (c.settingsContent.firstElementChild !== form) return;
+					if (status) status.textContent = I.t("asset.unavailable");
+					const retry = SGGButtons.create({ role: "quiet", labelKey: "asset.retry" });
+					retry.classList.add("sg-config-retry");
+					retry.onclick = read;
+					form.querySelector(".sg-config-footer").append(retry);
+				}
+			};
+			void read();
+		}
 		c.configurationMounted = true;
 	}
 	const selected = () => assemblies[mod(Math.round(state.theme), assemblies.length)];
@@ -265,7 +295,7 @@
 			return;
 		const theme =
 			targets.nav > 0.5
-				? themes.find((t) => t.id === a.games[mod(Math.round(a.pos), a.games.length)].category)
+				? SGGCatalogGameThemes.resolve(a.games[mod(Math.round(a.pos), a.games.length)])
 				: a.theme;
 		if (appliedTheme !== theme.id) {
 			const root = document.documentElement;

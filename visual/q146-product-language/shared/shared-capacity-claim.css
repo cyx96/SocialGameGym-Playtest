@@ -1,0 +1,135 @@
+/* Independent requests meet one unchanged common pool. No token moves or share fills are drawn. */
+.sg-capacity-claim {
+	container: sg-capacity-claim / inline-size;
+	display: grid;
+	justify-items: center;
+	gap: var(--sg-space-sibling);
+	inline-size: 100%;
+	max-inline-size: var(--sg-focus);
+	min-inline-size: 0;
+	margin-inline: auto;
+}
+.sg-capacity-claim-pool {
+	display: grid;
+	justify-items: center;
+	gap: var(--sg-space-sibling);
+	margin: 0;
+	min-inline-size: 0;
+	max-inline-size: 100%;
+}
+.sg-capacity-claim-pool > figcaption {
+	display: flex;
+	align-items: baseline;
+	justify-content: center;
+	flex-wrap: wrap;
+	gap: var(--sg-space-related) var(--sg-space-sibling);
+	overflow-wrap: anywhere;
+}
+.sg-capacity-claim-units {
+	display: grid;
+	grid-template-columns: repeat(5, var(--sg-space-sibling));
+	gap: var(--sg-space-related);
+}
+.sg-capacity-claim-unit {
+	inline-size: var(--sg-space-sibling);
+	block-size: var(--sg-space-sibling);
+	background: var(--wash);
+	border: 1px solid color-mix(in srgb, var(--ink) 35%, var(--surface));
+}
+.sg-capacity-claim-connections {
+	position: relative;
+	inline-size: 50%;
+	block-size: var(--sg-space-sibling);
+	margin-block-start: var(--sg-space-sibling);
+	border-block-start: 1px dashed var(--ink);
+	border-inline: 1px dashed var(--ink);
+}
+.sg-capacity-claim-connections::before {
+	content: "";
+	position: absolute;
+	inset-inline-start: 50%;
+	inset-block-end: 100%;
+	block-size: var(--sg-space-sibling);
+	border-inline-start: 1px dashed var(--ink);
+}
+.sg-capacity-claim-endpoints {
+	display: grid;
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+	gap: var(--sg-space-section);
+	inline-size: 100%;
+	min-inline-size: 0;
+}
+.sg-capacity-claim-endpoint {
+	display: grid;
+	align-content: start;
+	justify-items: center;
+	gap: var(--sg-space-sibling);
+	min-inline-size: 0;
+	text-align: center;
+	overflow-wrap: anywhere;
+}
+.sg-capacity-claim-name {
+	font-weight: var(--sg-weight-name);
+}
+.sg-capacity-claim-request {
+	display: grid;
+	justify-items: center;
+	gap: var(--sg-space-related);
+	inline-size: 100%;
+	padding-inline: var(--sg-space-related);
+	border-inline: 1px dashed var(--ink);
+	min-inline-size: 0;
+}
+.sg-capacity-claim-endpoint > [data-field-labels] {
+	inline-size: 100%;
+	min-inline-size: 0;
+}
+.sg-capacity-claim-unknown {
+	display: grid;
+	justify-items: center;
+	gap: var(--sg-space-related);
+	min-inline-size: 0;
+}
+.sg-capacity-claim-backface {
+	display: grid;
+	place-items: center;
+	inline-size: var(--sg-target);
+	block-size: var(--sg-target);
+	background: var(--wash);
+	border: 1px solid color-mix(in srgb, var(--ink) 35%, var(--surface));
+	border-radius: var(--sg-radius-ui);
+}
+/* Enlarged text follows one readable relationship spine instead of splitting long identities. */
+@container sg-capacity-claim (max-width: 20em) {
+	.sg-capacity-claim-connections {
+		justify-self: start;
+		block-size: 0;
+		border-inline: 0;
+	}
+	.sg-capacity-claim-connections::before {
+		inset-inline-start: 100%;
+	}
+	.sg-capacity-claim-endpoints {
+		position: relative;
+		grid-template-columns: minmax(0, 1fr);
+		padding-inline-start: var(--sg-space-sibling);
+	}
+	.sg-capacity-claim-endpoints::before {
+		content: "";
+		position: absolute;
+		inset-inline-start: 0;
+		inset-block: 0;
+		border-inline-start: 1px dashed var(--ink);
+	}
+	.sg-capacity-claim-endpoint {
+		position: relative;
+	}
+	.sg-capacity-claim-endpoint::before {
+		content: "";
+		position: absolute;
+		inset-inline-end: 100%;
+		inset-block-start: 0.75em;
+		inline-size: var(--sg-space-sibling);
+		border-block-start: 1px dashed var(--ink);
+	}
+}

@@ -243,6 +243,210 @@
       },
       "extraFields": [],
       "progressUnit": "round"
+    },
+    "private-cost-task": {
+      "rounds": 2,
+      "extraFields": [
+        {
+          "key": "teamValue",
+          "type": "rational",
+          "label": "团队产值",
+          "defaultValue": {
+            "n": "10",
+            "d": "1"
+          }
+        },
+        {
+          "key": "tasks",
+          "type": "ordered-string-list",
+          "label": "任务",
+          "length": "participantCount",
+          "unique": true
+        },
+        {
+          "key": "costs",
+          "type": "rational-matrix",
+          "label": "个人任务成本",
+          "rows": "participantCount",
+          "columns": "tasks",
+          "private": true,
+          "minimum": {
+            "n": "0",
+            "d": "1"
+          }
+        }
+      ],
+      "progressUnit": "round",
+      "communication": 2
+    },
+    "preference-coordination": {
+      "rounds": 3,
+      "extraFields": [],
+      "rationalFields": [
+        {
+          "key": "h",
+          "label": "偏好一致",
+          "value": {
+            "n": "3",
+            "d": "1"
+          }
+        },
+        {
+          "key": "l",
+          "label": "其他一致",
+          "value": {
+            "n": "2",
+            "d": "1"
+          }
+        },
+        {
+          "key": "m",
+          "label": "失配",
+          "value": {
+            "n": "0",
+            "d": "1"
+          }
+        }
+      ],
+      "strictOrder": [
+        "h",
+        "l",
+        "m"
+      ],
+      "progressUnit": "round",
+      "communication": 2
+    },
+    "public-good-contribution": {
+      "rounds": 2,
+      "extraFields": [],
+      "progressUnit": "round",
+      "communication": 2
+    },
+    "cournot-competition": {
+      "rounds": 2,
+      "extraFields": [],
+      "progressUnit": "round",
+      "communication": 2
+    },
+    "simultaneous-demand": {
+      "rounds": 3,
+      "extraFields": [],
+      "progressUnit": "round",
+      "communication": 2
+    },
+    "travelers-dilemma": {
+      "rounds": 2,
+      "extraFields": [],
+      "progressUnit": "round",
+      "communication": 2
+    },
+    "volunteer-response": {
+      "rounds": 3,
+      "extraFields": [],
+      "progressUnit": "round",
+      "communication": 2
+    },
+    "rank-prize-effort": {
+      "rounds": 2,
+      "extraFields": [],
+      "progressUnit": "round",
+      "communication": 2
+    },
+    "plurality-voting": {
+      "rounds": 3,
+      "extraFields": [],
+      "progressUnit": "round",
+      "communication": 2
+    },
+    "evidence-committee": {
+      "rounds": 3,
+      "extraFields": [
+        {
+          "key": "institution",
+          "type": "enum",
+          "label": "表决方式",
+          "defaultValue": "majority",
+          "options": [
+            {
+              "value": "majority",
+              "label": "多数决"
+            },
+            {
+              "value": "supermajority",
+              "label": "特定多数"
+            },
+            {
+              "value": "unanimity",
+              "label": "全体一致"
+            }
+          ]
+        },
+        {
+          "key": "threshold",
+          "type": "rational",
+          "label": "特定多数门槛",
+          "defaultValue": {
+            "n": "2",
+            "d": "3"
+          }
+        },
+        {
+          "key": "fallback",
+          "type": "enum",
+          "label": "固定兜底",
+          "defaultValue": "0",
+          "options": [
+            {
+              "value": "0",
+              "label": "0"
+            },
+            {
+              "value": "1",
+              "label": "1"
+            }
+          ]
+        },
+        {
+          "key": "reliability",
+          "type": "ordered-rational-list",
+          "label": "信号准确率",
+          "length": "participantCount",
+          "defaultItem": {
+            "n": "3",
+            "d": "4"
+          },
+          "itemBounds": {
+            "exclusiveMinimum": {
+              "n": "1",
+              "d": "2"
+            },
+            "exclusiveMaximum": {
+              "n": "1",
+              "d": "1"
+            }
+          }
+        },
+        {
+          "key": "correctPayoff",
+          "type": "rational",
+          "label": "答对所得",
+          "defaultValue": {
+            "n": "1",
+            "d": "1"
+          }
+        },
+        {
+          "key": "incorrectPayoff",
+          "type": "rational",
+          "label": "答错所得",
+          "defaultValue": {
+            "n": "0",
+            "d": "1"
+          }
+        }
+      ],
+      "progressUnit": "round",
+      "communication": 2
     }
   }
 };
@@ -260,7 +464,7 @@
 				{
 					...game,
 					extraFields: game.extraFields.map((field) =>
-						label({ ...field, options: field.options.map(label) }),
+						label({ ...field, ...(field.options ? { options: field.options.map(label) } : {}) }),
 					),
 					...(game.rationalFields ? { rationalFields: game.rationalFields.map(label) } : {}),
 				},

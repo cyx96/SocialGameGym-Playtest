@@ -1,6 +1,10 @@
 /* Stable entry samples, shared by the static theme fixtures. */
 (() => {
-	const { games, themes } = CatalogStudy,
+	SGGCatalogGameThemes.validate(CatalogStudy);
+	const { games } = CatalogStudy,
+		themes = SGGCatalogGameThemes.folderOrder.map((id) =>
+			CatalogStudy.themes.find((t) => t.id === id),
+		),
 		key = "sgg-q170-entry-samples";
 	const byId = new Map(games.map((g) => [g.id, g]));
 	function hue(hex) {
@@ -15,7 +19,7 @@
 		let h = max === r ? (g - b) / d : max === g ? (b - r) / d + 2 : (r - g) / d + 4;
 		return (h * 60 + 360) % 360;
 	}
-	const color = (game) => themes.find((t) => t.id === game.category).colors.ink.toLowerCase();
+	const color = (game) => SGGCatalogGameThemes.resolve(game).colors.ink.toLowerCase();
 	const distance = (a, b) => {
 		const d = Math.abs(hue(color(a)) - hue(color(b)));
 		return Math.min(d, 360 - d);

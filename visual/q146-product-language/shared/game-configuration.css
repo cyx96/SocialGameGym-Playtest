@@ -217,3 +217,19 @@ html[data-sg-motion-input="keyboard"] .sg-switch-track::after {
 		margin-top: 8px;
 	}
 }
+.sg-config-list-row {
+	display: grid;
+	grid-template-columns: minmax(0, 1fr) auto;
+	gap: var(--sg-space-sibling);
+	align-items: end;
+}
+.sg-config-list-row > [data-sg-button] {
+	margin-block-end: var(--sg-space-related);
+}
+.sg-config-list > [data-sg-button] {
+	margin-block-start: var(--sg-space-sibling);
+}
+/* Native hidden state wins the number asset's grid face during actual-context hydration. */
+.sg-game-config [hidden] {
+	display: none !important;
+}
