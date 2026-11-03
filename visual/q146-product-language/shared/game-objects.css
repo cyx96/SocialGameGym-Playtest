@@ -2,6 +2,7 @@
 @import url("./resource-transfer.css");
 @import url("./quantity-selection.css");
 @import url("./shared-capacity-claim.css");
+@import url("./shared-pool-total-vote.css");
 /* Authorized object geometry; shared controls retain type, material and physical state. */
 .sg-game-objects {
 	display: grid;

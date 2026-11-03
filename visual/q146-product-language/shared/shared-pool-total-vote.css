@@ -1,0 +1,42 @@
+/* One persistent common pool, one total ballot, one explicitly conditional equal share. */
+.sg-pool-total-vote {
+	container: sg-pool-total-vote / inline-size;
+	display: grid;
+	justify-items: center;
+	gap: var(--sg-space-section);
+	inline-size: 100%;
+	max-inline-size: var(--sg-focus);
+	min-inline-size: 0;
+	margin-inline: auto;
+	overflow-wrap: anywhere;
+}
+.sg-pool-total-vote-ballot {
+	display: grid;
+	justify-items: center;
+	gap: var(--sg-space-related);
+	inline-size: 100%;
+	min-inline-size: 0;
+}
+.sg-pool-total-vote-ballot > .sg-field {
+	inline-size: 100%;
+	min-inline-size: 0;
+}
+.sg-pool-total-vote-conditional {
+	display: grid;
+	justify-items: center;
+	gap: var(--sg-space-related);
+	max-inline-size: 100%;
+	min-inline-size: 0;
+	padding: var(--sg-space-sibling);
+	border-block-start: 1px dashed var(--ink);
+	text-align: center;
+}
+.sg-pool-total-vote-share {
+	display: flex;
+	align-items: baseline;
+	justify-content: center;
+	flex-wrap: wrap;
+	gap: var(--sg-space-related) var(--sg-space-sibling);
+	min-inline-size: 0;
+	max-inline-size: 100%;
+}

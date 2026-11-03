@@ -223,6 +223,9 @@ body > .sg-task-context-rail {
 @media (max-height: 600px) {
 	.sg-context-task.sg-task-layout {
 		padding-block-start: var(--sg-space-sibling);
+		/* Native navigation keeps its full band. Reclaim task-end whitespace so
+		   the final target fits in the remaining short canvas at enlarged text. */
+		padding-block-end: max(var(--sg-space-related), env(safe-area-inset-bottom));
 	}
 }
 @media (max-height: 600px) {

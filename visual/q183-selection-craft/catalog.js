@@ -399,6 +399,8 @@
 			// At the ownership midpoint both neighbours have zero reading opacity.
 			if (focusOnly) a.identity.style.opacity = String(reveal);
 			a.identity.tabIndex = active && p < 0.01 ? 0 : -1;
+			// Outgoing folder artwork may still paint, but only closed folders own input.
+			a.front.inert = !active || p >= 0.01 || navigationIntent() !== 0;
 			a.board.style.transform = `translateX(${-fp * 95}px) scale(${1 - 0.06 * fp})`;
 			a.board.style.opacity = String(1 - smooth(fp / 0.78));
 			a.front.style.transform = `perspective(1200px) translateX(${-fp * 150}px) rotateY(${-12 * reveal - 38 * fp}deg)`;

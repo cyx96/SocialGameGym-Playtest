@@ -447,6 +447,72 @@
       ],
       "progressUnit": "round",
       "communication": 2
+    },
+    "committed-information-policy": {
+      "rounds": 2,
+      "extraFields": [],
+      "progressUnit": "round",
+      "communication": 2
+    },
+    "public-experiment": {
+      "rounds": 4,
+      "extraFields": [],
+      "progressUnit": "round",
+      "communication": 2
+    },
+    "collective-estimation": {
+      "rounds": 2,
+      "extraFields": [],
+      "progressUnit": "round",
+      "communication": 2
+    },
+    "costly-signaling": {
+      "rounds": 1,
+      "communication": 2,
+      "sessionConstraints": {
+        "externalSocial": "disabled"
+      },
+      "extraFields": [],
+      "progressUnit": "round"
+    },
+    "action-observation": {
+      "rounds": 2,
+      "communication": 2,
+      "sessionConstraints": {
+        "externalSocial": "disabled"
+      },
+      "extraFields": [],
+      "progressUnit": "round"
+    },
+    "renewable-common-pool": {
+      "rounds": 2,
+      "extraFields": [],
+      "progressUnit": "round",
+      "communication": 2
+    },
+    "common-pool-voting": {
+      "rounds": 1,
+      "extraFields": [],
+      "progressUnit": "round",
+      "communication": 2
+    },
+    "sequential-continuation": {
+      "rounds": 1,
+      "extraFields": [],
+      "progressUnit": "round",
+      "communication": 2
+    },
+    "renewable-common-pool-threshold": {
+      "rounds": 2,
+      "extraFields": [],
+      "progressUnit": "round",
+      "communication": 2
+    },
+    "common-pool-voting-threshold": {
+      "rounds": 1,
+      "extraFields": [],
+      "progressUnit": "round",
+      "communication": 2
     }
   }
 };
