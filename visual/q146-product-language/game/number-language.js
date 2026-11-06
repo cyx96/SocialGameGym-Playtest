@@ -54,12 +54,7 @@
 	}
 	function format(
 		value,
-		{
-			signed = false,
-			unit = "",
-			digits = policy.recurringFractionDigits,
-			exact: requireExact = false,
-		} = {},
+		{ signed = false, unit = "", digits = policy.recurringFractionDigits } = {},
 	) {
 		const r = ratio(value);
 		unit =
@@ -82,21 +77,7 @@
 		let result,
 			exponent = "";
 		if (!exact.more) result = { ...exact, approx: false };
-		else if (requireExact) {
-			let a = n,
-				b = d;
-			while (b) [a, b] = [b, a % b];
-			const magnitude = grouped(String(n / a)) + "/" + grouped(String(d / a));
-			return {
-				text: sign + magnitude,
-				detail: sign + magnitude,
-				approx: false,
-				missing: false,
-				unit,
-				r,
-				aria: sign + magnitude + (unit ? " " + unit : ""),
-			};
-		} else {
+		else {
 			let places = digits;
 			if (n !== 0n && n < d) {
 				let first = 0,
@@ -213,11 +194,8 @@
 			Math.max(16, Math.min(box.bottom / zoom + 8, viewportHeight - popup.offsetHeight - 16)) +
 			"px";
 	}
-	function element(
-		value,
-		{ role = "data", signed = false, unit = "", digits, exact = false } = {},
-	) {
-		let f = format(value, { signed, unit, digits, exact });
+	function element(value, { role = "data", signed = false, unit = "", digits } = {}) {
+		let f = format(value, { signed, unit, digits });
 		const root = e(f.approx ? "button" : "span", "ui-number num--" + role);
 		if (f.approx) {
 			root.type = "button";
@@ -237,7 +215,7 @@
 		root.append(text);
 		if (unit && !f.missing) root.append(e("span", "numeric-unit", f.unit));
 		SGGI18n.observe(root, () => {
-			f = format(value, { signed, unit, digits, exact });
+			f = format(value, { signed, unit, digits });
 			root.setAttribute(
 				"aria-label",
 				f.approx ? SGGI18n.t("asset.numberDetails", { value: f.aria }) : f.aria,

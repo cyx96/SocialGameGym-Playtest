@@ -72,11 +72,6 @@
 	align-items: flex-end;
 	gap: var(--sg-space-related);
 }
-/* One action/feedback group occupies the rail; its primary keeps the trailing edge. */
-.sg-context-task > .sg-scene-actions > .sg-status-actions {
-	inline-size: 100%;
-	align-items: flex-end;
-}
 .sg-context-task[data-scene="decision"] > .content {
 	display: flex;
 	flex-direction: column;

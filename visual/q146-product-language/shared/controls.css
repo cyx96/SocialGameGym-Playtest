@@ -632,25 +632,3 @@ textarea.sg-text-control[data-sg-auto-size] {
 .sg-text-entry-footer > .field-help {
 	margin: 0;
 }
-
-/* Named choice evidence stays readable outside the selection label, in the same object row. */
-.sg-field .sg-choice[data-choice-layout="list"] .sg-choice-entry > .option {
-	display: grid;
-	grid-template-columns: var(--sg-target) minmax(0, 1fr);
-	align-items: start;
-	gap: var(--sg-space-sibling);
-	padding-block: var(--sg-space-related);
-}
-.sg-choice-entry {
-	min-inline-size: 0;
-}
-.sg-choice-material {
-	display: grid;
-	gap: var(--sg-space-related);
-	margin-inline-start: calc(var(--sg-target) + var(--sg-space-sibling));
-	padding-block-end: var(--sg-space-sibling);
-	color: var(--label);
-}
-.sg-choice-material p {
-	margin: 0;
-}

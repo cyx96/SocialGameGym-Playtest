@@ -1,5 +1,3 @@
-@import url("./ordered-tail-choice.css");
-@import url("./bounded-target-set.css");
 @import url("./directed-flow.css");
 @import url("./resource-transfer.css");
 @import url("./quantity-selection.css");
@@ -279,51 +277,4 @@
 }
 .sg-orthogonal-route figcaption {
 	font: inherit;
-}
-
-.sg-component-proposal,
-.sg-component-inspection {
-	display: grid;
-	gap: var(--sg-space-section);
-	min-inline-size: 0;
-}
-.sg-component-options {
-	display: grid;
-	grid-template-columns: repeat(3, minmax(0, 1fr));
-	gap: var(--sg-space-sibling);
-}
-.sg-component-options .option {
-	display: flex;
-	flex-direction: column;
-	align-items: flex-start;
-	gap: var(--sg-space-related);
-}
-.sg-component-content {
-	font-weight: var(--sg-font-weight-name, 600);
-}
-.sg-component-preview {
-	display: grid;
-	gap: var(--sg-space-related);
-}
-.sg-component-preview p,
-.sg-component-contributors {
-	margin: 0;
-}
-.sg-component-contributors {
-	color: var(--secondary);
-}
-.sg-component-pool {
-	display: grid;
-	gap: var(--sg-space-sibling);
-}
-.sg-component-inspection summary {
-	cursor: pointer;
-	min-block-size: 44px;
-	display: flex;
-	align-items: center;
-}
-@media (max-width: 28rem) {
-	.sg-component-options {
-		grid-template-columns: 1fr;
-	}
 }
