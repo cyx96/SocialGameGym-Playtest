@@ -513,6 +513,100 @@
       "extraFields": [],
       "progressUnit": "round",
       "communication": 2
+    },
+    "private-value-auction": {
+      "rounds": 2,
+      "extraFields": [],
+      "progressUnit": "round",
+      "communication": 2
+    },
+    "liquidity-bank-run": {
+      "rounds": 2,
+      "extraFields": [],
+      "progressUnit": "round",
+      "communication": 2
+    },
+    "hidden-action-contract": {
+      "rounds": 1,
+      "communication": 2,
+      "sessionConstraints": {
+        "externalSocial": "disabled"
+      },
+      "extraFields": [],
+      "progressUnit": "round"
+    },
+    "capacity-limited-inspection": {
+      "rounds": 3,
+      "extraFields": [],
+      "progressUnit": "round",
+      "communication": 2
+    },
+    "binding-final-offer-arbitration": {
+      "rounds": 2,
+      "extraFields": [],
+      "progressUnit": "round",
+      "communication": 2
+    },
+    "revocable-vote-delegation": {
+      "rounds": 2,
+      "extraFields": [],
+      "progressUnit": "round",
+      "communication": 2
+    },
+    "active-questioning": {
+      "rounds": 4,
+      "communication": 2,
+      "sessionConstraints": {
+        "externalSocial": "disabled"
+      },
+      "extraFields": [
+        {
+          "key": "lambda",
+          "label": "每教学窗成本",
+          "defaultValue": {
+            "n": "1",
+            "d": "4"
+          },
+          "type": "rational"
+        }
+      ],
+      "progressUnit": "round"
+    },
+    "persistent-proposal-selection": {
+      "rounds": 2,
+      "extraFields": [],
+      "progressUnit": "revision",
+      "communication": 2
+    },
+    "group-help-and-harm-with-group-messages": {
+      "rounds": 2,
+      "extraFields": [],
+      "progressUnit": "round",
+      "communication": 2
+    },
+    "collective-risk-account": {
+      "rounds": 2,
+      "extraFields": [
+        {
+          "key": "lossProbability",
+          "type": "rational",
+          "label": "共同损失概率",
+          "defaultValue": {
+            "n": "1",
+            "d": "2"
+          },
+          "minimum": {
+            "n": "0",
+            "d": "1"
+          },
+          "maximum": {
+            "n": "1",
+            "d": "1"
+          }
+        }
+      ],
+      "progressUnit": "round",
+      "communication": 2
     }
   }
 };
