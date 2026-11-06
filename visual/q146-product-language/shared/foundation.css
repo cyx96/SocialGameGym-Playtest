@@ -169,3 +169,9 @@ body {
 		outline-offset: -2px;
 	}
 }
+
+/* Opt-in verbatim participant/source content; procedural copy keeps ordinary flow. */
+.sg-literal-text {
+	white-space: pre-wrap;
+	overflow-wrap: anywhere;
+}

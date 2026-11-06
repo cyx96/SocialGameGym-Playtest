@@ -1,0 +1,66 @@
+/* Ordered current material meets its one tail input; local selection never rewrites the current row. */
+.sg-ordered-tail-choice {
+	display: grid;
+	gap: var(--sg-space-section);
+	min-inline-size: 0;
+}
+.sg-ordered-tail-program {
+	display: grid;
+	gap: var(--sg-space-related);
+	min-inline-size: 0;
+}
+.sg-ordered-tail-title {
+	font-weight: var(--sg-weight-name);
+}
+.sg-ordered-tail-sequence {
+	display: flex;
+	gap: var(--sg-space-related);
+	list-style: none;
+	padding: 0;
+	margin: 0;
+	min-inline-size: 0;
+}
+.sg-ordered-tail-sequence li {
+	position: relative;
+	display: flex;
+	flex: 1 1 0;
+	align-items: baseline;
+	gap: var(--sg-space-related);
+	padding: var(--sg-space-related);
+	background: var(--wash);
+	border: 1px solid var(--line);
+	box-shadow: var(--sg-paper-contact-shadow);
+	min-inline-size: 0;
+	overflow-wrap: anywhere;
+}
+.sg-ordered-tail-position {
+	color: var(--secondary);
+	font-variant-numeric: tabular-nums;
+}
+.sg-ordered-tail-sequence li + li::before {
+	content: "›";
+	position: absolute;
+	inset-inline-start: calc(-1 * var(--sg-space-related));
+	transform: translateX(-50%);
+	color: var(--ink);
+}
+.sg-ordered-tail-input {
+	padding-block-start: var(--sg-space-related);
+	border-block-start: 1px solid var(--line);
+}
+.sg-ordered-tail-input .choice-options {
+	display: grid;
+	grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+.sg-ordered-tail-input .option {
+	min-inline-size: 0;
+}
+.sg-ordered-tail-relation {
+	margin-block: var(--sg-space-related) 0;
+}
+@media (max-width: 32rem) {
+	.sg-ordered-tail-sequence li {
+		flex-direction: column;
+		gap: 0;
+	}
+}
